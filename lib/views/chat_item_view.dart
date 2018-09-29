@@ -70,17 +70,21 @@ class ChatViewItem extends StatelessWidget {
 
   Padding _buildReceivedMessageVIew(
       BorderRadius radius, Color bg, Color textColor) {
-    var usernameSection = new Text(
+    var usernameSection = chat.username != null
+        ? new Text(
       chat.username,
       style: new TextStyle(fontWeight: FontWeight.bold),
-    );
+    )
+        : new Container();
     var chatImageSection = _buildChatImageSection();
     var messageSection = Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: new Text(
+      child: chat.message != null
+          ? new Text(
         chat.message,
         style: new TextStyle(color: textColor),
-      ),
+      )
+          : new Container(),
     );
 
     return Padding(

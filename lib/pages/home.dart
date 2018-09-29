@@ -1,27 +1,49 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kijiweni_flutter/functions/functions.dart';
+import 'package:kijiweni_flutter/models/user.dart';
+import 'package:kijiweni_flutter/pages/chat_screen.dart';
+import 'package:kijiweni_flutter/pages/login_screen.dart';
 import 'package:kijiweni_flutter/values/strings.dart';
-import 'package:kijiweni_flutter/views/chat_field.dart';
-import 'package:kijiweni_flutter/views/chat_history.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final functions = new Functions();
+  User _user;
+  var _isLoggedIn = false;
+
   @override
   Widget build(BuildContext context) {
-    var topSection = new ChatHistoryView();
-    var bottomSection = new ChatFieldView();
+    functions.getUser().then((user) {
+      if (user != null) {
+        setState(() {
+          _isLoggedIn = true;
+//          _getUserDetails(user);
+        });
+      } else {
+        _isLoggedIn = false;
+      }
+    });
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(APP_NAME),
-      ),
-      body: SafeArea(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(child: topSection),
-            bottomSection,
-          ],
-        ),
-      ),
-    );
+    if (_isLoggedIn) {
+      return new ChatPage(user: _user);
+    } else {
+      return new LoginPage();
+    }
+  }
+
+  void _getUserDetails(FirebaseUser user) {
+    var userId = user.uid;
+    functions.database
+        .collection(USERS_COLLECTION)
+        .document(userId)
+        .get()
+        .then((document) {
+      _user = User.fromSnapshot(document);
+    });
   }
 }
