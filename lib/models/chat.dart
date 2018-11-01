@@ -22,6 +22,6 @@ class Chat {
     this.userImageUrl = value['user_image_url'];
     this.replyingTo = value['reply_source_id'];
     this.imageStatus = value['image_status'];
-//    this.createdAt = value['created_at'];
+    this.createdAt = value['created_at'];
   }
 }

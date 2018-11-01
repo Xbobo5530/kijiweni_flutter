@@ -1,11 +1,13 @@
+import 'package:kijiweni_flutter/utils/consts.dart';
+
 class User {
   String username, userId, userImageUrl;
 
   User(this.username, this.userImageUrl, this.userId);
 
   User.fromSnapshot(var value) {
-    this.username = value['username'];
-    this.userId = value['user_id'];
-    this.userImageUrl = value['user_image_url'];
+    this.username = value[NAME_FIELD];
+    this.userId = value[ID_FIELD];
+    this.userImageUrl = value[IMAGE_URL_FIELD];
   }
 }

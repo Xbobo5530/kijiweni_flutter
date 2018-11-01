@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
-import 'package:kijiweni_flutter/values/strings.dart';
+import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/views/chat_item_view.dart';
 
 class ChatHistoryView extends StatefulWidget {

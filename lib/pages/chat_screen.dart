@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/user.dart';
-import 'package:kijiweni_flutter/values/strings.dart';
+import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/chat_field.dart';
 import 'package:kijiweni_flutter/views/chat_history.dart';
 

@@ -1,0 +1,109 @@
+{
+  "project_info": {
+    "project_number": "325654567494",
+    "firebase_url": "https://kijiweni-c1a54.firebaseio.com",
+    "project_id": "kijiweni-c1a54",
+    "storage_bucket": "kijiweni-c1a54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325654567494:android:7f201defb1f5dbc1",
+        "android_client_info": {
+          "package_name": "com.nyayozangu.labs.kijiweni"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325654567494-loosvsns5ej5jmboftvs6hh9go0qkb8d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nyayozangu.labs.kijiweni",
+            "certificate_hash": "2f4d9e7d126975ab780ad16f3f73fd5e8d946af8"
+          }
+        },
+        {
+          "client_id": "325654567494-ls8uvhnecrmf3ne2vihe763pvtmb470t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nyayozangu.labs.kijiweni",
+            "certificate_hash": "375ff26f7c6b35b94eeb533a96f397fdfc98590f"
+          }
+        },
+        {
+          "client_id": "325654567494-tbb345ksnsq45pk7682ibbaqugpnra89.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nyayozangu.labs.kijiweni",
+            "certificate_hash": "d28bf9e0a6c0047f5af38fa3aac01de0e872fa31"
+          }
+        },
+        {
+          "client_id": "325654567494-n2bjug4jp0pvh5392931htv6pj97923c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUuZUC05XkcjeoCIaFaA5h1ycr_v2iuqQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "325654567494-n2bjug4jp0pvh5392931htv6pj97923c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "325654567494-80bp8sp5np4bbgmplg9ofogrnel0t6al.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nyayozangu.labs.kijiweni"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325654567494:android:662d8ab9974b690c",
+        "android_client_info": {
+          "package_name": "com.nyayozangu.labs.kijiweniflutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325654567494-n2bjug4jp0pvh5392931htv6pj97923c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUuZUC05XkcjeoCIaFaA5h1ycr_v2iuqQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
