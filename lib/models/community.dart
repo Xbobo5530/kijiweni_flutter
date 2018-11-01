@@ -5,12 +5,13 @@ class Community {
   String name, id, imageUrl, createdBy, description;
   int createdAt;
 
-  Community({@required this.name,
+  Community(
+      {@required this.name,
       this.description,
       this.id,
       this.imageUrl,
-    @required this.createdAt,
-    @required this.createdBy})
+      @required this.createdAt,
+      @required this.createdBy})
       : assert(name != null),
         assert(createdAt != null),
         assert(createdBy != null);

@@ -13,7 +13,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final snackBar = SnackBar(content: Text(errorMessageText));
 
-    _handleGoogleSignIn(MainModel model) async {
+    _handleGoogleSignIn(MainModel model, BuildContext context) async {
       await model.signInWithGoogle();
       switch (model.loginStatus) {
         case StatusCode.failed:
@@ -35,13 +35,17 @@ class LoginPage extends StatelessWidget {
         child: ScopedModelDescendant<MainModel>(
           builder: (BuildContext context, Widget child, MainModel model) {
             print('$tag loginStatus is ${model.loginStatus}');
-            return RaisedButton(
-                color: primaryColor,
-                textColor: Colors.white,
-                child: model.loginStatus == StatusCode.waiting
-                    ? MyProgressIndicator(size: 15.0, color: Colors.white)
-                    : Text(googleSignInText),
-                onPressed: () => _handleGoogleSignIn(model));
+            return Builder(
+              builder: ((context) {
+                return RaisedButton(
+                    color: primaryColor,
+                    textColor: Colors.white,
+                    child: model.loginStatus == StatusCode.waiting
+                        ? MyProgressIndicator(size: 15.0, color: Colors.white)
+                        : Text(googleSignInText),
+                    onPressed: () => _handleGoogleSignIn(model, context));
+              }),
+            );
           },
         ),
       ),

@@ -26,6 +26,7 @@ abstract class LoginModel extends Model {
   Future<void> checkLoginStatus() async {
     final FirebaseUser user = await _auth.currentUser();
     user != null ? _isLoggedIn = true : _isLoggedIn = false;
+    notifyListeners();
   }
 
   Future<FirebaseUser> _handleGoogleSignIn() async {
@@ -59,6 +60,7 @@ abstract class LoginModel extends Model {
         _loginStatus = StatusCode.failed;
       }
     }
+    checkLoginStatus();
     notifyListeners();
   }
 
@@ -116,6 +118,7 @@ abstract class LoginModel extends Model {
   logout() {
     print('$tag at logout');
     _auth.signOut();
+    checkLoginStatus();
     notifyListeners();
   }
 }

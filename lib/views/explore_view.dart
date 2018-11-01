@@ -17,11 +17,13 @@ class ExploreView extends StatelessWidget {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              return ListView.builder(itemBuilder: (context, index) {
-                final Community community =
+              return ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    final Community community =
                     Community.fromSnapShot(snapshot.data.documents[index]);
-                return CommunitiesItemView(community: community);
-              });
+                    return CommunitiesItemView(community: community);
+                  });
             },
           );
         },
