@@ -44,6 +44,7 @@ abstract class LoginModel extends Model {
   Future<void> signInWithGoogle() async {
     print('$tag at signInWithGoogle');
     _loginStatus = StatusCode.waiting;
+    notifyListeners();
     bool _hasError = false;
     final user = await _handleGoogleSignIn().catchError((error) {
       print('$tag error: $error');

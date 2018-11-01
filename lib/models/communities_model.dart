@@ -59,14 +59,11 @@ abstract class CommunitiesModel extends Model {
     if (community.createdBy != null)
       _communityMap.putIfAbsent(CREATED_BY_FIELD, () => community.createdBy);
     _communityMap.putIfAbsent(
-        CREATED_AT_FIELD, () =>
-    DateTime
-        .now()
-        .millisecondsSinceEpoch);
+        CREATED_AT_FIELD, () => DateTime.now().millisecondsSinceEpoch);
 
     /// create a new community document on communities collection
     DocumentReference newCommunityDocRef =
-    await _communitiesCollection.add(_communityMap).catchError((error) {
+        await _communitiesCollection.add(_communityMap).catchError((error) {
       print('$_tag error on creating community doc: $error');
       _hasError = true;
       _createCommunityStatus = StatusCode.failed;
@@ -80,20 +77,18 @@ abstract class CommunitiesModel extends Model {
       notifyListeners();
     } else {
       _createCommunityStatus =
-      await _createUserCommunityRef(communityId, community.createdBy);
+          await _createUserCommunityRef(communityId, community.createdBy);
       notifyListeners();
     }
   }
 
-  Future<StatusCode> _createUserCommunityRef(String communityId,
-      String userId) async {
+  Future<StatusCode> _createUserCommunityRef(
+      String communityId, String userId) async {
     print('$_tag at _createUserCommunityRef');
     bool _hasError = false;
     Map<String, dynamic> myCommunityMapRef = {
       ID_FIELD: communityId,
-      CREATED_AT_FIELD: DateTime
-          .now()
-          .millisecondsSinceEpoch
+      CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
     };
     await _database
         .collection(USERS_COLLECTION)
@@ -114,15 +109,13 @@ abstract class CommunitiesModel extends Model {
       return await _createSubScribedCommunityRef(communityId, userId);
   }
 
-  Future<StatusCode> _createSubScribedCommunityRef(String communityId,
-      String userId) async {
+  Future<StatusCode> _createSubScribedCommunityRef(
+      String communityId, String userId) async {
     print('$_tag at _createUserCommunityRef');
     bool _hasError = false;
     Map<String, dynamic> myCommunityMapRef = {
       ID_FIELD: communityId,
-      CREATED_AT_FIELD: DateTime
-          .now()
-          .millisecondsSinceEpoch
+      CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
     };
     await _database
         .collection(USERS_COLLECTION)

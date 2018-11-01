@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class MyProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    _goToLogin() => () {};
+    _goToLogin() =>
+        Navigator.push(context,
+            MaterialPageRoute(
+                builder: (_) => LoginPage(), fullscreenDialog: true));
 
     final _loginView = InkWell(
       onTap: () => _goToLogin(),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Material(
             shape: CircleBorder(),
@@ -20,7 +25,7 @@ class MyProfileView extends StatelessWidget {
               height: 150.0,
               child: Icon(Icons.lock_open, size: 80.0),
               decoration:
-                  BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
+              BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
             ),
           ),
           ListTile(
