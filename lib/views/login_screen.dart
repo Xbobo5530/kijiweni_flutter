@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
-import 'package:kijiweni_flutter/pages/home.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
@@ -21,8 +20,7 @@ class LoginPage extends StatelessWidget {
           Scaffold.of(context).showSnackBar(snackBar);
           break;
         case StatusCode.success:
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => HomePage()));
+          Navigator.pop(context);
           break;
         default:
           print('$tag login status is ${model.loginStatus}');

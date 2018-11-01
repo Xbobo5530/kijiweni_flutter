@@ -16,13 +16,13 @@ class HomePage extends StatelessWidget {
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.isLoggedIn
             ? CircleAvatar(
-          backgroundImage: NetworkImage(model.currentUser.userImageUrl),
-        )
+                backgroundImage: NetworkImage(model.currentUser.userImageUrl),
+              )
             : IconButton(
-          icon: Icon(Icons.account_circle),
-          iconSize: 30.0,
-          onPressed: () {},
-        );
+                icon: Icon(Icons.account_circle),
+                iconSize: 30.0,
+                onPressed: () {},
+              );
       },
     ),
   );
