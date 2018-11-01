@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ChatFieldView extends StatefulWidget {
+class InputFieldView extends StatefulWidget {
   @override
-  _ChatFieldViewState createState() => _ChatFieldViewState();
+  _InputFieldViewState createState() => _InputFieldViewState();
 }
 
-class _ChatFieldViewState extends State<ChatFieldView> {
+class _InputFieldViewState extends State<InputFieldView> {
   var _chatFieldController = new TextEditingController();
   var _hasMessage = false;
 

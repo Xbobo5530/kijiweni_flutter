@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
-import 'package:kijiweni_flutter/views/chat_item_view.dart';
+import 'package:kijiweni_flutter/views/timeline_item_view.dart';
 
-class ChatHistoryView extends StatefulWidget {
+class CommunityTimelineView extends StatefulWidget {
   @override
-  _ChatHistoryViewState createState() => _ChatHistoryViewState();
+  _CommunityTimelineViewState createState() => _CommunityTimelineViewState();
 }
 
-class _ChatHistoryViewState extends State<ChatHistoryView> {
+class _CommunityTimelineViewState extends State<CommunityTimelineView> {
   @override
   Widget build(BuildContext context) {
     //todo get the chat list

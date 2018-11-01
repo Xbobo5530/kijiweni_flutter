@@ -12,8 +12,7 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       body: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
-          if (model.currentUser == null)
-            return Center(child: CircularProgressIndicator());
+          if (model.currentUser == null) return EmptyHomePageView();
           final userId = model.currentUser.userId;
           return StreamBuilder(
             stream: model.getSubscribedCommunitiesStream(userId),
@@ -29,7 +28,7 @@ class HomeView extends StatelessWidget {
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (_, index) {
                     final DocumentSnapshot communityDoc =
-                    snapshot.data.documents[index];
+                        snapshot.data.documents[index];
                     final communityId = communityDoc.documentID;
                     return FutureBuilder(
                       future: model.getCommunityFromId(communityId),

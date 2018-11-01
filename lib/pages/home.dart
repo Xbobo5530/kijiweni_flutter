@@ -9,33 +9,17 @@ import 'package:kijiweni_flutter/views/login_screen.dart';
 import 'package:kijiweni_flutter/views/user_profile_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-const tag = 'HomePage:';
+const _tag = 'HomePage:';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _userSection = Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ScopedModelDescendant<MainModel>(
-        builder: (BuildContext context, Widget child, MainModel model) {
-          return model.isLoggedIn
-              ? CircleAvatar(
-            backgroundImage: NetworkImage(model.currentUser.userImageUrl),
-          )
-              : IconButton(
-            icon: Icon(Icons.account_circle),
-            iconSize: 30.0,
-            onPressed: () {},
-          );
-        },
-      ),
-    );
-
     _goToCreateCommunity() =>
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (_) => CreateCommunityPage(), fullscreenDialog: true));
+
     _goToLogin() =>
         Navigator.push(context,
             MaterialPageRoute(
@@ -49,10 +33,9 @@ class HomePage extends StatelessWidget {
             break;
           case 1:
             return IconButton(
-              onPressed: () =>
-              model.isLoggedIn
+              onPressed: model.isLoggedIn
                   ? () => _goToCreateCommunity()
-                  : _goToLogin(),
+                  : () => _goToLogin(),
               icon: Icon(Icons.add),
             );
             break;

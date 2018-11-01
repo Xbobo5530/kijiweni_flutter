@@ -49,10 +49,12 @@ class MyProfileView extends StatelessWidget {
                   child: Material(
                     elevation: 4.0,
                     shape: CircleBorder(),
-                    child: CircleAvatar(
+                    child: model.currentUser != null
+                        ? CircleAvatar(
                       backgroundImage:
-                          NetworkImage(model.currentUser.userImageUrl),
-                    ),
+                      NetworkImage(model.currentUser.userImageUrl),
+                    )
+                        : Icon(Icons.people),
                   ),
                 ),
                 ListTile(

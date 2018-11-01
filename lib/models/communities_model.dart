@@ -44,7 +44,7 @@ abstract class CommunitiesModel extends Model {
     return Community.fromSnapShot(communityDoc);
   }
 
-  Future<void> createCommunity(Community community) async {
+  Future<StatusCode> createCommunity(Community community) async {
     print('$_tag at createCommunity');
     _createCommunityStatus = StatusCode.waiting;
     notifyListeners();
@@ -80,6 +80,7 @@ abstract class CommunitiesModel extends Model {
           await _createUserCommunityRef(communityId, community.createdBy);
       notifyListeners();
     }
+    return _createCommunityStatus;
   }
 
   Future<StatusCode> _createUserCommunityRef(

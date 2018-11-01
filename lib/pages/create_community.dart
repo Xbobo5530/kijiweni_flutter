@@ -7,6 +7,8 @@ import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+const _tag = 'CreateCommunityPage:';
+
 class CreateCommunityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -14,6 +16,22 @@ class CreateCommunityPage extends StatelessWidget {
     final _descriptionFieldController = TextEditingController();
 
     final snackBar = SnackBar(content: Text(emptyNameFieldsWarningText));
+
+    _handleResult(StatusCode createCommunityResult) {
+      switch (createCommunityResult) {
+        case StatusCode.failed:
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('Failed to create community'),
+          ));
+          break;
+        case StatusCode.success:
+          Navigator.pop(context);
+          break;
+        default:
+          print(
+              '$_tag createCommunityResult statusCode is: $createCommunityResult');
+      }
+    }
 
     _submitNewCommunity(MainModel model, BuildContext context) async {
       final name = _nameFieldController.text.trim();
@@ -31,7 +49,8 @@ class CreateCommunityPage extends StatelessWidget {
                 ? _descriptionFieldController.text.trim()
                 : null);
 
-        model.createCommunity(community);
+        final createCommunityStatus = await model.createCommunity(community);
+        _handleResult(createCommunityStatus);
       }
     }
 
