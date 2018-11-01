@@ -1,16 +1,19 @@
 import 'package:kijiweni_flutter/utils/consts.dart';
+import 'package:meta/meta.dart';
 
 class Community {
   String name, id, imageUrl, createdBy, description;
   int createdAt;
 
-  Community(
-      {this.name,
+  Community({@required this.name,
       this.description,
       this.id,
       this.imageUrl,
-      this.createdAt,
-      this.createdBy});
+    @required this.createdAt,
+    @required this.createdBy})
+      : assert(name != null),
+        assert(createdAt != null),
+        assert(createdBy != null);
 
   Community.fromSnapShot(var value) {
     this.name = value[NAME_FIELD];

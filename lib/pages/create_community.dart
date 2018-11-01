@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:kijiweni_flutter/models/community.dart';
+import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class CreateCommunityPage extends StatelessWidget {
   @override
@@ -7,9 +13,30 @@ class CreateCommunityPage extends StatelessWidget {
     final _nameFieldController = TextEditingController();
     final _descriptionFieldController = TextEditingController();
 
+    final snackBar = SnackBar(content: Text(emptyNameFieldsWarningText));
+
+    _submitNewCommunity(MainModel model, BuildContext context) async {
+      final name = _nameFieldController.text.trim();
+      final description = _descriptionFieldController.text.trim();
+      if (name.isEmpty)
+        Scaffold.of(context).showSnackBar(snackBar);
+      else {
+        final community = Community(
+            name: _nameFieldController.text.trim(),
+            createdBy: model.currentUser.userId,
+            createdAt: DateTime
+                .now()
+                .millisecondsSinceEpoch,
+            description: description.isNotEmpty
+                ? _descriptionFieldController.text.trim()
+                : null);
+
+        model.createCommunity(community);
+      }
+    }
+
     final _appBar = AppBar(
       title: Text(createCommunityText),
-      backgroundColor: Colors.lightGreen,
     );
 
     final _imageSection = Padding(
@@ -21,7 +48,7 @@ class CreateCommunityPage extends StatelessWidget {
           height: 150.0,
           width: 150.0,
           child: Icon(
-            Icons.add_a_photo,
+            Icons.people,
             size: 50.0,
             color: Colors.white,
           ),
@@ -32,8 +59,9 @@ class CreateCommunityPage extends StatelessWidget {
     );
 
     final _nameField = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 40.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
       child: TextField(
+        controller: _nameFieldController,
         decoration: InputDecoration(
             border: OutlineInputBorder(), labelText: communityNameText),
       ),
@@ -42,40 +70,57 @@ class CreateCommunityPage extends StatelessWidget {
     final _descriptionField = Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
       child: TextField(
+        controller: _descriptionFieldController,
         maxLines: 5,
         decoration: InputDecoration(
             border: OutlineInputBorder(), labelText: communityDescriptionText),
       ),
     );
 
-    final _fieldsSection = Column(
-      children: <Widget>[_nameField, _descriptionField],
-    );
+    Widget _fieldsSection(BuildContext context) =>
+        Column(
+          children: <Widget>[_nameField, _descriptionField],
+        );
     final _submitButton = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
       child: Row(
         children: <Widget>[
           Expanded(
-            child: RaisedButton(
-              onPressed: () {},
-              textColor: Colors.white,
-              color: Colors.lightGreen,
-              child: Text(submitText),
+            child: ScopedModelDescendant<MainModel>(
+              builder: (BuildContext context, Widget child, MainModel model) {
+                return RaisedButton(
+                  onPressed: () => _submitNewCommunity(model, context),
+                  textColor: Colors.white,
+                  color: primaryColor,
+                  child: model.createCommunityStatus == StatusCode.waiting
+                      ? MyProgressIndicator(
+                    size: 15.0,
+                    color: Colors.white,
+                  )
+                      : Text(submitText),
+                );
+              },
             ),
           ),
         ],
       ),
     );
 
+    final _body = Builder(
+      builder: ((context) {
+        return ListView(
+          children: <Widget>[
+            _imageSection,
+            _fieldsSection(context),
+            _submitButton,
+          ],
+        );
+      }),
+    );
+
     return Scaffold(
       appBar: _appBar,
-      body: ListView(
-        children: <Widget>[
-          _imageSection,
-          _fieldsSection,
-          _submitButton,
-        ],
-      ),
+      body: _body,
     );
   }
 }

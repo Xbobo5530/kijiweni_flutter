@@ -25,20 +25,22 @@ class HomeView extends StatelessWidget {
               if (snapshot.data.documents.length == 0)
                 return EmptyHomePageView();
 
-              return ListView.builder(itemBuilder: (_, index) {
-                final DocumentSnapshot communityDoc =
-                snapshot.data.documents[index];
-                final communityId = communityDoc.documentID;
-                return FutureBuilder(
-                  future: model.getCommunityFromId(communityId),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<Community> snapshot) {
-                    if (!snapshot.hasData) return Container();
-                    final Community community = snapshot.data;
-                    return CommunitiesItemView(community: community);
-                  },
-                );
-              });
+              return ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (_, index) {
+                    final DocumentSnapshot communityDoc =
+                    snapshot.data.documents[index];
+                    final communityId = communityDoc.documentID;
+                    return FutureBuilder(
+                      future: model.getCommunityFromId(communityId),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Community> snapshot) {
+                        if (!snapshot.hasData) return Container();
+                        final Community community = snapshot.data;
+                        return CommunitiesItemView(community: community);
+                      },
+                    );
+                  });
             },
           );
         },

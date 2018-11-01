@@ -1,4 +1,4 @@
-import 'package:kijiweni_flutter/models/chats_model.dart';
+import 'package:kijiweni_flutter/models/communities_model.dart';
 import 'package:kijiweni_flutter/models/login_model.dart';
 import 'package:kijiweni_flutter/models/nav_model.dart';
 import 'package:kijiweni_flutter/models/user_model.dart';

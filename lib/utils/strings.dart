@@ -14,3 +14,6 @@ const exploreHint = 'Explore different communities';
 const createHint = 'Create a new community';
 const communityNameText = 'Community name';
 const communityDescriptionText = 'Community description';
+
+//warnings
+const emptyNameFieldsWarningText = 'The name field cannot be empty';

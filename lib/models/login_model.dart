@@ -115,5 +115,6 @@ abstract class LoginModel extends Model {
   logout() {
     print('$tag at logout');
     _auth.signOut();
+    notifyListeners();
   }
 }
