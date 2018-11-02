@@ -10,7 +10,7 @@ class ChatViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isMe;
-    currentUserId == chat.userId ? isMe = true : isMe = false;
+    currentUserId == chat.createdBy ? isMe = true : isMe = false;
     final background = isMe ? Colors.blueGrey : Colors.greenAccent;
     final textColor = isMe ? Colors.white : Colors.black;
     final radius = isMe
@@ -25,7 +25,7 @@ class ChatViewItem extends StatelessWidget {
             bottomRight: Radius.circular(5.0),
           );
 
-    return currentUserId == chat.userId
+    return currentUserId == chat.createdBy
         ? _buildSentMessageVIew(radius, background, textColor)
         : _buildReceivedMessageVIew(radius, background, textColor);
   }

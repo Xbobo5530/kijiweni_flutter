@@ -9,6 +9,7 @@ const meText = 'Me';
 
 const messageText = 'Message';
 const sendText = 'Send';
+const failedToSendMessageText = 'Failed to send your message, please try again';
 
 const createCommunityText = 'Create community';
 const submitText = 'Submit';

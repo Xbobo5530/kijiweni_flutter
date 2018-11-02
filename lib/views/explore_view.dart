@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
@@ -20,8 +21,12 @@ class ExploreView extends StatelessWidget {
               return ListView.builder(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
+                    final DocumentSnapshot communityDoc =
+                        snapshot.data.documents[index];
                     final Community community =
-                    Community.fromSnapShot(snapshot.data.documents[index]);
+                        Community.fromSnapShot(communityDoc);
+                    final communityId = communityDoc.documentID;
+                    community.id = communityId;
                     return CommunitiesItemView(community: community);
                   });
             },

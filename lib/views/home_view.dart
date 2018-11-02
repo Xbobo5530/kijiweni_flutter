@@ -36,6 +36,8 @@ class HomeView extends StatelessWidget {
                           AsyncSnapshot<Community> snapshot) {
                         if (!snapshot.hasData) return Container();
                         final Community community = snapshot.data;
+                        final communityId = communityDoc.documentID;
+                        community.id = communityId;
                         return CommunitiesItemView(community: community);
                       },
                     );

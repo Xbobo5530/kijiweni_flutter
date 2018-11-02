@@ -1,69 +1,97 @@
 import 'package:flutter/material.dart';
+import 'package:kijiweni_flutter/models/chat.dart';
+import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+const _tag = 'InputFieldView:';
 
 class InputFieldView extends StatelessWidget {
+  final String communityId;
+
+  InputFieldView({this.communityId});
+
   @override
   Widget build(BuildContext context) {
-    var _chatFieldController = new TextEditingController();
-    var _hasMessage = false;
+    final _chatFieldController = TextEditingController();
 
-    _processMessage() {}
-
-    sendMessage() {
-      //get text
-      //check if text is empty
-      //cleat text
-      var message = _chatFieldController.text.trim();
-      message.isNotEmpty ? _processMessage() : _hasMessage = false;
-      /*_chatFieldController.clear()*/
-      ;
-      _chatFieldController.clear();
+    _openImagePicker() {
+      //todo handle adding image
     }
 
-    _openImagePicker() {}
+    _handleSendingMessageResult(StatusCode code) {
+      switch (code) {
+        case StatusCode.failed:
+          Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(failedToSendMessageText)));
+          break;
+        default:
+          _chatFieldController.text = '';
+          print(
+              '$_tag at _handleSendingMessageResult, the send message status code is $code');
+      }
+    }
+
+    _sendMessage(MainModel model) async {
+      if (_chatFieldController.text
+          .trim()
+          .isNotEmpty) {
+        final message = _chatFieldController.text.trim();
+        final chat = Chat(
+          message: message,
+          createdBy: model.currentUser.userId,
+          communityId: communityId,
+        );
+
+        StatusCode sendMessageStatus = await model.sendMessage(chat);
+        _handleSendingMessageResult(sendMessageStatus);
+      }
+    }
+
+    final _addImageButton = IconButton(
+      icon: Icon(Icons.add_a_photo),
+      onPressed: () => _openImagePicker,
+    );
+
+    final _sendButton = ScopedModelDescendant<MainModel>(
+      builder: ((context, child, model) {
+        return IconButton(
+          onPressed: () => _sendMessage(model),
+          icon: model.sendingMessageStatus == StatusCode.waiting
+              ? MyProgressIndicator(
+            size: 15.0,
+            color: primaryColor,
+          )
+              : Icon(Icons.send),
+        );
+      }),
+    );
+
+    final _messageField = TextField(
+      controller: _chatFieldController,
+      maxLines: null,
+      textInputAction: TextInputAction.newline,
+      decoration: InputDecoration(
+          labelText: messageText,
+          border: OutlineInputBorder(),
+          prefixIcon: _addImageButton,
+          suffixIcon: _sendButton),
+    );
 
     return Material(
       elevation: 4.0,
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.add_a_photo),
-                    onPressed: () => _openImagePicker,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: _chatFieldController,
-//                onChanged: (){},
-                      autofocus: false,
-                      textInputAction: TextInputAction.newline,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: messageText,
-                      ),
-                    ),
-                  ),
-//                  IconButton(
-//                    onPressed: _hasMessage ? sendMessage : null,
-//                    icon: Icon(Icons.send),
-//                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  FlatButton(
-                    child: Text(sendText),
-                    onPressed: () {},
-                  ),
-                ],
-              )
-            ],
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Expanded(
+              child: _messageField,
+            ),
+          ],
         ),
       ),
     );

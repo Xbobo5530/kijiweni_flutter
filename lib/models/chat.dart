@@ -1,27 +1,26 @@
+import 'package:kijiweni_flutter/utils/consts.dart';
+import 'package:meta/meta.dart';
+
 class Chat {
-  String message,
-      chatImageUrl,
-      chatThumbUrl,
-      chatId,
-      username,
-      userId,
-      userImageUrl,
-      replyingTo;
-  int imageStatus, createdAt;
+  String message, chatImageUrl, chatId, createdBy, replyingTo, communityId;
+  int createdAt;
 
-  Chat(this.message, this.chatImageUrl, this.chatThumbUrl, this.chatId,
-      this.username, this.userId, this.userImageUrl, this.replyingTo);
+  Chat({@required this.message,
+    @required this.communityId,
+    this.chatImageUrl,
+    this.chatId,
+    @required this.createdBy,
+    this.replyingTo})
+      : assert(message != null),
+        assert(communityId != null),
+        assert(createdBy != null);
 
-  Chat.fromSnapshot(var value) {
-    this.message = value['message'];
-    this.chatImageUrl = value['chat_image_url'];
-    this.chatThumbUrl = value['chat_thumb_url'];
-    this.chatId = value['chat_id'];
-    this.username = value['username'];
-    this.userId = value['user_id'];
-    this.userImageUrl = value['user_image_url'];
-    this.replyingTo = value['reply_source_id'];
-    this.imageStatus = value['image_status'];
-    this.createdAt = value['created_at'];
-  }
+  Chat.fromSnapshot(var value)
+      : message = value[MESSAGE_FIELD],
+        communityId = value[COMMUNITY_ID_FIELD],
+        chatImageUrl = value[CHAT_IMAGE_URL_FIELD],
+        chatId = value[ID_FIELD],
+        createdBy = value[CREATED_BY_FIELD],
+        replyingTo = value[REPLYING_TO_FIELD],
+        createdAt = value[CREATED_AT_FIELD];
 }
