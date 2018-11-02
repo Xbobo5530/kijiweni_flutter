@@ -9,7 +9,10 @@ class EmptyHomePageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _goToLoginPage() {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => LoginPage()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => LoginPage(), fullscreenDialog: true));
     }
 
     _goToCreateCommunityPage() {

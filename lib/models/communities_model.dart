@@ -25,8 +25,7 @@ abstract class CommunitiesModel extends Model {
         .snapshots();
   }
 
-  Future<Community> getCommunityFromId(String communityId) async {
-    //todo handle community for mid
+  Future<Community> communityFromId(String communityId) async {
     bool _hasError = false;
 
     final DocumentSnapshot communityDoc = await _communitiesCollection
@@ -38,7 +37,7 @@ abstract class CommunitiesModel extends Model {
     });
     if (_hasError || !communityDoc.exists) {
       notifyListeners();
-      return Community();
+      return Community(createdBy: null, createdAt: null, name: null);
     }
     notifyListeners();
     return Community.fromSnapShot(communityDoc);
@@ -134,6 +133,16 @@ abstract class CommunitiesModel extends Model {
     if (_hasError)
       return StatusCode.failed;
     else
-      return StatusCode.success;
+      return await _createMembersRef(communityId, userId);
+  }
+
+  Future<StatusCode> _createMembersRef(String communityId, String userId) {
+    print('$_tag at _createMembersRef');
+    bool _hasError = false;
+    Map<String, dynamic> memberMap = {
+      MEMBER_ID_FIELD: userId,
+      COMMUNITY_ID_FIELD: communityId
+      CREATEDA
+    };
   }
 }

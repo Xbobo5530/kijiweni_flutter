@@ -3,7 +3,6 @@ import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/views/community_timeline.dart';
 import 'package:kijiweni_flutter/views/input_field.dart';
 
-const _tag = 'CommunityPage:';
 
 class CommunityPage extends StatelessWidget {
   final Community community;
@@ -19,7 +18,10 @@ class CommunityPage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Expanded(child: CommunityTimelineView()),
+          Expanded(
+              child: CommunityTimelineView(
+                community: community,
+              )),
           InputFieldView(
             communityId: community.id,
           ),

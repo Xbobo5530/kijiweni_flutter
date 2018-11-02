@@ -25,6 +25,7 @@ abstract class ChatModel extends Model {
   Future<StatusCode> sendMessage(Chat chat) async {
     print('$_tag at sendMessage');
     _sendingMessageStatus = StatusCode.waiting;
+    notifyListeners();
     bool _hasError = false;
     // make chat map
     Map<String, dynamic> chatMap = Map();
@@ -33,7 +34,7 @@ abstract class ChatModel extends Model {
     if (chat.communityId != null)
       chatMap.putIfAbsent(COMMUNITY_ID_FIELD, () => chat.communityId);
     if (chat.createdBy != null)
-      chatMap.putIfAbsent(USER_ID_FIELD, () => chat.createdBy);
+      chatMap.putIfAbsent(CREATED_BY_FIELD, () => chat.createdBy);
     if (chat.replyingTo != null)
       chatMap.putIfAbsent(REPLYING_TO_FIELD, () => chat.replyingTo);
     if (chat.chatImageUrl != null)
@@ -41,7 +42,7 @@ abstract class ChatModel extends Model {
     chatMap.putIfAbsent(
         CREATED_AT_FIELD, () => DateTime.now().millisecondsSinceEpoch);
 
-    final DocumentReference newChatDocRef = await _database
+    await _database
         .collection(COMMUNITIES_COLLECTION)
         .document(chat.communityId)
         .collection(CHATS_COLLECTION)

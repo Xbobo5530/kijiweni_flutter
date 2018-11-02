@@ -21,3 +21,5 @@ const USER_ID_FIELD = 'user_id';
 const CHAT_IMAGE_URL_FIELD = 'chat_image_url';
 const REPLYING_TO_FIELD = 'replying_to';
 const COMMUNITY_ID_FIELD = 'community_id';
+const MEMBER_ID_FIELD = 'memmber_id';
+

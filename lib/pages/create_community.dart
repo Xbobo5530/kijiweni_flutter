@@ -41,10 +41,8 @@ class CreateCommunityPage extends StatelessWidget {
       else {
         final community = Community(
             name: _nameFieldController.text.trim(),
-            createdBy: model.currentUser.userId,
-            createdAt: DateTime
-                .now()
-                .millisecondsSinceEpoch,
+            createdBy: model.currentUser.id,
+            createdAt: DateTime.now().millisecondsSinceEpoch,
             description: description.isNotEmpty
                 ? _descriptionFieldController.text.trim()
                 : null);
@@ -95,8 +93,7 @@ class CreateCommunityPage extends StatelessWidget {
       ),
     );
 
-    Widget _fieldsSection(BuildContext context) =>
-        Column(
+    Widget _fieldsSection(BuildContext context) => Column(
           children: <Widget>[_nameField, _descriptionField],
         );
     final _submitButton = Padding(
@@ -112,9 +109,9 @@ class CreateCommunityPage extends StatelessWidget {
                   color: primaryColor,
                   child: model.createCommunityStatus == StatusCode.waiting
                       ? MyProgressIndicator(
-                    size: 15.0,
-                    color: Colors.white,
-                  )
+                          size: 15.0,
+                          color: Colors.white,
+                        )
                       : Text(submitText),
                 );
               },

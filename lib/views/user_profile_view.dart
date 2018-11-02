@@ -52,14 +52,14 @@ class MyProfileView extends StatelessWidget {
                     child: model.currentUser != null
                         ? CircleAvatar(
                       backgroundImage:
-                      NetworkImage(model.currentUser.userImageUrl),
+                      NetworkImage(model.currentUser.imageUrl),
                     )
                         : Icon(Icons.people),
                   ),
                 ),
                 ListTile(
                     title: Text(
-                  model.currentUser.username,
+                      model.currentUser.name,
                   textAlign: TextAlign.center,
                 )),
               ],

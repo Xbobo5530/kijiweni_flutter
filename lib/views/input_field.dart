@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
-import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
-import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'InputFieldView:';
@@ -29,7 +27,6 @@ class InputFieldView extends StatelessWidget {
               .showSnackBar(SnackBar(content: Text(failedToSendMessageText)));
           break;
         default:
-          _chatFieldController.text = '';
           print(
               '$_tag at _handleSendingMessageResult, the send message status code is $code');
       }
@@ -42,9 +39,10 @@ class InputFieldView extends StatelessWidget {
         final message = _chatFieldController.text.trim();
         final chat = Chat(
           message: message,
-          createdBy: model.currentUser.userId,
+          createdBy: model.currentUser.id,
           communityId: communityId,
         );
+        _chatFieldController.text = '';
 
         StatusCode sendMessageStatus = await model.sendMessage(chat);
         _handleSendingMessageResult(sendMessageStatus);
@@ -60,12 +58,14 @@ class InputFieldView extends StatelessWidget {
       builder: ((context, child, model) {
         return IconButton(
           onPressed: () => _sendMessage(model),
-          icon: model.sendingMessageStatus == StatusCode.waiting
+          icon:
+          /*model.sendingMessageStatus == StatusCode.waiting
               ? MyProgressIndicator(
-            size: 15.0,
-            color: primaryColor,
-          )
-              : Icon(Icons.send),
+                  size: 15.0,
+                  color: primaryColor,
+                )
+              :*/
+          Icon(Icons.send),
         );
       }),
     );

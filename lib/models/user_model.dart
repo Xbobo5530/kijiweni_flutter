@@ -42,7 +42,7 @@ abstract class UserModel extends Model {
       if (_currentUserDoc.exists && !_hasError) {
         _gettingCurrentUserStatus = StatusCode.success;
         _currentUser = User.fromSnapshot(_currentUserDoc);
-        print('$_tag gotten current user: ${_currentUser.username}');
+        print('$_tag gotten current user: ${_currentUser.name}');
       } else
         _gettingCurrentUserStatus = StatusCode.failed;
       //todo maybe sign user out or finish login
@@ -63,7 +63,7 @@ abstract class UserModel extends Model {
       _hasError = true;
     });
 
-    if (_hasError)
+    if (_hasError || !userFromIdDoc.exists)
       return User();
     else
       return User.fromSnapshot(userFromIdDoc);

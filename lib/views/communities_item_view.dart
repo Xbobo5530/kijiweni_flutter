@@ -25,7 +25,7 @@ class CommunitiesItemView extends StatelessWidget {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
         return ListTile(
-          onTap: model.isLoggedIn ? () => _goToCommunity() : _goToLogin(),
+          onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
           leading: community.imageUrl != null
               ? CircleAvatar(
             backgroundImage: NetworkImage(community.imageUrl),
