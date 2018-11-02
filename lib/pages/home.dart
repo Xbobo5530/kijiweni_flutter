@@ -25,6 +25,39 @@ class HomePage extends StatelessWidget {
             MaterialPageRoute(
                 builder: (_) => LoginPage(), fullscreenDialog: true));
 
+    _handleLogout(MainModel model) async {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Icon(Icons.warning, color: Colors.red),
+                  ),
+                  Text(logoutText)
+                ],
+              ),
+              content: Text(confirmLogoutText),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(cancelText),
+                ),
+                FlatButton(
+                  textColor: Colors.red,
+                  onPressed: () {
+                    model.logout();
+                    Navigator.pop(context);
+                  },
+                  child: Text(logoutText),
+                )
+              ],
+            );
+          });
+    }
+
     final _appBarAction = ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         switch (model.currentNavItem) {
@@ -43,7 +76,7 @@ class HomePage extends StatelessWidget {
             return model.isLoggedIn
                 ? IconButton(
               icon: Icon(Icons.exit_to_app),
-              onPressed: () => model.logout(),
+              onPressed: () => _handleLogout(model),
             )
                 : Container();
             break;

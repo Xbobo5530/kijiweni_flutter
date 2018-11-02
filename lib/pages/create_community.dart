@@ -68,8 +68,7 @@ class CreateCommunityPage extends StatelessWidget {
           width: 150.0,
           child: Icon(
             Icons.people,
-            size: 50.0,
-            color: Colors.white,
+            size: 80.0,
           ),
           decoration:
               BoxDecoration(color: Colors.lightGreen, shape: BoxShape.circle),

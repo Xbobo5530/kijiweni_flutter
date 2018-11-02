@@ -92,13 +92,15 @@ abstract class LoginModel extends Model {
     final username = user.displayName;
     final userId = user.uid;
     final userImageUrl = user.photoUrl;
-    final created_at = DateTime.now().millisecondsSinceEpoch;
+    final createdAt = DateTime
+        .now()
+        .millisecondsSinceEpoch;
     // create user map
     Map<String, dynamic> userDocMap = {
       NAME_FIELD: username,
       ID_FIELD: userId,
       IMAGE_URL_FIELD: userImageUrl,
-      CREATED_AT_FIELD: created_at
+      CREATED_AT_FIELD: createdAt
     };
     await _database
         .collection(USERS_COLLECTION)

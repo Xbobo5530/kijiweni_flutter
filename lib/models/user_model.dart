@@ -7,26 +7,25 @@ import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-const tag = 'UserModel;';
+const _tag = 'UserModel;';
 
 abstract class UserModel extends Model {
   User _currentUser;
-
   User get currentUser => _currentUser;
-  StatusCode _gettingCurrentUserStatus;
 
+  StatusCode _gettingCurrentUserStatus;
   StatusCode get gettingCurrentUserStatus => _gettingCurrentUserStatus;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _database = Firestore.instance;
 
   Future<void> checkCurrentUser() async {
-    print('$tag at checkCurrentUser');
+    print('$_tag at checkCurrentUser');
     _gettingCurrentUserStatus = StatusCode.waiting;
     bool _hasError = false;
     // check if is logged in
     final user = await _auth.currentUser().catchError((error) {
-      print('$tag error on getting current user');
+      print('$_tag error on getting current user');
       _hasError = true;
     });
 
@@ -37,13 +36,13 @@ abstract class UserModel extends Model {
           .document(userId)
           .get()
           .catchError((error) {
-        print('$tag error on getting current user doc');
+        print('$_tag error on getting current user doc');
         _hasError = true;
       });
       if (_currentUserDoc.exists && !_hasError) {
         _gettingCurrentUserStatus = StatusCode.success;
         _currentUser = User.fromSnapshot(_currentUserDoc);
-        print('$tag gotten current user: ${_currentUser.username}');
+        print('$_tag gotten current user: ${_currentUser.username}');
       } else
         _gettingCurrentUserStatus = StatusCode.failed;
       //todo maybe sign user out or finish login
@@ -53,6 +52,20 @@ abstract class UserModel extends Model {
   }
 
   Future<User> userFromId(String userId) async {
-    print('$tag at userFromId');
+    print('$_tag at userFromId');
+    bool _hasError = false;
+    final userFromIdDoc = await _database
+        .collection(USERS_COLLECTION)
+        .document(userId)
+        .get()
+        .catchError((error) {
+      print('$_tag error on getting use from ID');
+      _hasError = true;
+    });
+
+    if (_hasError)
+      return User();
+    else
+      return User.fromSnapshot(userFromIdDoc);
   }
 }

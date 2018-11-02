@@ -13,12 +13,14 @@ class CommunitiesItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _goToLogin() =>
-        Navigator.push(context, MaterialPageRoute(
-            builder: (_) => LoginPage(), fullscreenDialog: true));
+        Navigator.push(context,
+            MaterialPageRoute(
+                builder: (_) => LoginPage(), fullscreenDialog: true));
 
     _goToCommunity() =>
-        Navigator.push(context, MaterialPageRoute(
-            builder: (_) => CommunityPage(community: community)));
+        Navigator.push(context,
+            MaterialPageRoute(
+                builder: (_) => CommunityPage(community: community)));
 
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {

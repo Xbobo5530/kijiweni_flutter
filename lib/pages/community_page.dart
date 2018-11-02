@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
-import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/community_timeline.dart';
 import 'package:kijiweni_flutter/views/input_field.dart';
 
@@ -11,21 +10,16 @@ class CommunityPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chatHistorySection = CommunityTimelineView();
-    final chatFieldSection = InputFieldView();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(APP_NAME),
+        title: Text(community.name),
       ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(child: chatHistorySection),
-            chatFieldSection,
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          InputFieldView(),
+          Expanded(child: CommunityTimelineView()),
+        ],
       ),
     );
   }

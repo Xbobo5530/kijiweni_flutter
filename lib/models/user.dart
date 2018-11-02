@@ -1,13 +1,19 @@
 import 'package:kijiweni_flutter/utils/consts.dart';
+import 'package:meta/meta.dart';
 
 class User {
   String username, userId, userImageUrl;
+  int createdAt;
 
-  User(this.username, this.userImageUrl, this.userId);
+  User({@required this.username,
+    this.userImageUrl,
+    @required this.userId,
+    this.createdAt})
+      : assert(username != null);
 
-  User.fromSnapshot(var value) {
-    this.username = value[NAME_FIELD];
-    this.userId = value[ID_FIELD];
-    this.userImageUrl = value[IMAGE_URL_FIELD];
-  }
+  User.fromSnapshot(var value)
+      : username = value[NAME_FIELD],
+        userId = value[ID_FIELD],
+        userImageUrl = value[IMAGE_URL_FIELD],
+        createdAt = value[CREATED_AT_FIELD];
 }

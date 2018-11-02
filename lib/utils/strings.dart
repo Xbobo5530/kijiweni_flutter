@@ -2,12 +2,17 @@ const APP_NAME = 'Kijiweni';
 const googleSignInText = 'Google sign in';
 const errorMessageText = 'Something went wrong';
 const loginText = 'Login';
+const logoutText = 'Logout';
 const homeText = 'Home';
 const exploreText = 'Explore';
 const meText = 'Me';
 
+const messageText = 'Message';
+const sendText = 'Send';
+
 const createCommunityText = 'Create community';
 const submitText = 'Submit';
+const cancelText = 'Cancel';
 
 //hints
 const exploreHint = 'Explore different communities';
@@ -17,3 +22,4 @@ const communityDescriptionText = 'Community description';
 
 //warnings
 const emptyNameFieldsWarningText = 'The name field cannot be empty';
+const confirmLogoutText = 'Are you sure you want to logout?';

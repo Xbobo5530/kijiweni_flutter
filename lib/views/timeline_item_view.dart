@@ -72,18 +72,18 @@ class ChatViewItem extends StatelessWidget {
       BorderRadius radius, Color bg, Color textColor) {
     var usernameSection = chat.username != null
         ? new Text(
-      chat.username,
-      style: new TextStyle(fontWeight: FontWeight.bold),
-    )
+            chat.username,
+            style: new TextStyle(fontWeight: FontWeight.bold),
+          )
         : new Container();
     var chatImageSection = _buildChatImageSection();
     var messageSection = Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: chat.message != null
           ? new Text(
-        chat.message,
-        style: new TextStyle(color: textColor),
-      )
+              chat.message,
+              style: new TextStyle(color: textColor),
+            )
           : new Container(),
     );
 
