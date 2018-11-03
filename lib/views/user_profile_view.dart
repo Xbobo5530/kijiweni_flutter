@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -7,10 +8,8 @@ import 'package:scoped_model/scoped_model.dart';
 class MyProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    _goToLogin() =>
-        Navigator.push(context,
-            MaterialPageRoute(
-                builder: (_) => LoginPage(), fullscreenDialog: true));
+    _goToLogin() => Navigator.push(context,
+        MaterialPageRoute(builder: (_) => LoginPage(), fullscreenDialog: true));
 
     final _loginView = InkWell(
       onTap: () => _goToLogin(),
@@ -25,7 +24,7 @@ class MyProfileView extends StatelessWidget {
               height: 150.0,
               child: Icon(Icons.lock_open, size: 80.0),
               decoration:
-              BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
+                  BoxDecoration(color: Colors.cyan, shape: BoxShape.circle),
             ),
           ),
           ListTile(
@@ -51,17 +50,20 @@ class MyProfileView extends StatelessWidget {
                     shape: CircleBorder(),
                     child: model.currentUser != null
                         ? CircleAvatar(
-                      backgroundImage:
-                      NetworkImage(model.currentUser.imageUrl),
-                    )
+                            backgroundColor: primaryColor,
+                            backgroundImage:
+                                NetworkImage(model.currentUser.imageUrl),
+                          )
                         : Icon(Icons.people),
                   ),
                 ),
                 ListTile(
-                    title: Text(
-                      model.currentUser.name,
-                  textAlign: TextAlign.center,
-                )),
+                    title: model.currentUser != null
+                        ? Text(
+                            model.currentUser.name,
+                            textAlign: TextAlign.center,
+                          )
+                        : Container()),
               ],
             ),
           ),

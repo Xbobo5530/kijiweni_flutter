@@ -46,6 +46,7 @@ abstract class UserModel extends Model {
       } else
         _gettingCurrentUserStatus = StatusCode.failed;
       //todo maybe sign user out or finish login
+      // there's a chance user could now be fetched cuz of network error
 
     }
     notifyListeners();
@@ -64,7 +65,7 @@ abstract class UserModel extends Model {
     });
 
     if (_hasError || !userFromIdDoc.exists)
-      return User();
+      return User(name: null);
     else
       return User.fromSnapshot(userFromIdDoc);
   }

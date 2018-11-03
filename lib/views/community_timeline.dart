@@ -19,7 +19,8 @@ class CommunityTimelineView extends StatelessWidget {
       return StreamBuilder(
         stream: model.communityChatStream(community),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData) return CircularProgressIndicator();
+          if (!snapshot.hasData)
+            return Center(child: CircularProgressIndicator());
           if (snapshot.data.documents.length == 0)
             return EmptyCommunityPage(community: community);
 

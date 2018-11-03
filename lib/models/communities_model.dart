@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'CommunitiesModel:';
 
+//todo set a global _hasError variable to handle all error;
 abstract class CommunitiesModel extends Model {
   final CollectionReference _communitiesCollection =
       Firestore.instance.collection(COMMUNITIES_COLLECTION);
@@ -14,8 +15,15 @@ abstract class CommunitiesModel extends Model {
   Stream<dynamic> get communitiesStream => _communitiesCollection.snapshots();
 
   StatusCode _createCommunityStatus;
-
   StatusCode get createCommunityStatus => _createCommunityStatus;
+
+  StatusCode _joiningCommunityStatus;
+
+  StatusCode get joiningCommunityStatus => _joiningCommunityStatus;
+
+  List<String> _joinedCommunities = <String>[];
+
+  List<String> get joinedCommunities => _joinedCommunities;
 
   Stream<dynamic> getSubscribedCommunitiesStream(String userId) {
     return _database
@@ -106,10 +114,10 @@ abstract class CommunitiesModel extends Model {
     if (_hasError)
       return StatusCode.failed;
     else
-      return await _createSubScribedCommunityRef(communityId, userId);
+      return await _createJoinedCommunityRef(communityId, userId);
   }
 
-  Future<StatusCode> _createSubScribedCommunityRef(
+  Future<StatusCode> _createJoinedCommunityRef(
       String communityId, String userId) async {
     print('$_tag at _createUserCommunityRef');
     bool _hasError = false;
@@ -133,16 +141,134 @@ abstract class CommunitiesModel extends Model {
     if (_hasError)
       return StatusCode.failed;
     else
-      return await _createMembersRef(communityId, userId);
+      return await joinCommunity(communityId, userId);
   }
 
-  Future<StatusCode> _createMembersRef(String communityId, String userId) {
+  Future<StatusCode> joinCommunity(String communityId, String userId) async {
     print('$_tag at _createMembersRef');
+    _joiningCommunityStatus = StatusCode.waiting;
+    notifyListeners();
     bool _hasError = false;
     Map<String, dynamic> memberMap = {
       MEMBER_ID_FIELD: userId,
-      COMMUNITY_ID_FIELD: communityId
-      CREATEDA
+      COMMUNITY_ID_FIELD: communityId,
+      CREATED_AT_FIELD: DateTime
+          .now()
+          .millisecondsSinceEpoch
     };
+    await _database
+        .collection(COMMUNITIES_COLLECTION)
+        .document(communityId)
+        .collection(MEMBERS_COLLECTION)
+        .document(userId)
+        .setData(memberMap)
+        .catchError((error) {
+      print('$_tag error on joining community: $error');
+      _hasError = true;
+    });
+
+    if (_hasError) {
+      _joiningCommunityStatus = StatusCode.failed;
+      notifyListeners();
+      return _joiningCommunityStatus;
+    } else
+      return await _addCommunityMemberRef(memberMap);
+  }
+
+  Future<StatusCode> _addCommunityMemberRef(
+      Map<String, dynamic> memberMap) async {
+    print('$_tag at _addCommunityMemberRef');
+    bool _hasError = false;
+    await _database
+        .collection(USERS_COLLECTION)
+        .document(memberMap[MEMBER_ID_FIELD])
+        .collection(COMMUNITIES_COLLECTION)
+        .document(memberMap[COMMUNITY_ID_FIELD])
+        .setData(memberMap)
+        .catchError((error) {
+      print('$_tag error on adding community member ref: $error');
+      _hasError = true;
+    });
+    if (_hasError) {
+      notifyListeners();
+      return _joiningCommunityStatus = StatusCode.failed;
+    }
+
+    updateJoinedCommunities(memberMap[MEMBER_ID_FIELD]);
+    return StatusCode.success;
+  }
+
+  Future<StatusCode> leaveCommunity(String communityId, String userId) async {
+    print('$_tag at leaveCommunity');
+    bool _hasError = false;
+    await _database
+        .collection(COMMUNITIES_COLLECTION)
+        .document(communityId)
+        .collection(MEMBERS_COLLECTION)
+        .document(userId)
+        .delete()
+        .catchError((error) {
+      print('$_tag error on deleting user from community member list');
+      _hasError = true;
+    });
+
+    if (_hasError) {
+      return StatusCode.failed;
+    } else
+      return await _deleteCommunityRefFromUser(communityId, userId);
+  }
+
+  Future<StatusCode> _deleteCommunityRefFromUser(String communityId,
+      String userId) async {
+    print('$_tag at _deleteCommunityRefFromUser');
+    bool _hasError = false;
+    await _database
+        .collection(USERS_COLLECTION)
+        .document(userId)
+        .collection(COMMUNITIES_COLLECTION)
+        .document(communityId)
+        .delete()
+        .catchError((error) {
+      print('$_tag error deleting community from user collections');
+      _hasError = true;
+    });
+
+    if (_hasError) return StatusCode.failed;
+    updateJoinedCommunities(userId);
+    notifyListeners();
+    return StatusCode.success;
+  }
+
+  Future<StatusCode> updateJoinedCommunities(String userId) async {
+    print('$_tag at updateJoinedCommunities');
+    bool _hasError = false;
+
+    final QuerySnapshot snapshot = await _database
+        .collection(USERS_COLLECTION)
+        .document(userId)
+        .collection(COMMUNITIES_COLLECTION)
+        .getDocuments()
+        .catchError((error) {
+      print('$_tag error on getting user collections: $error');
+      _hasError = true;
+    });
+
+    if (!_hasError) {
+      final documents = snapshot.documents;
+      final _tempList = <String>[];
+      documents.forEach((document) {
+        _tempList.add(document.documentID);
+      });
+      _joinedCommunities = _tempList;
+    }
+
+    notifyListeners();
+    if (_hasError) return StatusCode.failed;
+    return StatusCode.success;
+  }
+
+  resetJoinCommunityStatus() {
+    _joiningCommunityStatus = null;
+    notifyListeners();
   }
 }

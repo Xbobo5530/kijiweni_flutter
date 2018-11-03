@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'InputFieldView:';
@@ -81,6 +83,33 @@ class InputFieldView extends StatelessWidget {
           suffixIcon: _sendButton),
     );
 
+    _handleJoinCommunity(MainModel model) async {
+      final joinCommunityResult =
+      await model.joinCommunity(communityId, model.currentUser.id);
+      if (joinCommunityResult == StatusCode.failed)
+        Scaffold.of(context)
+            .showSnackBar(SnackBar(content: Text(failedToJoinCommunityText)));
+    }
+
+    final _joinButton =
+    ScopedModelDescendant<MainModel>(builder: ((context, child, model) {
+      model.resetJoinCommunityStatus();
+      return RaisedButton(
+        onPressed: () =>
+        model.joiningCommunityStatus == StatusCode.waiting
+            ? null
+            : _handleJoinCommunity(model),
+        child: model.joiningCommunityStatus == StatusCode.waiting
+            ? MyProgressIndicator(
+          color: Colors.white,
+          size: 15.0,
+        )
+            : Text(joinText),
+        color: primaryColor,
+        textColor: Colors.white,
+      );
+    }));
+
     return Material(
       elevation: 4.0,
       child: Padding(
@@ -89,7 +118,12 @@ class InputFieldView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Expanded(
-              child: _messageField,
+              child: ScopedModelDescendant<MainModel>(
+                  builder: ((context, child, model) {
+                    return model.joinedCommunities.contains(communityId)
+                        ? _messageField
+                        : _joinButton;
+                  })),
             ),
           ],
         ),

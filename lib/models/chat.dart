@@ -5,12 +5,13 @@ class Chat {
   String message, chatImageUrl, id, createdBy, replyingTo, communityId;
   int createdAt;
 
-  Chat({@required this.message,
-    @required this.communityId,
-    this.chatImageUrl,
-    this.id,
-    @required this.createdBy,
-    this.replyingTo})
+  Chat(
+      {@required this.message,
+      @required this.communityId,
+      this.chatImageUrl,
+      this.id,
+      @required this.createdBy,
+      this.replyingTo})
       : assert(message != null),
         assert(communityId != null),
         assert(createdBy != null);

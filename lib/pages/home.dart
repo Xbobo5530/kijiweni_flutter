@@ -9,7 +9,6 @@ import 'package:kijiweni_flutter/views/login_screen.dart';
 import 'package:kijiweni_flutter/views/user_profile_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

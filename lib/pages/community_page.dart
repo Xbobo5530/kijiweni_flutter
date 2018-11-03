@@ -3,7 +3,6 @@ import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/views/community_timeline.dart';
 import 'package:kijiweni_flutter/views/input_field.dart';
 
-
 class CommunityPage extends StatelessWidget {
   final Community community;
 

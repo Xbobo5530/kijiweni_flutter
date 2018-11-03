@@ -9,8 +9,12 @@ const meText = 'Me';
 
 const messageText = 'Message';
 const sendText = 'Send';
-const failedToSendMessageText = 'Failed to send your message, please try again';
 
+//errors
+const failedToSendMessageText = 'Failed to send your message, please try again';
+const failedToJoinCommunityText = 'Failed to join, please try again';
+
+const joinText = 'Join';
 const createCommunityText = 'Create community';
 const submitText = 'Submit';
 const cancelText = 'Cancel';
