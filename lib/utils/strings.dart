@@ -20,6 +20,7 @@ const joinText = 'Join';
 const createCommunityText = 'Create community';
 const submitText = 'Submit';
 const cancelText = 'Cancel';
+const leaveText = 'Leave';
 
 //hints
 const exploreHint = 'Explore different communities';
@@ -30,3 +31,4 @@ const communityDescriptionText = 'Community description';
 //warnings
 const emptyNameFieldsWarningText = 'The name field cannot be empty';
 const confirmLogoutText = 'Are you sure you want to logout?';
+const confirmLeaveCommunityText = 'Confirm leave community';

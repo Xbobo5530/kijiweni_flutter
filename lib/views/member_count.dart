@@ -36,5 +36,6 @@ class _CommunityMembersCountViewState extends State<CommunityMembersCountView> {
   @override
   void dispose() {
     _isDisposed = true;
+    super.dispose();
   }
 }

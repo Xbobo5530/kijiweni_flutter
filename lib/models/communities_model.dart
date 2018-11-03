@@ -172,8 +172,6 @@ abstract class CommunitiesModel extends Model {
       notifyListeners();
       return _joiningCommunityStatus;
     } else {
-      _joiningCommunityStatus = StatusCode.success;
-      notifyListeners();
       return await _addCommunityMemberRef(memberMap);
     }
   }
@@ -198,7 +196,7 @@ abstract class CommunitiesModel extends Model {
       leaveCommunity(memberMap[COMMUNITY_ID_FIELD], memberMap[MEMBER_ID_FIELD]);
       return _joiningCommunityStatus;
     }
-
+    _joiningCommunityStatus = StatusCode.success;
     updateJoinedCommunities(memberMap[MEMBER_ID_FIELD]);
     return StatusCode.success;
   }

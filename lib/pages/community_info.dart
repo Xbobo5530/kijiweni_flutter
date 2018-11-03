@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
+import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/join_button.dart';
 import 'package:kijiweni_flutter/views/member_count.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class CommunityInfoPage extends StatelessWidget {
   final Community community;
@@ -50,9 +53,59 @@ class CommunityInfoPage extends StatelessWidget {
           key: Key(community.id), community: community),
     );
 
+    final _joinButtonSection = Row(
+      children: <Widget>[
+        Expanded(
+          child: ScopedModelDescendant<MainModel>(
+            builder: (BuildContext context, Widget child, MainModel model) {
+              return model.joinedCommunities.contains(community.id)
+                  ? Container()
+                  : JoinButtonView(communityId: community.id);
+            },
+          ),
+        ),
+      ],
+    );
+
+    _handleLeaveCommunity(MainModel model) async {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(confirmLeaveCommunityText),
+              content: Text(
+                  'Are you sure you want to leave the ${community
+                      .name} community?'),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(cancelText)),
+                FlatButton(
+                  onPressed: () {
+                    model.leaveCommunity(community.id, model.currentUser.id);
+                    Navigator.pop(context);
+                  },
+                  child: Text(leaveText),
+                )
+              ],
+            );
+          });
+    }
+
+    final _leaveButton =
+    ScopedModelDescendant<MainModel>(builder: (context, child, model) {
+      return model.joinedCommunities.contains(community.id)
+          ? IconButton(
+        icon: Icon(Icons.exit_to_app),
+        onPressed: () => _handleLeaveCommunity(model),
+      )
+          : Container();
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Text(community.name),
+        actions: <Widget>[_leaveButton],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -62,6 +115,7 @@ class CommunityInfoPage extends StatelessWidget {
               _imageSection,
               _titleSection,
               _membersSection,
+              _joinButtonSection
             ],
           ),
         ),

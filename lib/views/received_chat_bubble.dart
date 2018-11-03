@@ -20,6 +20,7 @@ class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
   @override
   void dispose() {
     _isDisposed = true;
+    super.dispose();
   }
 
   @override
