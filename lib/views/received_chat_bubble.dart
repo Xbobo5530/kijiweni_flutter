@@ -15,14 +15,21 @@ class ReceivedChatBubbleView extends StatefulWidget {
 
 class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
   User _user;
+  bool _isDisposed = false;
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+  }
 
   @override
   Widget build(BuildContext context) {
     _getUser(MainModel model) async {
       User user = await model.userFromId(widget.chat.createdBy);
-      setState(() {
-        _user = user;
-      });
+      if (!_isDisposed)
+        setState(() {
+          _user = user;
+        });
     }
 
     return Row(

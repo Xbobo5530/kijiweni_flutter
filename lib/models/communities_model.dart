@@ -171,8 +171,11 @@ abstract class CommunitiesModel extends Model {
       _joiningCommunityStatus = StatusCode.failed;
       notifyListeners();
       return _joiningCommunityStatus;
-    } else
+    } else {
+      _joiningCommunityStatus = StatusCode.success;
+      notifyListeners();
       return await _addCommunityMemberRef(memberMap);
+    }
   }
 
   Future<StatusCode> _addCommunityMemberRef(
@@ -190,8 +193,10 @@ abstract class CommunitiesModel extends Model {
       _hasError = true;
     });
     if (_hasError) {
+      _joiningCommunityStatus = StatusCode.failed;
       notifyListeners();
-      return _joiningCommunityStatus = StatusCode.failed;
+      leaveCommunity(memberMap[COMMUNITY_ID_FIELD], memberMap[MEMBER_ID_FIELD]);
+      return _joiningCommunityStatus;
     }
 
     updateJoinedCommunities(memberMap[MEMBER_ID_FIELD]);

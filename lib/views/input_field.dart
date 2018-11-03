@@ -93,7 +93,7 @@ class InputFieldView extends StatelessWidget {
 
     final _joinButton =
     ScopedModelDescendant<MainModel>(builder: ((context, child, model) {
-      model.resetJoinCommunityStatus();
+//      model.resetJoinCommunityStatus();
       return RaisedButton(
         onPressed: () =>
         model.joiningCommunityStatus == StatusCode.waiting
