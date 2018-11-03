@@ -10,6 +10,8 @@ const meText = 'Me';
 const messageText = 'Message';
 const sendText = 'Send';
 
+const membersText = 'Members';
+
 //errors
 const failedToSendMessageText = 'Failed to send your message, please try again';
 const failedToJoinCommunityText = 'Failed to join, please try again';

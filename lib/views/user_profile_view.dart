@@ -54,7 +54,10 @@ class MyProfileView extends StatelessWidget {
                             backgroundImage:
                                 NetworkImage(model.currentUser.imageUrl),
                           )
-                        : Icon(Icons.people),
+                        : Icon(
+                      Icons.people,
+                      size: 50.0,
+                    ),
                   ),
                 ),
                 ListTile(

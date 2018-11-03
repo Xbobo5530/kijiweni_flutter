@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
+import 'package:kijiweni_flutter/pages/community_info.dart';
 import 'package:kijiweni_flutter/views/community_timeline.dart';
 import 'package:kijiweni_flutter/views/input_field.dart';
 
@@ -13,6 +14,18 @@ class CommunityPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(community.name),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () =>
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            CommunityInfoPage(community: community),
+                        fullscreenDialog: true)),
+          )
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

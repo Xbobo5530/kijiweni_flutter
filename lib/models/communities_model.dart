@@ -276,4 +276,20 @@ abstract class CommunitiesModel extends Model {
     _joiningCommunityStatus = null;
     notifyListeners();
   }
+
+  Future<int> getCommunityMembersCountFor(Community community) async {
+    print('$_tag at getMembersCountFor');
+    bool _hasError = false;
+    final snapshot = await _database
+        .collection(COMMUNITIES_COLLECTION)
+        .document(community.id)
+        .collection(MEMBERS_COLLECTION)
+        .getDocuments()
+        .catchError((error) {
+      print('$_tag error on getting members count for community: $error');
+      _hasError = true;
+    });
+    if (_hasError) return 0;
+    return snapshot.documents.length;
+  }
 }

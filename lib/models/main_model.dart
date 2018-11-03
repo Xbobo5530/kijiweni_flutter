@@ -10,5 +10,6 @@ class MainModel extends Model
   MainModel() {
     checkLoginStatus();
     checkCurrentUser();
+    if (isLoggedIn) updateJoinedCommunities(currentUser.id);
   }
 }
