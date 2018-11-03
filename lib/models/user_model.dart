@@ -48,6 +48,8 @@ abstract class UserModel extends Model {
       //todo maybe sign user out or finish login
       // there's a chance user could now be fetched cuz of network error
 
+    } else {
+      _currentUser = null;
     }
     notifyListeners();
   }

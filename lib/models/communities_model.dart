@@ -152,9 +152,7 @@ abstract class CommunitiesModel extends Model {
     Map<String, dynamic> memberMap = {
       MEMBER_ID_FIELD: userId,
       COMMUNITY_ID_FIELD: communityId,
-      CREATED_AT_FIELD: DateTime
-          .now()
-          .millisecondsSinceEpoch
+      CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
     };
     await _database
         .collection(COMMUNITIES_COLLECTION)
@@ -221,8 +219,8 @@ abstract class CommunitiesModel extends Model {
       return await _deleteCommunityRefFromUser(communityId, userId);
   }
 
-  Future<StatusCode> _deleteCommunityRefFromUser(String communityId,
-      String userId) async {
+  Future<StatusCode> _deleteCommunityRefFromUser(
+      String communityId, String userId) async {
     print('$_tag at _deleteCommunityRefFromUser');
     bool _hasError = false;
     await _database

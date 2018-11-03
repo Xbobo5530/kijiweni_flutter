@@ -34,9 +34,7 @@ class InputFieldView extends StatelessWidget {
     }
 
     _sendMessage(MainModel model) async {
-      if (_chatFieldController.text
-          .trim()
-          .isNotEmpty) {
+      if (_chatFieldController.text.trim().isNotEmpty) {
         final message = _chatFieldController.text.trim();
         final chat = Chat(
           message: message,
@@ -59,14 +57,7 @@ class InputFieldView extends StatelessWidget {
       builder: ((context, child, model) {
         return IconButton(
           onPressed: () => _sendMessage(model),
-          icon:
-          /*model.sendingMessageStatus == StatusCode.waiting
-              ? MyProgressIndicator(
-                  size: 15.0,
-                  color: primaryColor,
-                )
-              :*/
-          Icon(Icons.send),
+          icon: Icon(Icons.send),
         );
       }),
     );
@@ -82,31 +73,6 @@ class InputFieldView extends StatelessWidget {
           suffixIcon: _sendButton),
     );
 
-//    _handleJoinCommunity(MainModel model) async {
-//      final joinCommunityResult =
-//          await model.joinCommunity(communityId, model.currentUser.id);
-//      if (joinCommunityResult == StatusCode.failed)
-//        Scaffold.of(context)
-//            .showSnackBar(SnackBar(content: Text(failedToJoinCommunityText)));
-//    }
-
-//    final _joinButton =
-//        ScopedModelDescendant<MainModel>(builder: ((context, child, model) {
-//      return RaisedButton(
-//        onPressed: () => model.joiningCommunityStatus == StatusCode.waiting
-//            ? null
-//            : _handleJoinCommunity(model),
-//        child: model.joiningCommunityStatus == StatusCode.waiting
-//            ? MyProgressIndicator(
-//                color: Colors.white,
-//                size: 15.0,
-//              )
-//            : Text(joinText),
-//        color: primaryColor,
-//        textColor: Colors.white,
-//      );
-//    }));
-
     return Material(
       elevation: 4.0,
       child: Padding(
@@ -117,11 +83,10 @@ class InputFieldView extends StatelessWidget {
             Expanded(
               child: ScopedModelDescendant<MainModel>(
                   builder: ((context, child, model) {
-                    return model.joinedCommunities.contains(communityId)
-                        ? _messageField
-                        : JoinButtonView(
-                        communityId: communityId); //_joinButton;
-                  })),
+                return model.joinedCommunities.contains(communityId)
+                    ? _messageField
+                    : JoinButtonView(communityId: communityId); //_joinButton;
+              })),
             ),
           ],
         ),
