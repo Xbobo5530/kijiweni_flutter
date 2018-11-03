@@ -33,57 +33,76 @@ class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
         });
     }
 
+    final _userImageSection =
+        ScopedModelDescendant<MainModel>(builder: (context, child, model) {
+      _getUser(model);
+      return _user == null
+          ? Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Icon(
+                Icons.account_circle,
+                size: 42.0,
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: CircleAvatar(
+                radius: 20.0,
+                backgroundImage: NetworkImage(
+                  _user.imageUrl,
+                ),
+              ),
+            );
+    });
+
+    final _usernameSection = Container(
+      padding: const EdgeInsets.only(left: 16.0),
+      width: 100.0,
+      child: _user != null
+          ? Text(
+              _user.name,
+              textAlign: TextAlign.start,
+              style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+            )
+          : Container(),
+    );
+
+    final _messageSection = Container(
+        constraints: BoxConstraints(maxWidth: 300.0),
+        child: Text(
+          widget.chat.message,
+          style: TextStyle(fontSize: 16.0),
+          softWrap: true,
+        ),
+        margin: const EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                blurRadius: .5,
+                spreadRadius: 1.0,
+                color: Colors.black.withOpacity(.12))
+          ],
+          color: Colors.orange,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(5.0),
+            bottomLeft: Radius.circular(10.0),
+            bottomRight: Radius.circular(5.0),
+          ),
+        ));
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          ScopedModelDescendant<MainModel>(builder: (context, child, model) {
-            _getUser(model);
-
-            return Column(
-              children: <Widget>[
-                ListTile(
-                  subtitle: _user != null ? Text(_user.name) : Container(),
-                ),
-                _user == null
-                    ? Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Icon(
-                    Icons.account_circle,
-                    size: 42.0,
-                  ),
-                )
-                    : Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: CircleAvatar(
-                    radius: 20.0,
-                    backgroundImage: NetworkImage(
-                      _user.imageUrl,
-                    ),
-                  ),
-                )
-              ],
-            );
-          }),
-          Container(
-              child: Text(widget.chat.message),
-              margin: const EdgeInsets.all(3.0),
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: .5,
-                      spreadRadius: 1.0,
-                      color: Colors.black.withOpacity(.12))
-                ],
-                color: Colors.orange,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(5.0),
-                  bottomLeft: Radius.circular(10.0),
-                  bottomRight: Radius.circular(5.0),
-                ),
-              )),
+          _userImageSection,
+          Column(
+            children: <Widget>[
+              _usernameSection,
+              _messageSection,
+            ],
+          ),
         ],
       ),
     );

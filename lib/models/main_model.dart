@@ -9,7 +9,7 @@ class MainModel extends Model
     with LoginModel, UserModel, NavModel, CommunitiesModel, ChatModel {
   MainModel() {
     checkLoginStatus();
-    checkCurrentUser();
+//    checkCurrentUser();
     if (isLoggedIn) updateJoinedCommunities(currentUser.id);
   }
 }

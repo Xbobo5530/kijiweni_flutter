@@ -8,27 +8,32 @@ class SentChatBubbleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _messageSection = Container(
+        constraints: BoxConstraints(maxWidth: 300.0),
+        child: Text(
+          chat.message,
+          softWrap: true,
+        ),
+        margin: const EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                blurRadius: .5,
+                spreadRadius: 1.0,
+                color: Colors.black.withOpacity(.12))
+          ],
+          color: Colors.lightGreen,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(5.0),
+            bottomLeft: Radius.circular(5.0),
+            bottomRight: Radius.circular(10.0),
+          ),
+        ));
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        Container(
-            child: Text(chat.message),
-            margin: const EdgeInsets.all(3.0),
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: .5,
-                    spreadRadius: 1.0,
-                    color: Colors.black.withOpacity(.12))
-              ],
-              color: Colors.lightGreen,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(5.0),
-                bottomLeft: Radius.circular(5.0),
-                bottomRight: Radius.circular(10.0),
-              ),
-            )),
+        _messageSection,
       ],
     );
   }

@@ -75,9 +75,9 @@ class EmptyHomePageView extends StatelessWidget {
               ),
               ListTile(
                   title: Text(
-                    createHint,
-                    textAlign: TextAlign.center,
-                  )),
+                createHint,
+                textAlign: TextAlign.center,
+              )),
             ],
           ),
         );
