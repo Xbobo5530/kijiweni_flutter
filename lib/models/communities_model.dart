@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kijiweni_flutter/models/community.dart';
+import 'package:kijiweni_flutter/models/user.dart';
+import 'package:kijiweni_flutter/models/user_model.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -7,24 +9,20 @@ import 'package:scoped_model/scoped_model.dart';
 const _tag = 'CommunitiesModel:';
 
 //todo set a global _hasError variable to handle all error;
-abstract class CommunitiesModel extends Model {
+abstract class CommunitiesModel extends Model with UserModel {
   final CollectionReference _communitiesCollection =
       Firestore.instance.collection(COMMUNITIES_COLLECTION);
   Firestore _database = Firestore.instance;
 
-  Stream<dynamic> get communitiesStream => _communitiesCollection.snapshots();
-
   StatusCode _createCommunityStatus;
-  StatusCode get createCommunityStatus => _createCommunityStatus;
 
+  StatusCode get createCommunityStatus => _createCommunityStatus;
   StatusCode _joiningCommunityStatus;
 
   StatusCode get joiningCommunityStatus => _joiningCommunityStatus;
-
   List<String> _joinedCommunities = <String>[];
 
   List<String> get joinedCommunities => _joinedCommunities;
-
   Stream<dynamic> getSubscribedCommunitiesStream(String userId) {
     return _database
         .collection(USERS_COLLECTION)
@@ -32,6 +30,8 @@ abstract class CommunitiesModel extends Model {
         .collection(COMMUNITIES_COLLECTION)
         .snapshots();
   }
+
+  Stream<dynamic> get communitiesStream => _communitiesCollection.snapshots();
 
   Future<Community> communityFromId(String communityId) async {
     bool _hasError = false;
@@ -287,5 +287,28 @@ abstract class CommunitiesModel extends Model {
     });
     if (_hasError) return 0;
     return snapshot.documents.length;
+  }
+
+  Future<List<User>> getCommunityMembersFor(Community community) async {
+    print('$_tag at getMembersCountFor');
+    bool _hasError = false;
+    final snapshot = await _database
+        .collection(COMMUNITIES_COLLECTION)
+        .document(community.id)
+        .collection(MEMBERS_COLLECTION)
+        .getDocuments()
+        .catchError((error) {
+      print('$_tag error on getting members count for community: $error');
+      _hasError = true;
+    });
+    if (_hasError) return null;
+
+    final documents = snapshot.documents;
+    List<User> members = [];
+    documents.forEach((document) async {
+      final User user = await userFromId(document.documentID);
+      members.add(user);
+    });
+    return members;
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/models/user.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/join_button.dart';
 import 'package:kijiweni_flutter/views/member_count.dart';
@@ -44,9 +46,34 @@ class CommunityInfoPage extends StatelessWidget {
 
     final _membersSection = ExpansionTile(
       children: <Widget>[
-        ListView.builder(itemBuilder: (context, index) {
-          return ListTile();
-        })
+        ScopedModelDescendant<MainModel>(
+          builder: (context, child, model) {
+            Future<List<User>> members =
+            model.getCommunityMembersFor(community);
+            return FutureBuilder(
+              future: members,
+              builder: ((context, snapshot) {
+                if (!snapshot.hasData) return CircularProgressIndicator();
+                return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      final User member = snapshot.data[index];
+                      return ListTile(
+                        leading: member.imageUrl != null
+                            ? CircleAvatar(
+                          backgroundColor: green,
+                          backgroundImage: NetworkImage(member.imageUrl),
+                        )
+                            : Icon(
+                          Icons.account_circle,
+                          size: 20.0,
+                        ),
+                      );
+                    });
+              }),
+            );
+          },
+        )
       ],
       title: Text(membersText),
       leading: CommunityMembersCountView(
