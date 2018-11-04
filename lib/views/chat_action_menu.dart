@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
 
+const _tag = 'ChatActionMenuView:';
 class ChatActionMenuView extends StatelessWidget {
   final Color color;
 
@@ -10,6 +11,9 @@ class ChatActionMenuView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+        onSelected: (value) {
+          print('$_tag $value has been selected');
+        },
         icon: Icon(
           Icons.arrow_drop_down_circle,
           color: color,
@@ -18,21 +22,19 @@ class ChatActionMenuView extends StatelessWidget {
           return <PopupMenuItem<Widget>>[
             PopupMenuItem(
                 child: ChatBubbleActionItemView(
-              icon: Icon(
-                Icons.favorite,
-                color: Colors.white,
-              ),
-//              onTap: () {},
-              color: Colors.red,
-              label: likeText,
-            )),
+                  icon: Icon(
+                    Icons.favorite,
+                    color: Colors.white,
+                  ),
+                  color: Colors.red,
+                  label: likeText,
+                )),
             PopupMenuItem(
               child: ChatBubbleActionItemView(
                 icon: Icon(
                   Icons.share,
                   color: Colors.white,
                 ),
-//                onTap: () {},
                 color: Colors.orange,
                 label: shareText,
               ),
@@ -43,7 +45,6 @@ class ChatActionMenuView extends StatelessWidget {
                   Icons.reply,
                   color: Colors.white,
                 ),
-//                onTap: () {},
                 color: Colors.blue,
                 label: replyText,
               ),

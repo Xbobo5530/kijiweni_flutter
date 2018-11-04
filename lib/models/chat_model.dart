@@ -14,12 +14,19 @@ abstract class ChatModel extends Model {
   StatusCode get sendingMessageStatus => _sendingMessageStatus;
 
   StatusCode _likingMessageStatus;
-
   StatusCode get likingMessageStatus => _likingMessageStatus;
 
   StatusCode _dislikingMessageStatus;
-
   StatusCode get dislikingMessageStatus => _dislikingMessageStatus;
+
+  bool _isReplying = false;
+
+  bool get isReplying => _isReplying;
+
+  String _replyingToId;
+
+  String get replyingToId => _replyingToId;
+
 
   Stream<dynamic> communityChatStream(Community community) {
     return _database
@@ -139,9 +146,16 @@ abstract class ChatModel extends Model {
     return _dislikingMessageStatus;
   }
 
-
   replyMessage(Chat chat) {
     //todo handle reply message;
+    _replyingToId = chat.id;
+    _isReplying = true;
+    notifyListeners();
+  }
+
+  cancelReplyMessage() {
+    _isReplying = false;
+    notifyListeners();
   }
 
   shareMessage(Chat chat) {
