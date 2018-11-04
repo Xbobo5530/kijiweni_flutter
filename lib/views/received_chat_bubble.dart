@@ -4,75 +4,78 @@ import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/models/user.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/views/chat_action_menu.dart';
+import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class ReceivedChatBubbleView extends StatefulWidget {
+class ReceivedChatBubbleView extends StatelessWidget {
   final Chat chat;
-
   ReceivedChatBubbleView({Key key, this.chat}) : super(key: key);
 
   @override
-  _ReceivedChatBubbleViewState createState() => _ReceivedChatBubbleViewState();
-}
-
-class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
-  User _user;
-  bool _isDisposed = false;
-
-  @override
-  void dispose() {
-    _isDisposed = true;
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    _getUser(MainModel model) async {
-      final user = await model.userFromId(widget.chat.createdBy);
-      if (!_isDisposed)
-        setState(() {
-          _user = user;
-        });
-    }
-
     final _userImageSection =
         ScopedModelDescendant<MainModel>(builder: (context, child, model) {
-      _getUser(model);
-      return _user == null
-          ? Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(
-                Icons.account_circle,
-                size: 42.0,
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: CircleAvatar(
-                radius: 20.0,
-                backgroundImage: NetworkImage(
-                  _user.imageUrl,
+          return FutureBuilder(
+            future: model.userFromId(chat.createdBy),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Padding(
+                  padding: const EdgeInsets.all(28.0),
+                  child: MyProgressIndicator(
+                    color: Colors.grey,
+                    size: 15.0,
+                  ),
+                );
+              final _user = snapshot.data;
+              return _user == null
+                  ? Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Icon(
+                  Icons.account_circle,
+                  size: 42.0,
                 ),
-              ),
-            );
+              )
+                  : Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: CircleAvatar(
+                  radius: 20.0,
+                  backgroundImage: NetworkImage(
+                    _user.imageUrl,
+                  ),
+                ),
+              );
+            },
+          );
     });
 
-    final _usernameSection = Container(
-      padding: const EdgeInsets.only(left: 16.0),
-      width: 100.0,
-      child: _user != null
-          ? Text(
-              _user.name,
-              textAlign: TextAlign.start,
-              style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
-            )
-          : Container(),
+    final _usernameSection = ScopedModelDescendant<MainModel>(
+      builder: (context, child, model) {
+        return FutureBuilder(
+          future: model.userFromId(chat.createdBy),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return Container();
+            final User _user = snapshot.data;
+            return Container(
+              padding: const EdgeInsets.only(left: 16.0),
+              width: 100.0,
+              child: _user != null
+                  ? Text(
+                _user.name,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                    color: Colors.grey, fontStyle: FontStyle.italic),
+              )
+                  : Container(),
+            );
+          },
+        );
+      },
     );
 
     final _messageSection = Container(
         constraints: BoxConstraints(maxWidth: 300.0),
         child: Text(
-          widget.chat.message,
+          chat.message,
           style: TextStyle(fontSize: 18.0),
           softWrap: true,
         ),
