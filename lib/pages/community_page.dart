@@ -17,13 +17,12 @@ class CommunityPage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.info),
-            onPressed: () =>
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            CommunityInfoPage(community: community),
-                        fullscreenDialog: true)),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        CommunityInfoPage(community: community),
+                    fullscreenDialog: true)),
           )
         ],
       ),
@@ -32,8 +31,8 @@ class CommunityPage extends StatelessWidget {
         children: <Widget>[
           Expanded(
               child: CommunityTimelineView(
-                community: community,
-              )),
+            community: community,
+          )),
           InputFieldView(
             communityId: community.id,
           ),

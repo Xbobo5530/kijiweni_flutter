@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/views/chat_action_menu.dart';
 
 class SentChatBubbleView extends StatelessWidget {
   final Chat chat;
@@ -33,7 +35,11 @@ class SentChatBubbleView extends StatelessWidget {
         ));
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
+        ChatActionMenuView(
+          color: sentMessageColor,
+        ),
         _messageSection,
       ],
     );

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/models/user.dart';
-import 'package:kijiweni_flutter/utils/strings.dart';
-import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/views/chat_action_menu.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ReceivedChatBubbleView extends StatefulWidget {
@@ -93,48 +93,6 @@ class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
           ),
         ));
 
-    final _chatActionsMenu = PopupMenuButton(
-        icon: Icon(
-          Icons.arrow_drop_down_circle,
-          color: Colors.orange,
-        ),
-        itemBuilder: (_) {
-          return <PopupMenuItem<Widget>>[
-            PopupMenuItem(
-                child: ChatBubbleActionItemView(
-                  icon: Icon(
-                    Icons.favorite,
-                    color: Colors.white,
-                  ),
-//              onTap: () {},
-                  color: Colors.red,
-                  label: likeText,
-                )),
-            PopupMenuItem(
-              child: ChatBubbleActionItemView(
-                icon: Icon(
-                  Icons.share,
-                  color: Colors.white,
-                ),
-//                onTap: () {},
-                color: Colors.orange,
-                label: shareText,
-              ),
-            ),
-            PopupMenuItem(
-              child: ChatBubbleActionItemView(
-                icon: Icon(
-                  Icons.reply,
-                  color: Colors.white,
-                ),
-//                onTap: () {},
-                color: Colors.blue,
-                label: replyText,
-              ),
-            )
-          ];
-        });
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -150,7 +108,7 @@ class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
                   _messageSection,
                 ],
               ),
-              _chatActionsMenu
+              ChatActionMenuView(color: receivedMessageColor)
             ],
           ),
         ],
