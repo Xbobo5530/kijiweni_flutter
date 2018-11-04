@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/models/user.dart';
+import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ReceivedChatBubbleView extends StatefulWidget {
@@ -71,7 +72,7 @@ class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
         constraints: BoxConstraints(maxWidth: 300.0),
         child: Text(
           widget.chat.message,
-          style: TextStyle(fontSize: 16.0),
+          style: TextStyle(fontSize: 18.0),
           softWrap: true,
         ),
         margin: const EdgeInsets.all(3.0),
@@ -97,10 +98,54 @@ class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           _userImageSection,
-          Column(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              _usernameSection,
-              _messageSection,
+              Column(
+                children: <Widget>[
+                  _usernameSection,
+                  _messageSection,
+                ],
+              ),
+              PopupMenuButton(
+                  icon: Icon(
+                    Icons.arrow_drop_down_circle,
+                    color: Colors.orange,
+                  ),
+                  itemBuilder: (_) {
+                    return <PopupMenuItem<Widget>>[
+                      PopupMenuItem(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              ChatBubbleActionItemView(
+                                icon: Icon(
+                                  Icons.thumb_up,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                                color: Colors.lightGreen,
+                              ),
+                              ChatBubbleActionItemView(
+                                icon: Icon(
+                                  Icons.share,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                                color: Colors.orange,
+                              ),
+                              ChatBubbleActionItemView(
+                                icon: Icon(
+                                  Icons.reply,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                                color: Colors.blue,
+                              )
+                            ],
+                          )),
+                    ];
+                  })
             ],
           ),
         ],

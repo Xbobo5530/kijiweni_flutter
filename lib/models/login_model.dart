@@ -127,9 +127,7 @@ abstract class LoginModel extends Model {
     final username = user.displayName;
     final userId = user.uid;
     final userImageUrl = user.photoUrl;
-    final createdAt = DateTime
-        .now()
-        .millisecondsSinceEpoch;
+    final createdAt = DateTime.now().millisecondsSinceEpoch;
 
     Map<String, dynamic> userDocMap = {
       NAME_FIELD: username,

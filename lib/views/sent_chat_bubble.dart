@@ -12,6 +12,7 @@ class SentChatBubbleView extends StatelessWidget {
         constraints: BoxConstraints(maxWidth: 300.0),
         child: Text(
           chat.message,
+          style: TextStyle(fontSize: 18.0),
           softWrap: true,
         ),
         margin: const EdgeInsets.all(3.0),
