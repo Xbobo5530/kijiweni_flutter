@@ -44,40 +44,46 @@ class CommunityInfoPage extends StatelessWidget {
           : Container(),
     );
 
+    Widget _buildMemberListItem(User member) {
+      return ListTile(
+        leading: member.imageUrl != null
+            ? CircleAvatar(
+          backgroundColor: green,
+          backgroundImage: NetworkImage(member.imageUrl),
+        )
+            : Icon(
+          Icons.account_circle,
+          size: 20.0,
+        ),
+        title: Text(member.name),
+      );
+    }
+
     final _membersSection = ExpansionTile(
+      title: Text(membersText),
+      leading: CommunityMembersCountView(
+          key: Key(community.id), community: community),
       children: <Widget>[
         ScopedModelDescendant<MainModel>(
           builder: (context, child, model) {
-            Future<List<User>> members =
+            Future<List<User>> _members =
             model.getCommunityMembersFor(community);
             return FutureBuilder(
-              future: members,
-              builder: ((context, snapshot) {
-                if (!snapshot.hasData) return CircularProgressIndicator();
-                return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      final User member = snapshot.data[index];
-                      return ListTile(
-                        leading: member.imageUrl != null
-                            ? CircleAvatar(
-                          backgroundColor: green,
-                          backgroundImage: NetworkImage(member.imageUrl),
-                        )
-                            : Icon(
-                          Icons.account_circle,
-                          size: 20.0,
-                        ),
-                      );
-                    });
+              future: _members,
+              initialData: List<User>(),
+              builder: ((_, AsyncSnapshot<List<User>> snapshot) {
+                if (!snapshot.hasData)
+                  return Center(
+                    child: Text(loadingText),
+                  );
+                return Column(
+                  children: snapshot.data.map(_buildMemberListItem).toList(),
+                );
               }),
             );
           },
         )
       ],
-      title: Text(membersText),
-      leading: CommunityMembersCountView(
-          key: Key(community.id), community: community),
     );
 
     final _joinButtonSection = Row(

@@ -34,9 +34,7 @@ abstract class UserModel extends Model {
         final _user = User.fromSnapshot(userFromIdDoc);
         _cachedUsers.putIfAbsent(userId, () => _user);
         print(
-            '$_tag user ${_user
-                .name} has been added to _cached users, _cached users contains ${_cachedUsers
-                .length} users');
+            '$_tag user ${_user.name} has been added to _cached users, _cached users contains ${_cachedUsers.length} users');
         return _user;
       }
     }
