@@ -28,27 +28,63 @@ class LoginPage extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loginText),
-      ),
-      body: Center(
-        child: ScopedModelDescendant<MainModel>(
-          builder: (BuildContext context, Widget child, MainModel model) {
-            print('$tag loginStatus is ${model.loginStatus}');
-            return Builder(
-              builder: ((context) {
-                return RaisedButton(
-                    color: primaryColor,
-                    textColor: Colors.white,
-                    child: model.loginStatus == StatusCode.waiting
-                        ? MyProgressIndicator(size: 15.0, color: Colors.white)
-                        : Text(googleSignInText),
-                    onPressed: () => _handleGoogleSignIn(model, context));
-              }),
+        appBar: AppBar(
+          title: Text(loginText),
+        ),
+        body: ScopedModelDescendant<MainModel>(
+          builder: (context, child, model) {
+            return InkWell(
+              onTap: () => _handleGoogleSignIn(model, context),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Material(
+                    shape: CircleBorder(),
+                    elevation: 4.0,
+                    child: Container(
+                      width: 150.0,
+                      height: 150.0,
+                      child: model.loginStatus == StatusCode.waiting
+                          ? Center(
+                          child: MyProgressIndicator(
+                              size: 20.0, color: primaryColor))
+                          : Icon(Icons.track_changes, size: 80.0),
+                      decoration: BoxDecoration(
+                          color: Colors.blue, shape: BoxShape.circle),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      model.loginStatus == StatusCode.waiting
+                          ? waitText
+                          : signInWithGoogleText,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
             );
           },
-        ),
-      ),
+        )
+
+//      Center(
+//        child: ScopedModelDescendant<MainModel>(
+//          builder: (BuildContext context, Widget child, MainModel model) {
+//            print('$tag loginStatus is ${model.loginStatus}');
+//            return Builder(
+//              builder: ((context) {
+//                return RaisedButton(
+//                    color: primaryColor,
+//                    textColor: Colors.white,
+//                    child: model.loginStatus == StatusCode.waiting
+//                        ? MyProgressIndicator(size: 15.0, color: Colors.white)
+//                        : Text(googleSignInText),
+//                    onPressed: () => _handleGoogleSignIn(model, context));
+//              }),
+//            );
+//          },
+//        ),
+//      ),
     );
   }
 }

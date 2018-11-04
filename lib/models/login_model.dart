@@ -93,11 +93,14 @@ abstract class LoginModel extends Model with CommunitiesModel {
       print('$_tag error: $error');
       _hasError = true;
     });
-    if (_hasError || user == null) _loginStatus = StatusCode.failed;
-    _loginStatus = await _checkIfUserExists(user);
+    if (_hasError || user == null)
+      _loginStatus = StatusCode.failed;
+    else {
+      _loginStatus = await _checkIfUserExists(user);
+      checkLoginStatus();
+      //checkCurrentUser();
+    }
     notifyListeners();
-    checkLoginStatus();
-    //checkCurrentUser();
   }
 
   Future<StatusCode> _checkIfUserExists(FirebaseUser user) async {

@@ -1,5 +1,9 @@
 const APP_NAME = 'Kijiweni';
 const googleSignInText = 'Google sign in';
+const signInWithGoogleText = 'Sign in with Google';
+
+const waitText = 'Please wait';
+
 const errorMessageText = 'Something went wrong';
 const loginText = 'Login';
 const logoutText = 'Logout';
@@ -27,6 +31,8 @@ const shareText = 'Share';
 const replyText = 'Reply';
 
 const loadingText = 'Loading...';
+
+const myCommunitiesText = 'My communities';
 
 //hints
 const exploreHint = 'Explore different communities';

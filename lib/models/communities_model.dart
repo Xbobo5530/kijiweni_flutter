@@ -298,7 +298,7 @@ abstract class CommunitiesModel extends Model with UserModel {
         .collection(MEMBERS_COLLECTION)
         .getDocuments()
         .catchError((error) {
-      print('$_tag error on getting members count for community: $error');
+      print('$_tag error on getting members  for community: $error');
       _hasError = true;
     });
     if (_hasError) return null;
@@ -310,5 +310,44 @@ abstract class CommunitiesModel extends Model with UserModel {
       members.add(user);
     });
     return members;
+  }
+
+  Future<int> getUserCommunitiesCountFor(String userId) async {
+    print('$_tag at getUserCommunitiesCountFor');
+    bool _hasError = false;
+    final snapshot = await _database
+        .collection(USERS_COLLECTION)
+        .document(userId)
+        .collection(MY_COMMUNITIES_COLLECTION)
+        .getDocuments()
+        .catchError((error) {
+      print('$_tag error on getting communities count for user: $error');
+      _hasError = true;
+    });
+    if (_hasError) return 0;
+    return snapshot.documents.length;
+  }
+
+  Future<List<Community>> getUserCommunitiesFor(String userId) async {
+    print('$_tag at getUserCommunitiesFor');
+    bool _hasError = false;
+    final snapshot = await _database
+        .collection(USERS_COLLECTION)
+        .document(userId)
+        .collection(MY_COMMUNITIES_COLLECTION)
+        .getDocuments()
+        .catchError((error) {
+      print('$_tag error on getting communities for user: $error');
+      _hasError = true;
+    });
+    if (_hasError) return null;
+
+    final documents = snapshot.documents;
+    List<Community> communities = [];
+    documents.forEach((document) async {
+      final Community community = await communityFromId(document.documentID);
+      communities.add(community);
+    });
+    return communities;
   }
 }
