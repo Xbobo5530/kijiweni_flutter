@@ -1,8 +1,12 @@
+//collections
 const USERS_COLLECTION = 'Users';
 const CHATS_COLLECTION = 'Chats';
 const COMMUNITIES_COLLECTION = 'Communities';
 const MY_COMMUNITIES_COLLECTION = 'MyCommunities';
 const MEMBERS_COLLECTION = 'Members';
+const LIKES_COLLECTION = 'Likes';
+
+//fields
 const NAME_FIELD = 'name';
 const DESC_FIELD = 'Ddescription';
 const ID_FIELD = 'id';
