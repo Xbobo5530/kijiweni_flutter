@@ -65,26 +65,6 @@ class LoginPage extends StatelessWidget {
               ),
             );
           },
-        )
-
-//      Center(
-//        child: ScopedModelDescendant<MainModel>(
-//          builder: (BuildContext context, Widget child, MainModel model) {
-//            print('$tag loginStatus is ${model.loginStatus}');
-//            return Builder(
-//              builder: ((context) {
-//                return RaisedButton(
-//                    color: primaryColor,
-//                    textColor: Colors.white,
-//                    child: model.loginStatus == StatusCode.waiting
-//                        ? MyProgressIndicator(size: 15.0, color: Colors.white)
-//                        : Text(googleSignInText),
-//                    onPressed: () => _handleGoogleSignIn(model, context));
-//              }),
-//            );
-//          },
-//        ),
-//      ),
-    );
+        ));
   }
 }

@@ -48,13 +48,13 @@ class CommunityInfoPage extends StatelessWidget {
       return ListTile(
         leading: member.imageUrl != null
             ? CircleAvatar(
-          backgroundColor: green,
-          backgroundImage: NetworkImage(member.imageUrl),
-        )
+                backgroundColor: green,
+                backgroundImage: NetworkImage(member.imageUrl),
+              )
             : Icon(
-          Icons.account_circle,
-          size: 20.0,
-        ),
+                Icons.account_circle,
+                size: 20.0,
+              ),
         title: Text(member.name),
       );
     }
@@ -67,7 +67,7 @@ class CommunityInfoPage extends StatelessWidget {
         ScopedModelDescendant<MainModel>(
           builder: (context, child, model) {
             Future<List<User>> _members =
-            model.getCommunityMembersFor(community);
+                model.getCommunityMembersFor(community);
             return FutureBuilder(
               future: _members,
               initialData: List<User>(),
