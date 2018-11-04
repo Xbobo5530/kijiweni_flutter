@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kijiweni_flutter/models/communities_model.dart';
 import 'package:kijiweni_flutter/models/user.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
@@ -10,7 +11,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'LoginModel:';
 
-abstract class LoginModel extends Model {
+abstract class LoginModel extends Model with CommunitiesModel {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _database = Firestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -22,11 +23,9 @@ abstract class LoginModel extends Model {
   StatusCode get loginStatus => _loginStatus;
 
   User _currentUser;
-
   User get currentUser => _currentUser;
 
   StatusCode _gettingCurrentUserStatus;
-
   StatusCode get gettingCurrentUserStatus => _gettingCurrentUserStatus;
 
   /// check if a user is logged in;
@@ -61,6 +60,8 @@ abstract class LoginModel extends Model {
         print('$_tag got current user: ${_currentUser.name}');
       } else
         _gettingCurrentUserStatus = StatusCode.failed;
+
+      updateJoinedCommunities(currentUser.id);
     } else {
       _currentUser = null;
     }

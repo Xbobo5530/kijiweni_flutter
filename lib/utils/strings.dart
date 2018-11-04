@@ -22,6 +22,10 @@ const submitText = 'Submit';
 const cancelText = 'Cancel';
 const leaveText = 'Leave';
 
+const likeText = 'Like';
+const shareText = 'Share';
+const replyText = 'Reply';
+
 //hints
 const exploreHint = 'Explore different communities';
 const createHint = 'Create a new community';
