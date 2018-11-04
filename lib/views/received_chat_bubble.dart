@@ -92,6 +92,47 @@ class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
           ),
         ));
 
+    final _chatActionsMenu = PopupMenuButton(
+        icon: Icon(
+          Icons.arrow_drop_down_circle,
+          color: Colors.orange,
+        ),
+        itemBuilder: (_) {
+          return <PopupMenuItem<Widget>>[
+            PopupMenuItem(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    ChatBubbleActionItemView(
+                      icon: Icon(
+                        Icons.thumb_up,
+                        color: Colors.white,
+                      ),
+                      onTap: () {},
+                      color: Colors.lightGreen,
+                    ),
+                    ChatBubbleActionItemView(
+                      icon: Icon(
+                        Icons.share,
+                        color: Colors.white,
+                      ),
+                      onTap: () {},
+                      color: Colors.orange,
+                    ),
+                    ChatBubbleActionItemView(
+                      icon: Icon(
+                        Icons.reply,
+                        color: Colors.white,
+                      ),
+                      onTap: () {},
+                      color: Colors.blue,
+                    )
+                  ],
+                )),
+          ];
+        });
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -107,45 +148,7 @@ class _ReceivedChatBubbleViewState extends State<ReceivedChatBubbleView> {
                   _messageSection,
                 ],
               ),
-              PopupMenuButton(
-                  icon: Icon(
-                    Icons.arrow_drop_down_circle,
-                    color: Colors.orange,
-                  ),
-                  itemBuilder: (_) {
-                    return <PopupMenuItem<Widget>>[
-                      PopupMenuItem(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              ChatBubbleActionItemView(
-                                icon: Icon(
-                                  Icons.thumb_up,
-                                  color: Colors.white,
-                                ),
-                                onTap: () {},
-                                color: Colors.lightGreen,
-                              ),
-                              ChatBubbleActionItemView(
-                                icon: Icon(
-                                  Icons.share,
-                                  color: Colors.white,
-                                ),
-                                onTap: () {},
-                                color: Colors.orange,
-                              ),
-                              ChatBubbleActionItemView(
-                                icon: Icon(
-                                  Icons.reply,
-                                  color: Colors.white,
-                                ),
-                                onTap: () {},
-                                color: Colors.blue,
-                              )
-                            ],
-                          )),
-                    ];
-                  })
+              _chatActionsMenu
             ],
           ),
         ],

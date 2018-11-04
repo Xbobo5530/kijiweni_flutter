@@ -74,8 +74,7 @@ class CommunityInfoPage extends StatelessWidget {
             return AlertDialog(
               title: Text(confirmLeaveCommunityText),
               content: Text(
-                  'Are you sure you want to leave the ${community
-                      .name} community?'),
+                  'Are you sure you want to leave the ${community.name} community?'),
               actions: <Widget>[
                 FlatButton(
                     onPressed: () => Navigator.pop(context),
@@ -93,12 +92,12 @@ class CommunityInfoPage extends StatelessWidget {
     }
 
     final _leaveButton =
-    ScopedModelDescendant<MainModel>(builder: (context, child, model) {
+        ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       return model.joinedCommunities.contains(community.id)
           ? IconButton(
-        icon: Icon(Icons.exit_to_app),
-        onPressed: () => _handleLeaveCommunity(model),
-      )
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () => _handleLeaveCommunity(model),
+            )
           : Container();
     });
 
