@@ -20,13 +20,20 @@ class ChatActionMenuView extends StatelessWidget {
     PopupMenuItem<ChatMenuAction> _buildLikeButton(MainModel model) =>
         PopupMenuItem(
             value: ChatMenuAction.like,
-            child: ChatBubbleActionItemView(
-              icon: Icon(
-                Icons.favorite,
-                color: Colors.white,
-              ),
-              color: Colors.red,
-              label: likeText,
+            child: FutureBuilder<bool>(
+              future: model.hasLikedChat(model.currentUser.id, chat),
+              initialData: false,
+              builder: (_, snapshot) {
+                final _hasLiked = snapshot.data;
+                return ChatBubbleActionItemView(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: _hasLiked ? Colors.white : Colors.white,
+                  ),
+                  color: _hasLiked ? Colors.grey : Colors.red,
+                  label: _hasLiked ? dislikeText : likeText,
+                );
+              },
             ));
 
     PopupMenuItem<ChatMenuAction> _buildActionButton(ChatMenuAction action,
@@ -40,7 +47,6 @@ class ChatActionMenuView extends StatelessWidget {
           ),
         );
 
-
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
         return PopupMenuButton(
@@ -49,7 +55,7 @@ class ChatActionMenuView extends StatelessWidget {
 
               switch (selectedMenuAction) {
                 case ChatMenuAction.like:
-                  model.likeMessage(chat, model.currentUser.id);
+                  model.handleLikeMessage(chat, model.currentUser.id);
                   break;
               }
 
@@ -72,7 +78,6 @@ class ChatActionMenuView extends StatelessWidget {
                     ),
                     Colors.orange,
                     shareText),
-
                 _buildActionButton(
                     ChatMenuAction.reply,
                     Icon(

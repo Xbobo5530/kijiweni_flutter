@@ -27,6 +27,8 @@ const cancelText = 'Cancel';
 const leaveText = 'Leave';
 
 const likeText = 'Like';
+const dislikeText = 'Dislike';
+
 const shareText = 'Share';
 const replyText = 'Reply';
 

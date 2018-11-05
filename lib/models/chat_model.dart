@@ -13,11 +13,12 @@ abstract class ChatModel extends Model {
   StatusCode _sendingMessageStatus;
   StatusCode get sendingMessageStatus => _sendingMessageStatus;
 
-  StatusCode _likingMessageStatus;
-  StatusCode get likingMessageStatus => _likingMessageStatus;
+  StatusCode _handlingLikeMessageStatus;
 
-  StatusCode _dislikingMessageStatus;
-  StatusCode get dislikingMessageStatus => _dislikingMessageStatus;
+  StatusCode get handlingLikeMessageStatus => _handlingLikeMessageStatus;
+
+//  StatusCode _dislikingMessageStatus;
+//  StatusCode get dislikingMessageStatus => _dislikingMessageStatus;
 
   bool _isReplying = false;
 
@@ -76,12 +77,35 @@ abstract class ChatModel extends Model {
     }
   }
 
-  Future<StatusCode> likeMessage(Chat chat, String currentUserId) async {
+  Future<StatusCode> handleLikeMessage(Chat chat, String currentUserId) async {
     print('$_tag at likeMessage');
-    _likingMessageStatus = StatusCode.waiting;
+    _handlingLikeMessageStatus = StatusCode.waiting;
     notifyListeners();
 
+    final _likeRef = _database
+        .collection(COMMUNITIES_COLLECTION)
+        .document(chat.communityId)
+        .collection(CHATS_COLLECTION)
+        .document(chat.id)
+        .collection(LIKES_COLLECTION)
+        .document(currentUserId);
+
     bool _hasError = false;
+
+    //check if current user has liked chat
+    final DocumentSnapshot likeDocument = await _likeRef.get().catchError((
+        error) {
+      print('$_tag error on checking if user has liked chat');
+      _hasError = true;
+    });
+    if (!_hasError && likeDocument.exists) {
+      _likeRef.delete().catchError((error) {
+        print('$_tag error on deleting like document ref');
+      });
+      _handlingLikeMessageStatus = StatusCode.success;
+      notifyListeners();
+      return _handlingLikeMessageStatus;
+    }
 
     Map<String, dynamic> likeMap = {
       CREATED_BY_FIELD: currentUserId,
@@ -90,13 +114,7 @@ abstract class ChatModel extends Model {
           .millisecondsSinceEpoch,
     };
 
-    await _database
-        .collection(COMMUNITIES_COLLECTION)
-        .document(chat.communityId)
-        .collection(CHATS_COLLECTION)
-        .document(chat.id)
-        .collection(LIKES_COLLECTION)
-        .document(currentUserId)
+    await _likeRef
         .setData(likeMap)
         .catchError((error) {
       print('$_tag error on adding like');
@@ -104,46 +122,46 @@ abstract class ChatModel extends Model {
     });
 
     if (_hasError) {
-      _likingMessageStatus = StatusCode.failed;
+      _handlingLikeMessageStatus = StatusCode.failed;
       notifyListeners();
-      return _likingMessageStatus;
+      return _handlingLikeMessageStatus;
     }
 
-    _likingMessageStatus = StatusCode.success;
+    _handlingLikeMessageStatus = StatusCode.success;
     notifyListeners();
-    return _likingMessageStatus;
+    return _handlingLikeMessageStatus;
   }
 
-  Future<StatusCode> dislikeMessage(Chat chat, String currentUserId) async {
-    print('$_tag at dislikeMessage');
-    _dislikingMessageStatus = StatusCode.waiting;
-    notifyListeners();
-
-    bool _hasError = false;
-
-    await _database
-        .collection(COMMUNITIES_COLLECTION)
-        .document(chat.communityId)
-        .collection(CHATS_COLLECTION)
-        .document(chat.id)
-        .collection(LIKES_COLLECTION)
-        .document(currentUserId)
-        .delete()
-        .catchError((error) {
-      print('$_tag error on deleting like');
-      _hasError = true;
-    });
-
-    if (_hasError) {
-      _dislikingMessageStatus = StatusCode.failed;
-      notifyListeners();
-      return _dislikingMessageStatus;
-    }
-
-    _dislikingMessageStatus = StatusCode.success;
-    notifyListeners();
-    return _dislikingMessageStatus;
-  }
+//  Future<StatusCode> dislikeMessage(Chat chat, String currentUserId) async {
+//    print('$_tag at dislikeMessage');
+//    _dislikingMessageStatus = StatusCode.waiting;
+//    notifyListeners();
+//
+//    bool _hasError = false;
+//
+//    await _database
+//        .collection(COMMUNITIES_COLLECTION)
+//        .document(chat.communityId)
+//        .collection(CHATS_COLLECTION)
+//        .document(chat.id)
+//        .collection(LIKES_COLLECTION)
+//        .document(currentUserId)
+//        .delete()
+//        .catchError((error) {
+//      print('$_tag error on deleting like');
+//      _hasError = true;
+//    });
+//
+//    if (_hasError) {
+//      _dislikingMessageStatus = StatusCode.failed;
+//      notifyListeners();
+//      return _dislikingMessageStatus;
+//    }
+//
+//    _dislikingMessageStatus = StatusCode.success;
+//    notifyListeners();
+//    return _dislikingMessageStatus;
+//  }
 
   replyMessage(Chat chat) {
     //todo handle reply message;
