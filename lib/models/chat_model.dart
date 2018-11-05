@@ -27,7 +27,6 @@ abstract class ChatModel extends Model {
 
   String get replyingToId => _replyingToId;
 
-
   Stream<dynamic> communityChatStream(Community community) {
     return _database
         .collection(COMMUNITIES_COLLECTION)
@@ -160,5 +159,23 @@ abstract class ChatModel extends Model {
 
   shareMessage(Chat chat) {
     //todo handle share message
+  }
+
+  Future<int> getChatLikesCountFor(Chat chat) async {
+    print('$_tag at getChatLikesCountFor');
+    bool _hasError = false;
+    final snapshot = await _database
+        .collection(COMMUNITIES_COLLECTION)
+        .document(chat.communityId)
+        .collection(CHATS_COLLECTION)
+        .document(chat.id)
+        .collection(LIKES_COLLECTION)
+        .getDocuments()
+        .catchError((error) {
+      print('$_tag error on getting likes count for chat: $error');
+      _hasError = true;
+    });
+    if (_hasError) return 0;
+    return snapshot.documents.length;
   }
 }

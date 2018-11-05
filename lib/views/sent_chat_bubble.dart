@@ -39,6 +39,8 @@ class SentChatBubbleView extends StatelessWidget {
       children: <Widget>[
         ChatActionMenuView(
           color: sentMessageColor,
+          chat: chat,
+          key: Key(chat.id),
         ),
         _messageSection,
       ],

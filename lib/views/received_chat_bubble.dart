@@ -111,7 +111,11 @@ class ReceivedChatBubbleView extends StatelessWidget {
                   _messageSection,
                 ],
               ),
-              ChatActionMenuView(color: receivedMessageColor)
+              ChatActionMenuView(
+                color: receivedMessageColor,
+                chat: chat,
+                key: Key(chat.id),
+              )
             ],
           ),
         ],

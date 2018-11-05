@@ -40,7 +40,7 @@ class MyProfileView extends StatelessWidget {
     );
 
     Widget _buildCommunityListItem(Community community) {
-      ListTile(
+      return ListTile(
 //        onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
         leading: community.imageUrl != null
             ? CircleAvatar(
