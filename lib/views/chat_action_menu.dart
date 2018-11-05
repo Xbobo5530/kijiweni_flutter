@@ -17,6 +17,30 @@ class ChatActionMenuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PopupMenuItem<ChatMenuAction> _buildLikeButton(MainModel model) =>
+        PopupMenuItem(
+            value: ChatMenuAction.like,
+            child: ChatBubbleActionItemView(
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.white,
+              ),
+              color: Colors.red,
+              label: likeText,
+            ));
+
+    PopupMenuItem<ChatMenuAction> _buildActionButton(ChatMenuAction action,
+        Icon icon, Color backgroundColor, String label) =>
+        PopupMenuItem(
+          value: ChatMenuAction.share,
+          child: ChatBubbleActionItemView(
+            icon: icon,
+            color: backgroundColor,
+            label: label,
+          ),
+        );
+
+
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
         return PopupMenuButton(
@@ -39,38 +63,24 @@ class ChatActionMenuView extends StatelessWidget {
             ),
             itemBuilder: (_) {
               return <PopupMenuItem<ChatMenuAction>>[
-                PopupMenuItem(
-                    value: ChatMenuAction.like,
-                    child: ChatBubbleActionItemView(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: Colors.white,
-                      ),
-                      color: Colors.red,
-                      label: likeText,
-                    )),
-                PopupMenuItem(
-                  value: ChatMenuAction.share,
-                  child: ChatBubbleActionItemView(
-                    icon: Icon(
+                _buildLikeButton(model),
+                _buildActionButton(
+                    ChatMenuAction.share,
+                    Icon(
                       Icons.share,
                       color: Colors.white,
                     ),
-                    color: Colors.orange,
-                    label: shareText,
-                  ),
-                ),
-                PopupMenuItem(
-                  value: ChatMenuAction.reply,
-                  child: ChatBubbleActionItemView(
-                    icon: Icon(
+                    Colors.orange,
+                    shareText),
+
+                _buildActionButton(
+                    ChatMenuAction.reply,
+                    Icon(
                       Icons.reply,
                       color: Colors.white,
                     ),
-                    color: Colors.blue,
-                    label: replyText,
-                  ),
-                )
+                    Colors.blue,
+                    replyText)
               ];
             });
       },

@@ -162,7 +162,7 @@ abstract class ChatModel extends Model {
   }
 
   Future<int> getChatLikesCountFor(Chat chat) async {
-    print('$_tag at getChatLikesCountFor, chatId is ${chat.id}');
+    print('$_tag at getChatLikesCountFor');
     bool _hasError = false;
     final snapshot = await _database
         .collection(COMMUNITIES_COLLECTION)
@@ -178,5 +178,36 @@ abstract class ChatModel extends Model {
     if (_hasError) return 0;
     print('$_tag chat has ${snapshot.documents.length} likes');
     return snapshot.documents.length;
+  }
+
+  Future<bool> hasLikedChat
+
+  (
+
+  String userId
+
+  Chat chat
+
+  )
+
+  async
+
+  {
+  print('$_tag at hasLikedChat');
+  bool _hasError = false;
+  final document = await _database
+      .collection(COMMUNITIES_COLLECTION)
+      .document(chat.communityId)
+      .collection(CHATS_COLLECTION)
+      .document(chat.id)
+      .collection(LIKES_COLLECTION)
+      .document(userId). get ()
+      .catchError((error) {
+  print('$_tag error on getting current user like doc: $error');
+  _hasError = true;
+  });
+
+  if(_hasError || !document.exists) return false;
+  return true;
   }
 }
