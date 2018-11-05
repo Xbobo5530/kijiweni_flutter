@@ -14,7 +14,8 @@ class CommunityTimelineView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //todo get the chat list
+//    final _scrollController = ScrollController();
+
     return ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       return StreamBuilder(
         stream: model.communityChatStream(community),
@@ -24,12 +25,27 @@ class CommunityTimelineView extends StatelessWidget {
           if (snapshot.data.documents.length == 0)
             return EmptyCommunityPage(community: community);
 
+//            SchedulerBinding.instance.addPostFrameCallback((_) {
+//
+//            });
+
           return ListView.builder(
+            controller: model.scrollController,
+            reverse: false,
+            shrinkWrap: true,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (BuildContext context, int index) {
               final DocumentSnapshot chatDoc = snapshot.data.documents[index];
               final Chat chat = Chat.fromSnapshot(chatDoc);
               chat.id = chatDoc.documentID;
+
+//              if (model.sendingMessageStatus == StatusCode.success)
+//                _scrollController.animateTo(
+//                  _scrollController.position.maxScrollExtent,
+//                  duration: const Duration(milliseconds: 300),
+//                  curve: Curves.easeOut,
+//                );
+
               return ChatListItemView(chat: chat);
             },
           );

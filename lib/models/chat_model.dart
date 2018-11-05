@@ -1,20 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/community.dart';
+import 'package:kijiweni_flutter/models/nav_model.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'ChatModel:';
 
-abstract class ChatModel extends Model {
+abstract class ChatModel extends Model with NavModel {
   Firestore _database = Firestore.instance;
 
   StatusCode _sendingMessageStatus;
   StatusCode get sendingMessageStatus => _sendingMessageStatus;
 
   StatusCode _handlingLikeMessageStatus;
-
   StatusCode get handlingLikeMessageStatus => _handlingLikeMessageStatus;
 
 //  StatusCode _dislikingMessageStatus;
@@ -72,6 +72,7 @@ abstract class ChatModel extends Model {
       return StatusCode.failed;
     else {
       _sendingMessageStatus = StatusCode.success;
+      updateListViewPosition();
       notifyListeners();
       return _sendingMessageStatus;
     }
@@ -132,36 +133,6 @@ abstract class ChatModel extends Model {
     return _handlingLikeMessageStatus;
   }
 
-//  Future<StatusCode> dislikeMessage(Chat chat, String currentUserId) async {
-//    print('$_tag at dislikeMessage');
-//    _dislikingMessageStatus = StatusCode.waiting;
-//    notifyListeners();
-//
-//    bool _hasError = false;
-//
-//    await _database
-//        .collection(COMMUNITIES_COLLECTION)
-//        .document(chat.communityId)
-//        .collection(CHATS_COLLECTION)
-//        .document(chat.id)
-//        .collection(LIKES_COLLECTION)
-//        .document(currentUserId)
-//        .delete()
-//        .catchError((error) {
-//      print('$_tag error on deleting like');
-//      _hasError = true;
-//    });
-//
-//    if (_hasError) {
-//      _dislikingMessageStatus = StatusCode.failed;
-//      notifyListeners();
-//      return _dislikingMessageStatus;
-//    }
-//
-//    _dislikingMessageStatus = StatusCode.success;
-//    notifyListeners();
-//    return _dislikingMessageStatus;
-//  }
 
   replyMessage(Chat chat) {
     //todo handle reply message;
