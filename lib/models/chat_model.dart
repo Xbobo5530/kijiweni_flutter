@@ -162,7 +162,7 @@ abstract class ChatModel extends Model {
   }
 
   Future<int> getChatLikesCountFor(Chat chat) async {
-    print('$_tag at getChatLikesCountFor');
+    print('$_tag at getChatLikesCountFor, chatId is ${chat.id}');
     bool _hasError = false;
     final snapshot = await _database
         .collection(COMMUNITIES_COLLECTION)
@@ -176,6 +176,7 @@ abstract class ChatModel extends Model {
       _hasError = true;
     });
     if (_hasError) return 0;
+    print('$_tag chat has ${snapshot.documents.length} likes');
     return snapshot.documents.length;
   }
 }
