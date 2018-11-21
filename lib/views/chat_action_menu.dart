@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -106,4 +107,4 @@ class ChatActionMenuView extends StatelessWidget {
   }
 }
 
-enum ChatMenuAction { like, share, reply }
+

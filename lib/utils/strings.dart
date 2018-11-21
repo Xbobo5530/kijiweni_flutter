@@ -16,6 +16,10 @@ const sendText = 'Send';
 
 const membersText = 'Members';
 
+const addImageText = 'Add image';
+const addVideoText = 'Add video';
+const takePhotoText = 'Take a photo';
+
 //errors
 const failedToSendMessageText = 'Failed to send your message, please try again';
 const failedToJoinCommunityText = 'Failed to join, please try again';

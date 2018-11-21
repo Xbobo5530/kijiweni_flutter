@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/pages/picked_iamge.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/join_button.dart';
@@ -17,9 +18,9 @@ class InputFieldView extends StatelessWidget {
   Widget build(BuildContext context) {
     final _chatFieldController = TextEditingController();
 
-    _openImagePicker() {
-      //todo handle adding image
-    }
+    // _showOptionsMenu() {
+    //   //todo handle adding image
+    // }
 
     _handleSendingMessageResult(StatusCode code) {
       switch (code) {
@@ -48,10 +49,35 @@ class InputFieldView extends StatelessWidget {
       }
     }
 
-    final _addImageButton = IconButton(
-      icon: Icon(Icons.add_a_photo),
-      onPressed: () => _openImagePicker,
-    );
+    // _handlePickImage(MainModel model, AddMenuOption option) {
+    //   switch(option){
+    //     case video
+    //   }
+    // }
+
+    final _addImageButton =PopupMenuButton<AddMenuOption>(
+              onSelected: (option) => Navigator.push(context, 
+              MaterialPageRoute(
+                builder: (_)=> PreviewPage(option: option),
+                fullscreenDialog: true
+              )),
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<AddMenuOption>>[
+                    const PopupMenuItem(
+                      value: AddMenuOption.camera,
+                      child: Text(takePhotoText),
+                    ),
+                    const PopupMenuItem(
+                      value: AddMenuOption.image,
+                      child: Text(addImageText),
+                    ),
+                    const PopupMenuItem(
+                      value: AddMenuOption.video,
+                      child: Text(addVideoText),
+                    ),
+                  ],
+              child: Icon(Icons.add),
+            );
 
     final _sendButton = ScopedModelDescendant<MainModel>(
       builder: ((context, child, model) {

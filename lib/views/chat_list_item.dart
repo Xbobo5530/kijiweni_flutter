@@ -6,7 +6,7 @@ import 'package:kijiweni_flutter/views/received_chat_bubble.dart';
 import 'package:kijiweni_flutter/views/sent_chat_bubble.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-const _tag = 'ChatListItemView:';
+// const _tag = 'ChatListItemView:';
 
 class ChatListItemView extends StatelessWidget {
   final Chat chat;
