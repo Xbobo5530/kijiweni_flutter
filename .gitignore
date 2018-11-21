@@ -12,3 +12,4 @@ ios/Runner/Info.plist
 kijiweni_flutter_android/app/google-services.json
 
 .flutter-plugins
+android/app/google-services.json
