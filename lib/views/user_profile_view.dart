@@ -44,8 +44,8 @@ class MyProfileView extends StatelessWidget {
 //        onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
         leading: community.imageUrl != null
             ? CircleAvatar(
-          backgroundImage: NetworkImage(community.imageUrl),
-        )
+                backgroundImage: NetworkImage(community.imageUrl),
+              )
             : Icon(Icons.people),
         title: Text(community.name),
         subtitle: community.description != null
@@ -54,8 +54,8 @@ class MyProfileView extends StatelessWidget {
       );
     }
 
-    Widget _buildMyCommunitiesListItems(MainModel model,
-        List<Community> communities) {
+    Widget _buildMyCommunitiesListItems(
+        MainModel model, List<Community> communities) {
       return Column(
         children: communities.map(_buildCommunityListItem).toList(),
       );
@@ -64,7 +64,7 @@ class MyProfileView extends StatelessWidget {
     Widget _buildMyCommunitiesSection(MainModel model) {
       final userId = model.currentUser.id;
       Future<List<Community>> myCommunities =
-      model.getUserCommunitiesFor(model.currentUser.id);
+          model.getUserCommunitiesFor(model.currentUser.id);
       return ExpansionTile(
         title: Text(myCommunitiesText),
         leading: CommunitiesCountView(key: Key(userId), userId: userId),
@@ -85,8 +85,7 @@ class MyProfileView extends StatelessWidget {
       );
     }
 
-    Widget _buildImageSection(MainModel model) =>
-        Container(
+    Widget _buildImageSection(MainModel model) => Container(
           width: 120.0,
           height: 120.0,
           child: Material(
@@ -94,27 +93,25 @@ class MyProfileView extends StatelessWidget {
             shape: CircleBorder(),
             child: model.currentUser != null
                 ? CircleAvatar(
-              backgroundColor: green,
-              backgroundImage: NetworkImage(model.currentUser.imageUrl),
-            )
+                    backgroundColor: green,
+                    backgroundImage: NetworkImage(model.currentUser.imageUrl),
+                  )
                 : Icon(
-              Icons.people,
-              size: 50.0,
-            ),
+                    Icons.people,
+                    size: 50.0,
+                  ),
           ),
         );
 
-    Widget _buildInfoSection(MainModel model) =>
-        ListTile(
-            title: model.currentUser != null
-                ? Text(
-              model.currentUser.name,
-              textAlign: TextAlign.center,
-            )
-                : Container());
+    Widget _buildInfoSection(MainModel model) => ListTile(
+        title: model.currentUser != null
+            ? Text(
+                model.currentUser.name,
+                textAlign: TextAlign.center,
+              )
+            : Container());
 
-    Widget _buildUserProfilePage(MainModel model) =>
-        Padding(
+    Widget _buildUserProfilePage(MainModel model) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: Center(
             child: Column(

@@ -46,8 +46,8 @@ class LoginPage extends StatelessWidget {
                       height: 150.0,
                       child: model.loginStatus == StatusCode.waiting
                           ? Center(
-                          child: MyProgressIndicator(
-                              size: 20.0, color: primaryColor))
+                              child: MyProgressIndicator(
+                                  size: 20.0, color: primaryColor))
                           : Icon(Icons.track_changes, size: 80.0),
                       decoration: BoxDecoration(
                           color: Colors.blue, shape: BoxShape.circle),

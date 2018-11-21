@@ -16,37 +16,37 @@ class ReceivedChatBubbleView extends StatelessWidget {
   Widget build(BuildContext context) {
     final _userImageSection =
         ScopedModelDescendant<MainModel>(builder: (context, child, model) {
-          return FutureBuilder(
-            future: model.userFromId(chat.createdBy),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Padding(
-                  padding: const EdgeInsets.all(28.0),
-                  child: MyProgressIndicator(
-                    color: Colors.grey,
-                    size: 15.0,
+      return FutureBuilder(
+        future: model.userFromId(chat.createdBy),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Padding(
+              padding: const EdgeInsets.all(28.0),
+              child: MyProgressIndicator(
+                color: Colors.grey,
+                size: 15.0,
+              ),
+            );
+          final _user = snapshot.data;
+          return _user == null
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Icon(
+                    Icons.account_circle,
+                    size: 42.0,
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: CircleAvatar(
+                    radius: 20.0,
+                    backgroundImage: NetworkImage(
+                      _user.imageUrl,
+                    ),
                   ),
                 );
-              final _user = snapshot.data;
-              return _user == null
-                  ? Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Icon(
-                  Icons.account_circle,
-                  size: 42.0,
-                ),
-              )
-                  : Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: CircleAvatar(
-                  radius: 20.0,
-                  backgroundImage: NetworkImage(
-                    _user.imageUrl,
-                  ),
-                ),
-              );
-            },
-          );
+        },
+      );
     });
 
     final _usernameSection = ScopedModelDescendant<MainModel>(
@@ -61,11 +61,11 @@ class ReceivedChatBubbleView extends StatelessWidget {
               width: 100.0,
               child: _user != null
                   ? Text(
-                _user.name,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    color: Colors.grey, fontStyle: FontStyle.italic),
-              )
+                      _user.name,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.grey, fontStyle: FontStyle.italic),
+                    )
                   : Container(),
             );
           },

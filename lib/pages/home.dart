@@ -12,16 +12,13 @@ import 'package:scoped_model/scoped_model.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    _goToCreateCommunity() =>
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => CreateCommunityPage(), fullscreenDialog: true));
+    _goToCreateCommunity() => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => CreateCommunityPage(), fullscreenDialog: true));
 
-    _goToLogin() =>
-        Navigator.push(context,
-            MaterialPageRoute(
-                builder: (_) => LoginPage(), fullscreenDialog: true));
+    _goToLogin() => Navigator.push(context,
+        MaterialPageRoute(builder: (_) => LoginPage(), fullscreenDialog: true));
 
     _handleLogout(MainModel model) async {
       await showDialog(
@@ -73,9 +70,9 @@ class HomePage extends StatelessWidget {
           case 2:
             return model.isLoggedIn
                 ? IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () => _handleLogout(model),
-            )
+                    icon: Icon(Icons.exit_to_app),
+                    onPressed: () => _handleLogout(model),
+                  )
                 : Container();
             break;
         }

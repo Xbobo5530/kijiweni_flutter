@@ -5,11 +5,9 @@ const tag = 'NavModel';
 
 abstract class NavModel extends Model {
   int _currentNavItem = 0;
-
   int get currentNavItem => _currentNavItem;
 
   final _scrollController = ScrollController();
-
   ScrollController get scrollController => _scrollController;
 
   setSelectedNavItem(int selectedNavItem) {

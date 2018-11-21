@@ -4,6 +4,7 @@ import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:share/share.dart';
 
 const _tag = 'ChatActionMenuView:';
 
@@ -37,7 +38,7 @@ class ChatActionMenuView extends StatelessWidget {
             ));
 
     PopupMenuItem<ChatMenuAction> _buildActionButton(ChatMenuAction action,
-        Icon icon, Color backgroundColor, String label) =>
+            Icon icon, Color backgroundColor, String label) =>
         PopupMenuItem(
           value: ChatMenuAction.share,
           child: ChatBubbleActionItemView(
@@ -46,6 +47,13 @@ class ChatActionMenuView extends StatelessWidget {
             label: label,
           ),
         );
+
+    _shareMessage() {
+      //todo get short link
+      //todo add share to project
+      final url = 'testUrl'; //todo add app download link
+      Share.share('${chat.message}\n$url');
+    }
 
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
@@ -57,6 +65,11 @@ class ChatActionMenuView extends StatelessWidget {
                 case ChatMenuAction.like:
                   model.handleLikeMessage(chat, model.currentUser.id);
                   break;
+                case ChatMenuAction.reply:
+                  model.replyMessage(chat);
+                  break;
+                case ChatMenuAction.share:
+                  _shareMessage();
               }
 
               /// todo check the returning value,

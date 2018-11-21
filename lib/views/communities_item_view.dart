@@ -12,15 +12,11 @@ class CommunitiesItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _goToLogin() =>
-        Navigator.push(context,
-            MaterialPageRoute(
-                builder: (_) => LoginPage(), fullscreenDialog: true));
+    _goToLogin() => Navigator.push(context,
+        MaterialPageRoute(builder: (_) => LoginPage(), fullscreenDialog: true));
 
-    _goToCommunity() =>
-        Navigator.push(context,
-            MaterialPageRoute(
-                builder: (_) => CommunityPage(community: community)));
+    _goToCommunity() => Navigator.push(context,
+        MaterialPageRoute(builder: (_) => CommunityPage(community: community)));
 
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
@@ -28,8 +24,8 @@ class CommunitiesItemView extends StatelessWidget {
           onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
           leading: community.imageUrl != null
               ? CircleAvatar(
-            backgroundImage: NetworkImage(community.imageUrl),
-          )
+                  backgroundImage: NetworkImage(community.imageUrl),
+                )
               : Icon(Icons.people),
           title: Text(community.name),
           subtitle: community.description != null

@@ -17,15 +17,10 @@ abstract class ChatModel extends Model with NavModel {
   StatusCode _handlingLikeMessageStatus;
   StatusCode get handlingLikeMessageStatus => _handlingLikeMessageStatus;
 
-//  StatusCode _dislikingMessageStatus;
-//  StatusCode get dislikingMessageStatus => _dislikingMessageStatus;
-
   bool _isReplying = false;
-
   bool get isReplying => _isReplying;
 
   String _replyingToId;
-
   String get replyingToId => _replyingToId;
 
   Stream<dynamic> communityChatStream(Community community) {
@@ -170,18 +165,7 @@ abstract class ChatModel extends Model with NavModel {
   }
 
   Future<bool> hasLikedChat
-
-  (
-
-  String userId
-
-  Chat chat
-
-  )
-
-  async
-
-  {
+  (String userId Chat chat)async{
   print('$_tag at hasLikedChat');
   bool _hasError = false;
   final document = await _database

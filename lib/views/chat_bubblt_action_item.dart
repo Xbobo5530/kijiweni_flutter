@@ -7,11 +7,12 @@ class ChatBubbleActionItemView extends StatelessWidget {
   final Icon icon;
   final String label;
 
-  ChatBubbleActionItemView({@required this.color,
-    /*@required this.onTap,*/ @required this.icon,
-    this.label})
+  ChatBubbleActionItemView(
+      {@required this.color,
+      /*@required this.onTap,*/ @required this.icon,
+      this.label})
       : assert(color != null),
-  /*assert(onTap != null),*/
+        /*assert(onTap != null),*/
         assert(icon != null);
 
   @override
@@ -27,12 +28,12 @@ class ChatBubbleActionItemView extends StatelessWidget {
           ),
           label != null
               ? Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              label,
-              style: TextStyle(fontWeight: FontWeight.bold, color: color),
-            ),
-          )
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Text(
+                    label,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: color),
+                  ),
+                )
               : Container()
         ],
       ),

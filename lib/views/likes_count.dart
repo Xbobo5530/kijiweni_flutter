@@ -31,23 +31,6 @@ class ChatLikesCountView extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 10.0),
                       ),
-//                  Container(
-//                      child: Chip(
-//                        backgroundColor: Colors.lightBlueAccent,
-//                        label: Text(
-//                          '${snapshot.data}',
-//                          style: TextStyle(
-//                              fontWeight: FontWeight.bold, fontSize: 10.0),
-//                        ),
-//                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-//                        labelPadding: const EdgeInsets.only(right: 4.0),
-//                        avatar: Icon(
-//                          Icons.favorite,
-//                          size: 14.0,
-//                          color: Colors.red,
-//                        ),
-//                      ),
-//                    ),
                     ],
                   ),
                 );
