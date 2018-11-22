@@ -8,6 +8,8 @@ const LIKES_COLLECTION = 'Likes';
 
 //fields
 const NAME_FIELD = 'name';
+const BIO_FIELD = 'bio';
+
 const DESC_FIELD = 'Ddescription';
 const ID_FIELD = 'id';
 const IMAGE_URL_FIELD = 'image_url';

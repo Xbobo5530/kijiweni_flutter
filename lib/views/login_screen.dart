@@ -14,7 +14,7 @@ class LoginPage extends StatelessWidget {
     final snackBar = SnackBar(content: Text(errorMessageText));
 
     _handleGoogleSignIn(MainModel model, BuildContext context) async {
-      await model.signInWithGoogle();
+      await model.loginWithGoogle();
       switch (model.loginStatus) {
         case StatusCode.failed:
           Scaffold.of(context).showSnackBar(snackBar);

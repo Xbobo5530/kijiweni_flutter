@@ -91,7 +91,7 @@ class CommunityInfoPage extends StatelessWidget {
         Expanded(
           child: ScopedModelDescendant<MainModel>(
             builder: (BuildContext context, Widget child, MainModel model) {
-              return model.joinedCommunities.contains(community.id)
+              return model.joinedCommunities.containsKey(community.id)
                   ? Container()
                   : JoinButtonView(communityId: community.id);
             },
@@ -126,7 +126,7 @@ class CommunityInfoPage extends StatelessWidget {
 
     final _leaveButton =
         ScopedModelDescendant<MainModel>(builder: (context, child, model) {
-      return model.joinedCommunities.contains(community.id)
+      return model.joinedCommunities.containsKey(community.id)
           ? IconButton(
               icon: Icon(Icons.exit_to_app),
               onPressed: () => _handleLeaveCommunity(model),

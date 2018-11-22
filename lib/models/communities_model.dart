@@ -1,28 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/user.dart';
-import 'package:kijiweni_flutter/models/user_model.dart';
+
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'CommunitiesModel:';
 
-//todo set a global _hasError variable to handle all error;
-abstract class CommunitiesModel extends Model with UserModel {
+abstract class CommunitiesModel extends Model {
   final CollectionReference _communitiesCollection =
       Firestore.instance.collection(COMMUNITIES_COLLECTION);
   Firestore _database = Firestore.instance;
-
+  Map<String, User> _cachedUsers = Map();
   StatusCode _createCommunityStatus;
-
   StatusCode get createCommunityStatus => _createCommunityStatus;
   StatusCode _joiningCommunityStatus;
-
   StatusCode get joiningCommunityStatus => _joiningCommunityStatus;
-  List<String> _joinedCommunities = <String>[];
+  Map<String, Community> _joinedCommunities = Map();
+  Map<String, Community> get joinedCommunities => _joinedCommunities;
 
-  List<String> get joinedCommunities => _joinedCommunities;
   Stream<dynamic> getSubscribedCommunitiesStream(String userId) {
     return _database
         .collection(USERS_COLLECTION)
@@ -256,11 +253,12 @@ abstract class CommunitiesModel extends Model with UserModel {
 
     if (!_hasError) {
       final documents = snapshot.documents;
-      final _tempList = <String>[];
-      documents.forEach((document) {
-        _tempList.add(document.documentID);
+      Map<String, Community> _tempMap = Map();
+      documents.forEach((document) async {
+        Community community = await communityFromId(document.documentID);
+        _tempMap.putIfAbsent(document.documentID, () => community);
       });
-      _joinedCommunities = _tempList;
+      _joinedCommunities = _tempMap;
     }
 
     notifyListeners();
@@ -289,7 +287,8 @@ abstract class CommunitiesModel extends Model with UserModel {
     return snapshot.documents.length;
   }
 
-  Future<List<User>> getCommunityMembersFor(Community community) async {
+  Future<List<User>> getCommunityMembersFor(
+      Community community) async {
     print('$_tag at getMembersCountFor');
     bool _hasError = false;
     final snapshot = await _database
@@ -306,11 +305,58 @@ abstract class CommunitiesModel extends Model with UserModel {
     final documents = snapshot.documents;
     List<User> members = [];
     documents.forEach((document) async {
-      final User user = await userFromId(document.documentID);
+      final User user = await _userFromId(document.documentID);
       members.add(user);
     });
     return members;
   }
+
+
+  Future<User> _userFromId(String userId) async {
+    // print('$_tag at userFromId');
+    bool _hasError = false;
+    if (_cachedUsers[userId] != null) return _cachedUsers[userId];
+    DocumentSnapshot document = await _database
+        .collection(USERS_COLLECTION)
+        .document(userId)
+        .get()
+        .catchError((error) {
+      print('$_tag error on getting user document form id');
+      _hasError = true;
+    });
+    if (_hasError) return null;
+    final userFromId = User.fromSnapshot(document);
+    _cachedUsers.putIfAbsent(userId, () => userFromId);
+    return userFromId;
+  }
+
+  // Future<User> _userFromId(String userId) async {
+  //   // print('$_tag at userFromId');
+  //   if (_cachedUsers[userId] != null) {
+  //     // print('$_tag, _cached users contains user ${_cachedUsers[userId].name}');
+  //     return _cachedUsers[userId];
+  //   } else {
+  //     bool _hasError = false;
+  //     DocumentSnapshot userFromIdDoc = await _database
+  //         .collection(USERS_COLLECTION)
+  //         .document(userId)
+  //         .get()
+  //         .catchError((error) {
+  //       print('$_tag error on getting use from ID');
+  //       _hasError = true;
+  //     });
+
+  //     if (_hasError || !userFromIdDoc.exists)
+  //       return User(name: null);
+  //     else {
+  //       final _user = User.fromSnapshot(userFromIdDoc);
+  //       _cachedUsers.putIfAbsent(userId, () => _user);
+  //       print(
+  //           '$_tag user ${_user.name} has been added to _cached users, _cached users contains ${_cachedUsers.length} users');
+  //       return _user;
+  //     }
+  //   }
+  // }
 
   Future<int> getUserCommunitiesCountFor(String userId) async {
     print('$_tag at getUserCommunitiesCountFor');

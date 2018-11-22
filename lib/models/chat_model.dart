@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/community.dart';
-import 'package:kijiweni_flutter/models/nav_model.dart';
+
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'ChatModel:';
 
-abstract class ChatModel extends Model with NavModel {
+abstract class ChatModel extends Model {
   Firestore _database = Firestore.instance;
 
   StatusCode _sendingMessageStatus;
@@ -67,7 +67,7 @@ abstract class ChatModel extends Model with NavModel {
       return StatusCode.failed;
     else {
       _sendingMessageStatus = StatusCode.success;
-      updateListViewPosition();
+      //updateListViewPosition();
       notifyListeners();
       return _sendingMessageStatus;
     }

@@ -7,7 +7,7 @@ import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:share/share.dart';
 
-const _tag = 'ChatActionMenuView:';
+// const _tag = 'ChatActionMenuView:';
 
 class ChatActionMenuView extends StatelessWidget {
   final Color color;

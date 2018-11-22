@@ -64,6 +64,11 @@ class MyProfileView extends StatelessWidget {
     Widget _buildMyCommunitiesSection(MainModel model) {
       final userId = model.currentUser.id;
       Future<List<Community>> myCommunities =
+
+      
+      
+
+
           model.getUserCommunitiesFor(model.currentUser.id);
       return ExpansionTile(
         title: Text(myCommunitiesText),

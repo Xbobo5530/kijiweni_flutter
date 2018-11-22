@@ -24,11 +24,14 @@ class InputFieldView extends StatelessWidget {
     //   //todo handle adding image
     // }
 
-    _handleSendingMessageResult(StatusCode code) {
+    _handleSendingMessageResult(MainModel model, StatusCode code) {
       switch (code) {
         case StatusCode.failed:
           Scaffold.of(context)
               .showSnackBar(SnackBar(content: Text(failedToSendMessageText)));
+          break;
+          case StatusCode.success:
+          model.updateListViewPosition();
           break;
         default:
           print(
@@ -47,7 +50,7 @@ class InputFieldView extends StatelessWidget {
         _chatFieldController.text = '';
 
         StatusCode sendMessageStatus = await model.sendMessage(chat);
-        _handleSendingMessageResult(sendMessageStatus);
+        _handleSendingMessageResult(model, sendMessageStatus);
       }
     }
 
@@ -155,7 +158,7 @@ class InputFieldView extends StatelessWidget {
             Expanded(
               child: ScopedModelDescendant<MainModel>(
                   builder: ((context, child, model) {
-                return model.joinedCommunities.contains(communityId)
+                return model.joinedCommunities.containsKey(communityId)
                     ? _messageField
                     : JoinButtonView(communityId: communityId); //_joinButton;
               })),
