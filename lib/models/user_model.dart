@@ -13,9 +13,9 @@ abstract class UserModel extends Model {
   Map<String, User> _cachedUsers = Map();
 
   Future<User> userFromId(String userId) async {
-    print('$_tag at userFromId');
+    // print('$_tag at userFromId');
     if (_cachedUsers[userId] != null) {
-      print('$_tag, _cached users contains user ${_cachedUsers[userId].name}');
+      // print('$_tag, _cached users contains user ${_cachedUsers[userId].name}');
       return _cachedUsers[userId];
     } else {
       bool _hasError = false;

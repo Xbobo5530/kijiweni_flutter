@@ -60,7 +60,7 @@ class ChatActionMenuView extends StatelessWidget {
       builder: (context, child, model) {
         return PopupMenuButton(
             onSelected: (selectedMenuAction) {
-              print('$_tag $selectedMenuAction has been selected');
+              // print('$_tag $selectedMenuAction has been selected');
 
               switch (selectedMenuAction) {
                 case ChatMenuAction.like:
@@ -72,13 +72,9 @@ class ChatActionMenuView extends StatelessWidget {
                 case ChatMenuAction.share:
                   _shareMessage();
               }
-
-              /// todo check the returning value,
-              /// probably will have to switch between the returning values
-              /// will also have to nest this widget inside a scoped model descendant
             },
             icon: Icon(
-              Icons.arrow_drop_down_circle,
+              Icons.more_horiz,
               color: color,
             ),
             itemBuilder: (_) {
@@ -106,5 +102,3 @@ class ChatActionMenuView extends StatelessWidget {
     );
   }
 }
-
-

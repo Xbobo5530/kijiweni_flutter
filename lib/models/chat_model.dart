@@ -146,7 +146,7 @@ abstract class ChatModel extends Model with NavModel {
   }
 
   Future<int> getChatLikesCountFor(Chat chat) async {
-    print('$_tag at getChatLikesCountFor');
+    // print('$_tag at getChatLikesCountFor');
     bool _hasError = false;
     final snapshot = await _database
         .collection(COMMUNITIES_COLLECTION)
@@ -160,13 +160,13 @@ abstract class ChatModel extends Model with NavModel {
       _hasError = true;
     });
     if (_hasError) return 0;
-    print('$_tag chat has ${snapshot.documents.length} likes');
+    // print('$_tag chat has ${snapshot.documents.length} likes');
     return snapshot.documents.length;
   }
 
   Future<bool> hasLikedChat
   (String userId Chat chat)async{
-  print('$_tag at hasLikedChat');
+  // print('$_tag at hasLikedChat');
   bool _hasError = false;
   final document = await _database
       .collection(COMMUNITIES_COLLECTION)

@@ -76,7 +76,9 @@ class ReceivedChatBubbleView extends StatelessWidget {
     final _messageSection = Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Container(
-          constraints: BoxConstraints(maxWidth: 300.0),
+          constraints: BoxConstraints(maxWidth: // 300.0
+          MediaQuery.of(context).size.width - 120
+          ),
           child: Text(
             chat.message,
             style: TextStyle(fontSize: 18.0),
@@ -111,23 +113,27 @@ class ReceivedChatBubbleView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _userImageSection,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  _usernameSection,
-                  _messageStack,
-                ],
-              ),
-              ChatActionMenuView(
-                color: receivedMessageColor,
-                chat: chat,
-                key: Key(chat.id),
-              )
-            ],
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    _usernameSection,
+                    _messageStack,
+                  ],
+                ),
+                ChatActionMenuView(
+                  color: receivedMessageColor,
+                  chat: chat,
+                  key: Key(chat.id),
+                )
+              ],
+            ),
           ),
         ],
       ),

@@ -13,6 +13,7 @@ const meText = 'Me';
 
 const messageText = 'Message';
 const sendText = 'Send';
+const addCaptionText = 'Add caption...';
 
 const membersText = 'Members';
 

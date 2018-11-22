@@ -18,7 +18,7 @@ class MessageMetaSectionView extends StatelessWidget {
         children: <Widget>[
           Text('${_createdAt.hour}:${_createdAt.minute}',
               style: TextStyle(
-                color: Colors.black38,
+                color: Colors.white70,
                 fontSize: 10.0,
               )),
           SizedBox(width: 3.0),

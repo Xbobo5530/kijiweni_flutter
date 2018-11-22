@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
-import 'package:kijiweni_flutter/pages/picked_iamge.dart';
+
+import 'package:kijiweni_flutter/pages/preview_file.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/join_button.dart';
@@ -55,12 +57,31 @@ class InputFieldView extends StatelessWidget {
     //   }
     // }
 
-    final _addImageButton =PopupMenuButton<AddMenuOption>(
-              onSelected: (option) => Navigator.push(context, 
+    _handleSelectFileFromDevice(MainModel model, AddMenuOption option) async {
+      StatusCode getFileStatus = await model.getFile(option);
+      switch (getFileStatus) {
+        case StatusCode.success:
+          Navigator.push(
+              context,
               MaterialPageRoute(
-                builder: (_)=> PreviewPage(option: option),
-                fullscreenDialog: true
-              )),
+                  builder: (_) => PreviewFilePage(
+                        option: option,
+                      ),
+                  fullscreenDialog: true));
+          break;
+        case StatusCode.failed:
+          Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(errorMessageText)));
+          break;
+        default:
+          print('$_tag unexpected get file status : $getFileStatus');
+      }
+    }
+
+    final _addFileButton = ScopedModelDescendant<MainModel>(
+        builder: (_, __, model) => PopupMenuButton<AddMenuOption>(
+              onSelected: (option) =>
+                  _handleSelectFileFromDevice(model, option),
               itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<AddMenuOption>>[
                     const PopupMenuItem(
@@ -76,14 +97,14 @@ class InputFieldView extends StatelessWidget {
                       child: Text(addVideoText),
                     ),
                   ],
-              child: Icon(Icons.add),
-            );
+              child: Icon(Icons.add, color: primaryColor,),
+            ));
 
     final _sendButton = ScopedModelDescendant<MainModel>(
       builder: ((context, child, model) {
         return IconButton(
           onPressed: () => _sendMessage(model),
-          icon: Icon(Icons.send),
+          icon: Icon(Icons.send, color: primaryColor,),
         );
       }),
     );
@@ -93,16 +114,41 @@ class InputFieldView extends StatelessWidget {
       maxLines: null,
       textInputAction: TextInputAction.newline,
       decoration: InputDecoration(
-          labelText: messageText,
-          border: OutlineInputBorder(),
-          prefixIcon: _addImageButton,
+          hintText: messageText,
+          border: InputBorder.none,
+          prefixIcon: _addFileButton,
           suffixIcon: _sendButton),
     );
 
-    return Material(
-      elevation: 4.0,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+
+
+    // Container(
+    //         decoration: BoxDecoration(
+    //           borderRadius: BorderRadius.all(Radius.circular(12.0)),
+    //           color: Colors.white70,
+    //         ),
+    //         child: Row(
+    //           children: <Widget>[
+    //             Expanded(
+    //               child: TextField(
+    //                 decoration: InputDecoration(
+    //                     suffixIcon: _sendButton,
+    //                     border: InputBorder.none,
+    //                     hintText: addCaptionText,
+    //                     prefixIcon: Icon(Icons.message)),
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       );
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                color: Colors.white70,
+              ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
