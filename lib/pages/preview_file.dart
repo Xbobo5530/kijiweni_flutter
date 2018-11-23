@@ -59,7 +59,7 @@ class PreviewFilePage extends StatelessWidget {
           fileType: _getFileType(),
           fileStatus: FILE_STATUS_UPLOADING);
 
-      StatusCode sendStatus = await model.sendMessage(chat, model.currentUser);
+      StatusCode sendStatus = await model.sendMessage(chat, model.currentUser, community);
       switch (sendStatus) {
         case StatusCode.failed:
           Scaffold.of(context)

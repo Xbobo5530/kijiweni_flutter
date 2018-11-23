@@ -17,7 +17,7 @@ class MainModel extends Model
         FileModel {
   MainModel() {
     _startup();
-    firebaseCloudMessaging_Listeners();
+    firebaseCloudMessagingListeners();
     // checkLoginStatus();
 //    checkCurrentUser();
     // updateJoinedCommunities(currentUser);

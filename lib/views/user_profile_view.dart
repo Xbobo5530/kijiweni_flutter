@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
-import 'package:kijiweni_flutter/utils/colors.dart';
+
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:kijiweni_flutter/views/communities_count.dart';

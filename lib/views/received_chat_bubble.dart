@@ -26,12 +26,37 @@ class ReceivedChatBubbleView extends StatelessWidget {
           softWrap: true,
         );
       if (chat.fileType != FILE_TYPE_NO_FILE && chat.message == null ||
-          chat.message.isEmpty) return Image.network(chat.fileUrl);
+          chat.message.isEmpty)
+        return chat.fileUrl != null
+            ? Image.network(chat.fileUrl)
+            : FittedBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Icon(
+                    Icons.image,
+                    size: 100.0,
+                    color: Colors.black12,
+                  ),
+                ),
+              );
 
       return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network(chat.fileUrl),
+            Center(
+              child: chat.fileUrl != null
+                  ? Image.network(chat.fileUrl)
+                  : FittedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Icon(
+                          Icons.image,
+                          size: 100.0,
+                          color: Colors.black12,
+                        ),
+                      ),
+                    ),
+            ),
             Text(
               chat.message,
               style: TextStyle(fontSize: 18.0),

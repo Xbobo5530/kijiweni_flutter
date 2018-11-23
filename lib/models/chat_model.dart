@@ -34,7 +34,7 @@ abstract class ChatModel extends Model {
         .snapshots();
   }
 
-  Future<StatusCode> sendMessage(Chat chat, User user) async {
+  Future<StatusCode> sendMessage(Chat chat, User user, Community community) async {
     print('$_tag at sendMessage');
     _sendingMessageStatus = StatusCode.waiting;
     notifyListeners();
@@ -80,15 +80,15 @@ abstract class ChatModel extends Model {
       _latestChat = await _chatFromId(chat.communityId, docRef.documentID);
       notifyListeners();
       chat.id = docRef.documentID;
-      _addToMessageForNotifications(chat, user);
+      _addToMessageForNotifications(chat, user, community);
       return _sendingMessageStatus;
     
   }
 
-  Future<StatusCode> _addToMessageForNotifications(Chat chat, User user)async{
+  Future<StatusCode> _addToMessageForNotifications(Chat chat, User user, Community community)async{
     print('$_tag at _addToMessageForNotifications');
     bool _hasError = false;
-    final title = user.name;
+    final title = '${user.name} @ ${community.name}';
     final body = _creadeMessageBody(chat, user); 
     Map<String, dynamic> messageMap = {
       TITLE_FIELD : title,
@@ -107,8 +107,8 @@ abstract class ChatModel extends Model {
     return StatusCode.success;
   }
   String  _creadeMessageBody(Chat chat, User user){
-    if (chat.fileType == FILE_TYPE_IMAGE) return '${user.name} has sent an image';
-    if (chat.fileType == FILE_TYPE_VIDEO) return '${user.name} has sent a video';
+    if (chat.fileType == FILE_TYPE_IMAGE) return '${user.name} has shared an image';
+    if (chat.fileType == FILE_TYPE_VIDEO) return '${user.name} has shared a video';
     if (chat.message != null && chat.message.isNotEmpty) return chat.message;
     return 'You have a new message';
   }
@@ -245,7 +245,7 @@ abstract class ChatModel extends Model {
 
 
   
-  void firebaseCloudMessaging_Listeners() {
+  void firebaseCloudMessagingListeners() {
   // if (Platform.isIOS) iOS_Permission();
 
   _firebaseMessaging.getToken().then((token){
