@@ -2,7 +2,7 @@ const APP_NAME = 'Kijiweni';
 const googleSignInText = 'Google sign in';
 const signInWithGoogleText = 'Sign in with Google';
 
-const waitText = 'Please wait';
+const waitText = 'Please wait...';
 
 const errorMessage = 'Something went wrong';
 const loginText = 'Login';

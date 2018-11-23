@@ -150,7 +150,7 @@ class InputFieldView extends StatelessWidget {
                   builder: ((context, child, model) {
                 return model.joinedCommunities.containsKey(community.id)
                     ? _messageField
-                    : JoinButtonView(communityId: community.id); //_joinButton;
+                    : JoinButtonView(community: community); //_joinButton;
               })),
             ),
           ],

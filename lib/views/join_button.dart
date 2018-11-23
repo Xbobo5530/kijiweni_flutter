@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
@@ -7,16 +8,18 @@ import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class JoinButtonView extends StatelessWidget {
-  final String communityId;
+  final Community community;
 
-  JoinButtonView({this.communityId});
+  const JoinButtonView({Key key, this.community}) : super(key: key);
+
+  
 
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(builder: ((context, child, model) {
       _handleJoinCommunity(MainModel model, BuildContext context) async {
         final joinCommunityResult =
-            await model.joinCommunity(communityId, model.currentUser.id);
+            await model.joinCommunity(community, model.currentUser);
         if (joinCommunityResult == StatusCode.failed)
           Scaffold.of(context)
               .showSnackBar(SnackBar(content: Text(failedToJoinCommunityText)));

@@ -14,6 +14,6 @@ class MainModel extends Model
     updateLoginStatus();
     // checkLoginStatus();
 //    checkCurrentUser();
-  //  if (isLoggedIn) updateJoinedCommunities(currentUser.id);
+    updateJoinedCommunities(currentUser);
   }
 }

@@ -47,7 +47,7 @@ class CreateCommunityPage extends StatelessWidget {
                 ? _descriptionFieldController.text.trim()
                 : null);
 
-        final createCommunityStatus = await model.createCommunity(community);
+        final createCommunityStatus = await model.createCommunity(community, model.currentUser);
         _handleResult(createCommunityStatus);
       }
     }

@@ -93,7 +93,7 @@ class CommunityInfoPage extends StatelessWidget {
             builder: (BuildContext context, Widget child, MainModel model) {
               return model.joinedCommunities.containsKey(community.id)
                   ? Container()
-                  : JoinButtonView(communityId: community.id);
+                  : JoinButtonView(community: community);
             },
           ),
         ),
@@ -114,7 +114,7 @@ class CommunityInfoPage extends StatelessWidget {
                     child: Text(cancelText)),
                 FlatButton(
                   onPressed: () {
-                    model.leaveCommunity(community.id, model.currentUser.id);
+                    model.leaveCommunity(community, model.currentUser);
                     Navigator.pop(context);
                   },
                   child: Text(leaveText),

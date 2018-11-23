@@ -48,7 +48,7 @@ abstract class CommunitiesModel extends Model {
     return Community.fromSnapShot(communityDoc);
   }
 
-  Future<StatusCode> createCommunity(Community community) async {
+  Future<StatusCode> createCommunity(Community community, User user) async {
     print('$_tag at createCommunity');
     _createCommunityStatus = StatusCode.waiting;
     notifyListeners();
@@ -75,31 +75,31 @@ abstract class CommunitiesModel extends Model {
     });
 
     final communityId = newCommunityDocRef.documentID;
+    community.id = communityId;
 
     if (_hasError) {
       _createCommunityStatus = StatusCode.failed;
       notifyListeners();
     } else {
-      _createCommunityStatus =
-          await _createUserCommunityRef(communityId, community.createdBy);
+      _createCommunityStatus = await _createUserCommunityRef(community, user);
       notifyListeners();
     }
     return _createCommunityStatus;
   }
 
   Future<StatusCode> _createUserCommunityRef(
-      String communityId, String userId) async {
+      Community community, User user) async {
     print('$_tag at _createUserCommunityRef');
     bool _hasError = false;
     Map<String, dynamic> myCommunityMapRef = {
-      ID_FIELD: communityId,
+      ID_FIELD: community.id,
       CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
     };
     await _database
         .collection(USERS_COLLECTION)
-        .document(userId)
+        .document(user.id)
         .collection(MY_COMMUNITIES_COLLECTION)
-        .document(communityId)
+        .document(community.id)
         .setData(myCommunityMapRef)
         .catchError((error) {
       print('$_tag error on creating a my collections refference');
@@ -111,22 +111,22 @@ abstract class CommunitiesModel extends Model {
     if (_hasError)
       return StatusCode.failed;
     else
-      return await _createJoinedCommunityRef(communityId, userId);
+      return await _createJoinedCommunityRef(community, user);
   }
 
   Future<StatusCode> _createJoinedCommunityRef(
-      String communityId, String userId) async {
+      Community community, User user) async {
     print('$_tag at _createUserCommunityRef');
     bool _hasError = false;
     Map<String, dynamic> myCommunityMapRef = {
-      ID_FIELD: communityId,
+      ID_FIELD: community.id,
       CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
     };
     await _database
         .collection(USERS_COLLECTION)
-        .document(userId)
+        .document(user.id)
         .collection(COMMUNITIES_COLLECTION)
-        .document(communityId)
+        .document(community.id)
         .setData(myCommunityMapRef)
         .catchError((error) {
       print('$_tag error on creating a my collections refference');
@@ -138,24 +138,24 @@ abstract class CommunitiesModel extends Model {
     if (_hasError)
       return StatusCode.failed;
     else
-      return await joinCommunity(communityId, userId);
+      return await joinCommunity(community, user);
   }
 
-  Future<StatusCode> joinCommunity(String communityId, String userId) async {
+  Future<StatusCode> joinCommunity(Community community, User user) async {
     print('$_tag at _createMembersRef');
     _joiningCommunityStatus = StatusCode.waiting;
     notifyListeners();
     bool _hasError = false;
     Map<String, dynamic> memberMap = {
-      MEMBER_ID_FIELD: userId,
-      COMMUNITY_ID_FIELD: communityId,
+      MEMBER_ID_FIELD: user.id,
+      COMMUNITY_ID_FIELD: community.id,
       CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
     };
     await _database
         .collection(COMMUNITIES_COLLECTION)
-        .document(communityId)
+        .document(community.id)
         .collection(MEMBERS_COLLECTION)
-        .document(userId)
+        .document(user.id)
         .setData(memberMap)
         .catchError((error) {
       print('$_tag error on joining community: $error');
@@ -192,18 +192,18 @@ abstract class CommunitiesModel extends Model {
       return _joiningCommunityStatus;
     }
     _joiningCommunityStatus = StatusCode.success;
-    updateJoinedCommunities(memberMap[MEMBER_ID_FIELD]);
+    updateJoinedCommunities(await _userFromId(memberMap[MEMBER_ID_FIELD]));
     return StatusCode.success;
   }
 
-  Future<StatusCode> leaveCommunity(String communityId, String userId) async {
+  Future<StatusCode> leaveCommunity(Community community, User user) async {
     print('$_tag at leaveCommunity');
     bool _hasError = false;
     await _database
         .collection(COMMUNITIES_COLLECTION)
-        .document(communityId)
+        .document(community.id)
         .collection(MEMBERS_COLLECTION)
-        .document(userId)
+        .document(user.id)
         .delete()
         .catchError((error) {
       print('$_tag error on deleting user from community member list');
@@ -213,18 +213,18 @@ abstract class CommunitiesModel extends Model {
     if (_hasError) {
       return StatusCode.failed;
     } else
-      return await _deleteCommunityRefFromUser(communityId, userId);
+      return await _deleteCommunityRefFromUser(community, user);
   }
 
   Future<StatusCode> _deleteCommunityRefFromUser(
-      String communityId, String userId) async {
+      Community community, User user) async {
     print('$_tag at _deleteCommunityRefFromUser');
     bool _hasError = false;
     await _database
         .collection(USERS_COLLECTION)
-        .document(userId)
+        .document(user.id)
         .collection(COMMUNITIES_COLLECTION)
-        .document(communityId)
+        .document(community.id)
         .delete()
         .catchError((error) {
       print('$_tag error deleting community from user collections');
@@ -232,18 +232,23 @@ abstract class CommunitiesModel extends Model {
     });
 
     if (_hasError) return StatusCode.failed;
-    updateJoinedCommunities(userId);
+    updateJoinedCommunities(user);
     notifyListeners();
     return StatusCode.success;
   }
 
-  Future<StatusCode> updateJoinedCommunities(String userId) async {
+  Future<StatusCode> updateJoinedCommunities(User user) async {
     print('$_tag at updateJoinedCommunities');
+    if (user == null) {
+      _joinedCommunities = Map();
+      notifyListeners();
+      return StatusCode.success;
+    }
     bool _hasError = false;
 
     final QuerySnapshot snapshot = await _database
         .collection(USERS_COLLECTION)
-        .document(userId)
+        .document(user.id)
         .collection(COMMUNITIES_COLLECTION)
         .getDocuments()
         .catchError((error) {
@@ -287,8 +292,7 @@ abstract class CommunitiesModel extends Model {
     return snapshot.documents.length;
   }
 
-  Future<List<User>> getCommunityMembersFor(
-      Community community) async {
+  Future<List<User>> getCommunityMembersFor(Community community) async {
     print('$_tag at getMembersCountFor');
     bool _hasError = false;
     final snapshot = await _database
@@ -310,7 +314,6 @@ abstract class CommunitiesModel extends Model {
     });
     return members;
   }
-
 
   Future<User> _userFromId(String userId) async {
     // print('$_tag at userFromId');
@@ -395,5 +398,14 @@ abstract class CommunitiesModel extends Model {
       communities.add(community);
     });
     return communities;
+  }
+
+  List<Community> getJoinedCommuityList() {
+    print('$_tag at getJoinedCommuityList');
+    List<Community> communityList = <Community>[];
+    _joinedCommunities.forEach((id, community) {
+      communityList.add(community);
+    });
+    return communityList;
   }
 }
