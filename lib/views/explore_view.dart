@@ -18,16 +18,19 @@ class ExploreView extends StatelessWidget {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              return ListView.builder(
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    final DocumentSnapshot communityDoc =
-                        snapshot.data.documents[index];
-                    final Community community =
-                        Community.fromSnapShot(communityDoc);
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) {
+                  final DocumentSnapshot communityDoc =
+                      snapshot.data.documents[index];
+                  final Community community =
+                      Community.fromSnapShot(communityDoc);
 
-                    return CommunitiesItemView(community: community);
-                  });
+                  return CommunitiesItemView(community: community);
+                },
+              );
             },
           );
         },

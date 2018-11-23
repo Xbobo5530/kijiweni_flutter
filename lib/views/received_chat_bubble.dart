@@ -3,6 +3,7 @@ import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/models/user.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/views/chat_action_menu.dart';
 import 'package:kijiweni_flutter/views/message_meta_section.dart';
 import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
@@ -14,6 +15,29 @@ class ReceivedChatBubbleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget _buildMessageContent() {
+      if (chat.fileType == null) return Container();
+      if (chat.message != null && chat.fileType == FILE_TYPE_NO_FILE)
+        return Text(
+          chat.message,
+          style: TextStyle(fontSize: 18.0),
+          softWrap: true,
+        );
+      if (chat.fileType != FILE_TYPE_NO_FILE && chat.message == null)
+        return Image.network(chat.fileUrl);
+
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Image.network(chat.fileUrl),
+            Text(
+              chat.message,
+              style: TextStyle(fontSize: 18.0),
+              softWrap: true,
+            )
+          ]);
+    }
+
     final _userImageSection =
         ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       return FutureBuilder(
@@ -76,14 +100,17 @@ class ReceivedChatBubbleView extends StatelessWidget {
     final _messageSection = Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Container(
-          constraints: BoxConstraints(maxWidth: // 300.0
-          MediaQuery.of(context).size.width - 120
-          ),
-          child: Text(
-            chat.message,
-            style: TextStyle(fontSize: 18.0),
-            softWrap: true,
-          ),
+          constraints: BoxConstraints(
+              maxWidth: // 300.0
+                  MediaQuery.of(context).size.width - 120),
+          child: _buildMessageContent()
+          
+          // Text(
+          //   chat.message,
+          //   style: TextStyle(fontSize: 18.0),
+          //   softWrap: true,
+          // )
+          ,
           margin: const EdgeInsets.all(3.0),
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(

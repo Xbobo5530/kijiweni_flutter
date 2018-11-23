@@ -88,6 +88,7 @@ class HomePage extends StatelessWidget {
     final _bottomNavSection = ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return BottomNavigationBar(
+          fixedColor: Colors.lightGreen,
             currentIndex: model.currentNavItem,
             onTap: (selectedNavItem) {
               model.setSelectedNavItem(selectedNavItem);
