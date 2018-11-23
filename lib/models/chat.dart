@@ -3,8 +3,8 @@ import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:meta/meta.dart';
 
 class Chat {
-  String id, message, fileUrl, filePath,  createdBy, replyingTo, communityId;
-  int fileStatus, fileType,createdAt;
+  String id, message, fileUrl, filePath, createdBy, replyingTo, communityId;
+  int fileStatus, fileType, createdAt;
 
   Chat(
       {this.id,
@@ -25,11 +25,27 @@ class Chat {
       : id = document.documentID,
         message = document[MESSAGE_FIELD],
         communityId = document[COMMUNITY_ID_FIELD],
-         fileUrl = document[FILE_URL_FIELD],
+        fileUrl = document[FILE_URL_FIELD],
         filePath = document[FILE_PATH_FIELD],
         fileType = document[FILE_TYPE_FIELD],
         fileStatus = document[FILE_STATUS_FIELD],
         createdBy = document[CREATED_BY_FIELD],
         replyingTo = document[REPLYING_TO_FIELD],
         createdAt = document[CREATED_AT_FIELD];
+
+  @override
+  String toString() {
+    return '''
+          id: ${this.id}
+          message: ${this.message}
+          cratedBy: ${this.createdBy}
+          createdAt: ${this.createdAt}
+          communityId: ${this.communityId}
+          fileUrl: ${this.fileUrl}
+          filePath: ${this.filePath}
+          fileType: ${this.fileType}
+          fileStatus: ${this.fileStatus}
+          replyingTo: ${this.replyingTo}
+          ''';
+  }
 }

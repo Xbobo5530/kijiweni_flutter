@@ -49,6 +49,8 @@ abstract class ChatModel extends Model {
     //   chatMap.putIfAbsent(CHAT_IMAGE_URL_FIELD, () => chat.fileUrl);
     chatMap.putIfAbsent(
         CREATED_AT_FIELD, () => chat.createdAt);
+    
+    chatMap.putIfAbsent(FILE_TYPE_FIELD, ()=>chat.fileType);
 
     DocumentReference docRef = await _database
         .collection(COMMUNITIES_COLLECTION)

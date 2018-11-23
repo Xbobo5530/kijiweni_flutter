@@ -23,18 +23,18 @@ class JoinButtonView extends StatelessWidget {
       }
 
       return Builder(builder: (context) {
-        return RaisedButton(
+        return FlatButton(
           onPressed: () => model.joiningCommunityStatus == StatusCode.waiting
               ? null
               : _handleJoinCommunity(model, context),
           child: model.joiningCommunityStatus == StatusCode.waiting
               ? MyProgressIndicator(
-                  color: Colors.white,
+                  color: primaryColor,
                   size: 15.0,
                 )
               : Text(joinText),
-          color: primaryColor,
-          textColor: Colors.white,
+
+          textColor: primaryColor,
         );
       });
     }));

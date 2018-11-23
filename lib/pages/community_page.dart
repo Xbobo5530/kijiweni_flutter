@@ -12,34 +12,38 @@ class CommunityPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _appBar = AppBar(
+      elevation: 0.0,
+      title: Text(community.name),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.info),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      CommunityInfoPage(community: community),
+                  fullscreenDialog: true)),
+        )
+      ],
+    );
+
+    final _body = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+            child: CommunityTimelineView(
+          community: community,
+        )),
+        InputFieldView(
+          community: community,
+        ),
+      ],
+    );
     return Scaffold(
       backgroundColor: primaryColor,
-      appBar: AppBar(
-        title: Text(community.name),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.info),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        CommunityInfoPage(community: community),
-                    fullscreenDialog: true)),
-          )
-        ],
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-              child: CommunityTimelineView(
-            community: community,
-          )),
-          InputFieldView(
-            community: community,
-          ),
-        ],
-      ),
+      appBar: _appBar,
+      body: _body,
     );
   }
 }

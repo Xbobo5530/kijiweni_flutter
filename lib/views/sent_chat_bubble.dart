@@ -12,7 +12,9 @@ class SentChatBubbleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print(chat.toString());
     Widget _buildMessageContent() {
+      if(chat.fileType == null) return Container();
       if (chat.message != null && chat.fileType == FILE_TYPE_NO_FILE)
         return Text(
           chat.message,
@@ -21,16 +23,19 @@ class SentChatBubbleView extends StatelessWidget {
         );
       if (chat.fileType != FILE_TYPE_NO_FILE && chat.message == null)
         return Image.network(chat.fileUrl);
+      
+      
+      
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-        Image.network(chat.fileUrl),
-        Text(
-          chat.message,
-          style: TextStyle(fontSize: 18.0),
-          softWrap: true,
-        )
-      ]);
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Image.network(chat.fileUrl),
+            Text(
+              chat.message,
+              style: TextStyle(fontSize: 18.0),
+              softWrap: true,
+            )
+          ]);
     }
 
     final _messageSection = Padding(
@@ -40,20 +45,6 @@ class SentChatBubbleView extends StatelessWidget {
               maxWidth: //300.0
                   MediaQuery.of(context).size.width - 120),
           child: _buildMessageContent(),
-
-          // Column(
-          //   children: <Widget>[
-          //     chat.fileUrl != null
-          //         ? Image.network(chat.fileUrl)
-          //         : Container(),
-          //     Text(
-          //       chat.message,
-          //       style: TextStyle(fontSize: 18.0),
-          //       softWrap: true,
-          //     ),
-          //   ],
-          // ),
-
           margin: const EdgeInsets.all(3.0),
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(

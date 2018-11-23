@@ -32,11 +32,13 @@ class EmptyCommunityPage extends StatelessWidget {
                 title: Text(
                   community.name,
                   textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white70),
                 ),
                 subtitle: community.description != null
                     ? Text(
                         community.description,
                         textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white70),
                       )
                     : Container(),
               ),
