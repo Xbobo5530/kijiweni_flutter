@@ -171,6 +171,7 @@ abstract class CommunitiesModel extends Model {
     } 
     
     _firebaseMessaging.subscribeToTopic(community.id);
+    print('$_tag subscripbed to community ${community.name}');
     return await _addCommunityMemberRef(memberMap);
     
   }
@@ -218,6 +219,7 @@ abstract class CommunitiesModel extends Model {
       return StatusCode.failed;
     } 
     _firebaseMessaging.unsubscribeFromTopic(community.id);
+    print('$_tag usubscripbed to community ${community.name}');
       return await _deleteCommunityRefFromUser(community, user);
   }
 

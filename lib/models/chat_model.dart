@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/community.dart';
+import 'package:kijiweni_flutter/models/user.dart';
 
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
@@ -33,7 +34,7 @@ abstract class ChatModel extends Model {
         .snapshots();
   }
 
-  Future<StatusCode> sendMessage(Chat chat) async {
+  Future<StatusCode> sendMessage(Chat chat, User user) async {
     print('$_tag at sendMessage');
     _sendingMessageStatus = StatusCode.waiting;
     notifyListeners();
@@ -64,19 +65,52 @@ abstract class ChatModel extends Model {
       print('$_tag error on adding new chat: $error');
       _hasError = true;
       _sendingMessageStatus = StatusCode.failed;
-      // _notify();
+      
       notifyListeners();
     });
 
     if (_hasError)
-      return StatusCode.failed;
-    else {
+      {_sendingMessageStatus = StatusCode.failed;
+      notifyListeners();
+      return _sendingMessageStatus;
+      }
+    
       _sendingMessageStatus = StatusCode.success;
       //updateListViewPosition();
       _latestChat = await _chatFromId(chat.communityId, docRef.documentID);
       notifyListeners();
+      chat.id = docRef.documentID;
+      _addToMessageForNotifications(chat, user);
       return _sendingMessageStatus;
-    }
+    
+  }
+
+  Future<StatusCode> _addToMessageForNotifications(Chat chat, User user)async{
+    print('$_tag at _addToMessageForNotifications');
+    bool _hasError = false;
+    final title = user.name;
+    final body = _creadeMessageBody(chat, user); 
+    Map<String, dynamic> messageMap = {
+      TITLE_FIELD : title,
+      BODY_FIELD : body,
+      COMMUNITY_ID_FIELD : chat.communityId,
+      CHAT_ID_FIELD : chat.id,
+      USER_ID_FIELD : chat.createdBy
+    };
+    await _database.collection(MESSAGES_COLLECTION).add(messageMap)
+    .catchError((error){
+      print('$_tag error on adding message to messages for notifs: $error');
+      _hasError = true;
+
+    });
+    if (_hasError) return StatusCode.failed;
+    return StatusCode.success;
+  }
+  String  _creadeMessageBody(Chat chat, User user){
+    if (chat.fileType == FILE_TYPE_IMAGE) return '${user.name} has sent an image';
+    if (chat.fileType == FILE_TYPE_VIDEO) return '${user.name} has sent a video';
+    if (chat.message != null && chat.message.isNotEmpty) return chat.message;
+    return 'You have a new message';
   }
 
   Future<Chat> _chatFromId(String communityId, String chatId)async{

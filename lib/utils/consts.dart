@@ -52,5 +52,9 @@ const FILE_TYPE_VIDEO = 2;
 
 /// messaging
 const SUBSCRIPTION_UPDATES = 'UPDATES';
+const MESSAGES_COLLECTION = 'Messages';
+const TITLE_FIELD = 'from';
+const BODY_FIELD = 'message';
+const CHAT_ID_FIELD = 'chat_id';
 
 

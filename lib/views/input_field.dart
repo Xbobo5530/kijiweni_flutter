@@ -54,7 +54,7 @@ class InputFieldView extends StatelessWidget {
         );
         _chatFieldController.text = '';
 
-        StatusCode sendMessageStatus = await model.sendMessage(chat);
+        StatusCode sendMessageStatus = await model.sendMessage(chat, model.currentUser);
         _handleSendingMessageResult(model, sendMessageStatus);
       }
     }
