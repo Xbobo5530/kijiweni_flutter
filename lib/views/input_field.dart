@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
+import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 
 import 'package:kijiweni_flutter/pages/preview_file.dart';
@@ -12,9 +13,9 @@ import 'package:scoped_model/scoped_model.dart';
 const _tag = 'InputFieldView:';
 
 class InputFieldView extends StatelessWidget {
-  final String communityId;
+  final Community community;
 
-  InputFieldView({this.communityId});
+  InputFieldView({this.community});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class InputFieldView extends StatelessWidget {
           Scaffold.of(context)
               .showSnackBar(SnackBar(content: Text(failedToSendMessageText)));
           break;
-          case StatusCode.success:
+        case StatusCode.success:
           model.updateListViewPosition();
           break;
         default:
@@ -45,7 +46,7 @@ class InputFieldView extends StatelessWidget {
         final chat = Chat(
           message: message,
           createdBy: model.currentUser.id,
-          communityId: communityId,
+          communityId: community.id,
         );
         _chatFieldController.text = '';
 
@@ -69,12 +70,13 @@ class InputFieldView extends StatelessWidget {
               MaterialPageRoute(
                   builder: (_) => PreviewFilePage(
                         option: option,
+                        community: community,
                       ),
                   fullscreenDialog: true));
           break;
         case StatusCode.failed:
           Scaffold.of(context)
-              .showSnackBar(SnackBar(content: Text(errorMessageText)));
+              .showSnackBar(SnackBar(content: Text(errorMessage)));
           break;
         default:
           print('$_tag unexpected get file status : $getFileStatus');
@@ -100,14 +102,20 @@ class InputFieldView extends StatelessWidget {
                       child: Text(addVideoText),
                     ),
                   ],
-              child: Icon(Icons.add, color: primaryColor,),
+              child: Icon(
+                Icons.add,
+                color: primaryColor,
+              ),
             ));
 
     final _sendButton = ScopedModelDescendant<MainModel>(
       builder: ((context, child, model) {
         return IconButton(
           onPressed: () => _sendMessage(model),
-          icon: Icon(Icons.send, color: primaryColor,),
+          icon: Icon(
+            Icons.send,
+            color: primaryColor,
+          ),
         );
       }),
     );
@@ -123,44 +131,22 @@ class InputFieldView extends StatelessWidget {
           suffixIcon: _sendButton),
     );
 
-
-
-    // Container(
-    //         decoration: BoxDecoration(
-    //           borderRadius: BorderRadius.all(Radius.circular(12.0)),
-    //           color: Colors.white70,
-    //         ),
-    //         child: Row(
-    //           children: <Widget>[
-    //             Expanded(
-    //               child: TextField(
-    //                 decoration: InputDecoration(
-    //                     suffixIcon: _sendButton,
-    //                     border: InputBorder.none,
-    //                     hintText: addCaptionText,
-    //                     prefixIcon: Icon(Icons.message)),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       );
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                color: Colors.white70,
-              ),
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          color: Colors.white70,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Expanded(
               child: ScopedModelDescendant<MainModel>(
                   builder: ((context, child, model) {
-                return model.joinedCommunities.containsKey(communityId)
+                return model.joinedCommunities.containsKey(community.id)
                     ? _messageField
-                    : JoinButtonView(communityId: communityId); //_joinButton;
+                    : JoinButtonView(communityId: community.id); //_joinButton;
               })),
             ),
           ],

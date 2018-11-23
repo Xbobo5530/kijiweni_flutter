@@ -14,11 +14,20 @@ class SentChatBubbleView extends StatelessWidget {
     final _messageSection = Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Container(
-          constraints: BoxConstraints(maxWidth: 300.0),
-          child: Text(
-            chat.message,
-            style: TextStyle(fontSize: 18.0),
-            softWrap: true,
+          constraints: BoxConstraints(
+              maxWidth: //300.0
+                  MediaQuery.of(context).size.width - 120),
+          child: Column(
+            children: <Widget>[
+              chat.imageUrl != null
+                  ? Image.network(chat.imageUrl)
+                  : Container(),
+              Text(
+                chat.message,
+                style: TextStyle(fontSize: 18.0),
+                softWrap: true,
+              ),
+            ],
           ),
           margin: const EdgeInsets.all(3.0),
           padding: const EdgeInsets.all(8.0),

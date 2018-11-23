@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:meta/meta.dart';
 
@@ -16,12 +17,12 @@ class Community {
         assert(createdAt != null),
         assert(createdBy != null);
 
-  Community.fromSnapShot(var value) {
-    this.name = value[NAME_FIELD];
-    this.description = value[DESC_FIELD];
-    this.id = value[ID_FIELD];
-    this.imageUrl = value[IMAGE_URL_FIELD];
-    this.createdBy = value[CREATED_BY_FIELD];
-    this.createdAt = value[CREATED_AT_FIELD];
+  Community.fromSnapShot(DocumentSnapshot document) {
+    this.name = document[NAME_FIELD];
+    this.description = document[DESC_FIELD];
+    this.id = document.documentID;
+    this.imageUrl = document[IMAGE_URL_FIELD];
+    this.createdBy = document[CREATED_BY_FIELD];
+    this.createdAt = document[CREATED_AT_FIELD];
   }
 }

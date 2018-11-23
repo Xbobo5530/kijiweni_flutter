@@ -4,7 +4,7 @@ const signInWithGoogleText = 'Sign in with Google';
 
 const waitText = 'Please wait';
 
-const errorMessageText = 'Something went wrong';
+const errorMessage = 'Something went wrong';
 const loginText = 'Login';
 const logoutText = 'Logout';
 const homeText = 'Home';

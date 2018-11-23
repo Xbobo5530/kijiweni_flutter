@@ -11,7 +11,7 @@ const tag = 'LoginPage:';
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final snackBar = SnackBar(content: Text(errorMessageText));
+    final snackBar = SnackBar(content: Text(errorMessage));
 
     _handleGoogleSignIn(MainModel model, BuildContext context) async {
       await model.loginWithGoogle();

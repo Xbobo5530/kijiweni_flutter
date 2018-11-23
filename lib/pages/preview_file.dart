@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kijiweni_flutter/models/chat.dart';
+import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
@@ -6,13 +8,21 @@ import 'package:kijiweni_flutter/utils/strings.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
+const _tag = 'PreviewFilePage:';
+
 class PreviewFilePage extends StatelessWidget {
   final AddMenuOption option;
+  final Community community;
 
-  const PreviewFilePage({Key key, this.option}) : super(key: key);
+  const PreviewFilePage(
+      {Key key, @required this.option, @required this.community})
+      : assert(option != null),
+        assert(community != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _captionController = TextEditingController();
     Widget _previewImage() {
       return ScopedModelDescendant<MainModel>(
           builder: (_, __, model) => Image.file(model.imageFile));
@@ -22,13 +32,39 @@ class PreviewFilePage extends StatelessWidget {
       child: /*option == AddMenuOption.video ? _previewVideo(_controller) : */ _previewImage(),
     );
 
-    final _sendButton = IconButton(
-      icon: Icon(
-        Icons.send,
-        color: primaryColor,
-      ),
-      onPressed: () {},
-    );
+    _handleSend(MainModel model) async {
+      final caption = _captionController.text.trim();
+      if (caption.isEmpty) return null;
+      Chat chat = Chat(
+          message: caption,
+          createdBy: model.currentUser.id,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+          communityId: community.id);
+
+      StatusCode sendStatus = await model.sendMessage(chat);
+      switch (sendStatus) {
+        case StatusCode.failed:
+          Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(errorMessage)));
+          break;
+        case StatusCode.success:
+          chat.id = model.latestChat.id;
+          model.uploadFile(chat);
+          Navigator.pop(context);
+          break;
+        default:
+          print('$_tag unexpected send status: $sendStatus');
+      }
+    }
+
+    final _sendButton = ScopedModelDescendant<MainModel>(
+        builder: (_, __, model) => IconButton(
+              icon: Icon(
+                Icons.send,
+                color: primaryColor,
+              ),
+              onPressed: () => _handleSend(model),
+            ));
 
     final _captionSection = Positioned(
       bottom: 0.0,
@@ -46,6 +82,7 @@ class PreviewFilePage extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: TextField(
+                    controller: _captionController,
                     decoration: InputDecoration(
                         suffixIcon: _sendButton,
                         border: InputBorder.none,

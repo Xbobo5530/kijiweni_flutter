@@ -25,8 +25,7 @@ class ExploreView extends StatelessWidget {
                         snapshot.data.documents[index];
                     final Community community =
                         Community.fromSnapShot(communityDoc);
-                    final communityId = communityDoc.documentID;
-                    community.id = communityId;
+
                     return CommunitiesItemView(community: community);
                   });
             },

@@ -13,15 +13,14 @@ abstract class ChatModel extends Model {
 
   StatusCode _sendingMessageStatus;
   StatusCode get sendingMessageStatus => _sendingMessageStatus;
-
   StatusCode _handlingLikeMessageStatus;
   StatusCode get handlingLikeMessageStatus => _handlingLikeMessageStatus;
-
   bool _isReplying = false;
   bool get isReplying => _isReplying;
-
   String _replyingToId;
   String get replyingToId => _replyingToId;
+  Chat _latestChat;
+  Chat get latestChat => _latestChat;
 
   Stream<dynamic> communityChatStream(Community community) {
     return _database
@@ -46,12 +45,12 @@ abstract class ChatModel extends Model {
       chatMap.putIfAbsent(CREATED_BY_FIELD, () => chat.createdBy);
     if (chat.replyingTo != null)
       chatMap.putIfAbsent(REPLYING_TO_FIELD, () => chat.replyingTo);
-    if (chat.chatImageUrl != null)
-      chatMap.putIfAbsent(CHAT_IMAGE_URL_FIELD, () => chat.chatImageUrl);
+    if (chat.imageUrl != null)
+      chatMap.putIfAbsent(CHAT_IMAGE_URL_FIELD, () => chat.imageUrl);
     chatMap.putIfAbsent(
         CREATED_AT_FIELD, () => DateTime.now().millisecondsSinceEpoch);
 
-    await _database
+    DocumentReference docRef = await _database
         .collection(COMMUNITIES_COLLECTION)
         .document(chat.communityId)
         .collection(CHATS_COLLECTION)
@@ -68,9 +67,29 @@ abstract class ChatModel extends Model {
     else {
       _sendingMessageStatus = StatusCode.success;
       //updateListViewPosition();
+      _latestChat = await _chatFromId(chat.communityId, docRef.documentID);
       notifyListeners();
       return _sendingMessageStatus;
     }
+  }
+
+  Future<Chat> _chatFromId(String communityId, String chatId)async{
+    print('$_tag _chatFromId');
+    bool _hasError = false;
+    DocumentSnapshot document = await _database
+    .collection(COMMUNITIES_COLLECTION)
+    .document(communityId)
+    .collection(CHATS_COLLECTION)
+    .document(chatId)
+    .get()
+    .catchError((error){
+      print('$_tag error on getting latest chat document: $error');
+      _hasError = true;
+
+    });
+    if (_hasError || !document.exists) return null;
+    return Chat.fromSnapshot(document);
+    
   }
 
   Future<StatusCode> handleLikeMessage(Chat chat, String currentUserId) async {
