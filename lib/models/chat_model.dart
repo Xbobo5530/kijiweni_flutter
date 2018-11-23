@@ -210,12 +210,15 @@ abstract class ChatModel extends Model {
   }
 
 
+  
   void firebaseCloudMessaging_Listeners() {
   // if (Platform.isIOS) iOS_Permission();
 
   _firebaseMessaging.getToken().then((token){
     print(token);
   });
+
+  _firebaseMessaging.subscribeToTopic(SUBSCRIPTION_UPDATES);
 
   _firebaseMessaging.configure(
     onMessage: (Map<String, dynamic> message) async {

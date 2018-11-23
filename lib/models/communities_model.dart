@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/user.dart';
 
@@ -12,6 +13,7 @@ abstract class CommunitiesModel extends Model {
   final CollectionReference _communitiesCollection =
       Firestore.instance.collection(COMMUNITIES_COLLECTION);
   Firestore _database = Firestore.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   Map<String, User> _cachedUsers = Map();
   StatusCode _createCommunityStatus;
   StatusCode get createCommunityStatus => _createCommunityStatus;
@@ -166,9 +168,11 @@ abstract class CommunitiesModel extends Model {
       _joiningCommunityStatus = StatusCode.failed;
       notifyListeners();
       return _joiningCommunityStatus;
-    } else {
-      return await _addCommunityMemberRef(memberMap);
-    }
+    } 
+    
+    _firebaseMessaging.subscribeToTopic(community.id);
+    return await _addCommunityMemberRef(memberMap);
+    
   }
 
   Future<StatusCode> _addCommunityMemberRef(
@@ -212,7 +216,8 @@ abstract class CommunitiesModel extends Model {
 
     if (_hasError) {
       return StatusCode.failed;
-    } else
+    } 
+    _firebaseMessaging.unsubscribeFromTopic(community.id);
       return await _deleteCommunityRefFromUser(community, user);
   }
 

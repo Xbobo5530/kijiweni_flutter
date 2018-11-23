@@ -50,4 +50,7 @@ const FILE_TYPE_IMAGE = 1;
 const FILE_TYPE_VIDEO = 2;
 
 
+/// messaging
+const SUBSCRIPTION_UPDATES = 'UPDATES';
+
 
