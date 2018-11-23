@@ -3,6 +3,7 @@ import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:kijiweni_flutter/views/communities_count.dart';
 import 'package:kijiweni_flutter/views/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -64,11 +65,6 @@ class MyProfileView extends StatelessWidget {
     Widget _buildMyCommunitiesSection(MainModel model) {
       final userId = model.currentUser.id;
       Future<List<Community>> myCommunities =
-
-      
-      
-
-
           model.getUserCommunitiesFor(model.currentUser.id);
       return ExpansionTile(
         title: Text(myCommunitiesText),
@@ -90,23 +86,18 @@ class MyProfileView extends StatelessWidget {
       );
     }
 
-    Widget _buildImageSection(MainModel model) => Container(
-          width: 120.0,
-          height: 120.0,
-          child: Material(
-            elevation: 4.0,
-            shape: CircleBorder(),
-            child: model.currentUser != null
-                ? CircleAvatar(
-                    backgroundColor: green,
-                    backgroundImage: NetworkImage(model.currentUser.imageUrl),
-                  )
-                : Icon(
-                    Icons.people,
-                    size: 50.0,
-                  ),
-          ),
-        );
+    Widget _buildImageSection(MainModel model) =>
+        model.currentUser == null || model.currentUser.imageUrl == null
+            ? CircularButton(
+              size: 120.0,
+              icon: Icon(Icons.person, size: 70.0,),
+            )
+            : CircleAvatar(
+                backgroundColor: Colors.lightGreen,
+                backgroundImage: NetworkImage(model.currentUser.imageUrl),
+              );
+
+   
 
     Widget _buildInfoSection(MainModel model) => ListTile(
         title: model.currentUser != null
