@@ -33,32 +33,31 @@ class PreviewFilePage extends StatelessWidget {
       child: /*option == AddMenuOption.video ? _previewVideo(_controller) : */ _previewImage(),
     );
 
-    int _getFileType(){
-      switch(option){
+    int _getFileType() {
+      switch (option) {
         case AddMenuOption.camera:
         case AddMenuOption.image:
-        return FILE_TYPE_IMAGE;
-        break;
+          return FILE_TYPE_IMAGE;
+          break;
         case AddMenuOption.video:
-        return FILE_TYPE_VIDEO;
-        break;
+          return FILE_TYPE_VIDEO;
+          break;
         default:
-        print('$_tag unexpected add menu option: $option');
-        return FILE_TYPE_NO_FILE;
+          print('$_tag unexpected add menu option: $option');
+          return FILE_TYPE_NO_FILE;
       }
     }
 
     _handleSend(MainModel model) async {
       final caption = _captionController.text.trim();
-      if (caption.isEmpty) return null;
+      // if (caption.isEmpty) return null;
       Chat chat = Chat(
           message: caption,
           createdBy: model.currentUser.id,
           createdAt: DateTime.now().millisecondsSinceEpoch,
           communityId: community.id,
           fileType: _getFileType(),
-          fileStatus: FILE_STATUS_UPLOADING
-          );
+          fileStatus: FILE_STATUS_UPLOADING);
 
       StatusCode sendStatus = await model.sendMessage(chat);
       switch (sendStatus) {

@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
               BottomNavigationBarItem(
                   icon: Icon(Icons.search), title: Text(exploreText)),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle), title: Text(meText)),
+                  icon: Icon(Icons.person), title: Text(meText)),
             ]);
       },
     );

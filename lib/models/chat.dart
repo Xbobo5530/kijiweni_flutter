@@ -8,16 +8,18 @@ class Chat {
 
   Chat(
       {this.id,
-      @required this.message,
+      this.message = '',
       @required this.communityId,
       this.fileUrl,
       this.filePath,
-      this.fileStatus,
-      this.fileType,
+      this.fileStatus = FILE_STATUS_NO_FILE,
+      this.fileType = FILE_TYPE_NO_FILE,
       @required this.createdBy,
       this.createdAt,
       this.replyingTo})
       : assert(message != null),
+        assert(fileType != null),
+        assert(fileStatus != null),
         assert(communityId != null),
         assert(createdBy != null);
 

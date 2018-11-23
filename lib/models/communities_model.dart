@@ -256,18 +256,22 @@ abstract class CommunitiesModel extends Model {
       _hasError = true;
     });
 
-    if (!_hasError) {
-      final documents = snapshot.documents;
-      Map<String, Community> _tempMap = Map();
-      documents.forEach((document) async {
-        Community community = await communityFromId(document.documentID);
-        _tempMap.putIfAbsent(document.documentID, () => community);
-      });
-      _joinedCommunities = _tempMap;
+    if (_hasError) {
+      _joinedCommunities = Map();
+      notifyListeners();
+      return StatusCode.failed;
     }
+    final documents = snapshot.documents;
+    Map<String, Community> _tempMap = Map();
+    documents.forEach((document) async {
+      Community community = await communityFromId(document.documentID);
+      _tempMap.putIfAbsent(document.documentID, () => community);
+    });
+    _joinedCommunities = _tempMap;
+    print(
+        '$_tag updted _joinedCommunities has ${_joinedCommunities.length} communities');
 
     notifyListeners();
-    if (_hasError) return StatusCode.failed;
     return StatusCode.success;
   }
 

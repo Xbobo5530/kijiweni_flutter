@@ -17,14 +17,16 @@ class ReceivedChatBubbleView extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget _buildMessageContent() {
       if (chat.fileType == null) return Container();
-      if (chat.message != null && chat.fileType == FILE_TYPE_NO_FILE)
+      if (chat.message != null &&
+          chat.message.isNotEmpty &&
+          chat.fileType == FILE_TYPE_NO_FILE)
         return Text(
           chat.message,
           style: TextStyle(fontSize: 18.0),
           softWrap: true,
         );
-      if (chat.fileType != FILE_TYPE_NO_FILE && chat.message == null)
-        return Image.network(chat.fileUrl);
+      if (chat.fileType != FILE_TYPE_NO_FILE && chat.message == null ||
+          chat.message.isEmpty) return Image.network(chat.fileUrl);
 
       return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +106,7 @@ class ReceivedChatBubbleView extends StatelessWidget {
               maxWidth: // 300.0
                   MediaQuery.of(context).size.width - 120),
           child: _buildMessageContent()
-          
+
           // Text(
           //   chat.message,
           //   style: TextStyle(fontSize: 18.0),
