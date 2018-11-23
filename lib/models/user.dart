@@ -13,7 +13,7 @@ class User {
       : name = document[NAME_FIELD],
         id = document.documentID,
         bio = document[BIO_FIELD],
-        imageUrl = document[IMAGE_URL_FIELD],
+        imageUrl = document[FILE_URL_FIELD],
         createdAt = document[CREATED_AT_FIELD];
 
 

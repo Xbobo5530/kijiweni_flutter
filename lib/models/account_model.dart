@@ -147,7 +147,7 @@ abstract class AccountModel extends Model {
     Map<String, dynamic> userMap = {
       ID_FIELD: user.uid,
       NAME_FIELD: user.displayName,
-      IMAGE_URL_FIELD: user.photoUrl,
+      FILE_URL_FIELD: user.photoUrl,
       CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
     };
 

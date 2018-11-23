@@ -59,7 +59,7 @@ abstract class CommunitiesModel extends Model {
     if (community.description != null)
       _communityMap.putIfAbsent(DESC_FIELD, () => community.description);
     if (community.imageUrl != null)
-      _communityMap.putIfAbsent(IMAGE_URL_FIELD, () => community.imageUrl);
+      _communityMap.putIfAbsent(FILE_URL_FIELD, () => community.imageUrl);
     if (community.createdBy != null)
       _communityMap.putIfAbsent(CREATED_BY_FIELD, () => community.createdBy);
     _communityMap.putIfAbsent(

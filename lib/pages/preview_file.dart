@@ -3,6 +3,7 @@ import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 
@@ -32,6 +33,21 @@ class PreviewFilePage extends StatelessWidget {
       child: /*option == AddMenuOption.video ? _previewVideo(_controller) : */ _previewImage(),
     );
 
+    int _getFileType(){
+      switch(option){
+        case AddMenuOption.camera:
+        case AddMenuOption.image:
+        return FILE_TYPE_IMAGE;
+        break;
+        case AddMenuOption.video:
+        return FILE_TYPE_VIDEO;
+        break;
+        default:
+        print('$_tag unexpected add menu option: $option');
+        return FILE_TYPE_NO_FILE;
+      }
+    }
+
     _handleSend(MainModel model) async {
       final caption = _captionController.text.trim();
       if (caption.isEmpty) return null;
@@ -39,7 +55,10 @@ class PreviewFilePage extends StatelessWidget {
           message: caption,
           createdBy: model.currentUser.id,
           createdAt: DateTime.now().millisecondsSinceEpoch,
-          communityId: community.id);
+          communityId: community.id,
+          fileType: _getFileType(),
+          fileStatus: FILE_STATUS_UPLOADING
+          );
 
       StatusCode sendStatus = await model.sendMessage(chat);
       switch (sendStatus) {

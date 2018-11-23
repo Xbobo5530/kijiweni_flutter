@@ -5,6 +5,7 @@ import 'package:kijiweni_flutter/models/main_model.dart';
 
 import 'package:kijiweni_flutter/pages/preview_file.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/join_button.dart';
@@ -47,6 +48,9 @@ class InputFieldView extends StatelessWidget {
           message: message,
           createdBy: model.currentUser.id,
           communityId: community.id,
+          fileType: FILE_TYPE_NO_FILE,
+          fileStatus: FILE_STATUS_NO_FILE,
+          createdAt: DateTime.now().millisecondsSinceEpoch
         );
         _chatFieldController.text = '';
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/views/chat_action_menu.dart';
 import 'package:kijiweni_flutter/views/message_meta_section.dart';
 
@@ -11,24 +12,48 @@ class SentChatBubbleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget _buildMessageContent() {
+      if (chat.message != null && chat.fileType == FILE_TYPE_NO_FILE)
+        return Text(
+          chat.message,
+          style: TextStyle(fontSize: 18.0),
+          softWrap: true,
+        );
+      if (chat.fileType != FILE_TYPE_NO_FILE && chat.message == null)
+        return Image.network(chat.fileUrl);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+        Image.network(chat.fileUrl),
+        Text(
+          chat.message,
+          style: TextStyle(fontSize: 18.0),
+          softWrap: true,
+        )
+      ]);
+    }
+
     final _messageSection = Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Container(
           constraints: BoxConstraints(
               maxWidth: //300.0
                   MediaQuery.of(context).size.width - 120),
-          child: Column(
-            children: <Widget>[
-              chat.imageUrl != null
-                  ? Image.network(chat.imageUrl)
-                  : Container(),
-              Text(
-                chat.message,
-                style: TextStyle(fontSize: 18.0),
-                softWrap: true,
-              ),
-            ],
-          ),
+          child: _buildMessageContent(),
+
+          // Column(
+          //   children: <Widget>[
+          //     chat.fileUrl != null
+          //         ? Image.network(chat.fileUrl)
+          //         : Container(),
+          //     Text(
+          //       chat.message,
+          //       style: TextStyle(fontSize: 18.0),
+          //       softWrap: true,
+          //     ),
+          //   ],
+          // ),
+
           margin: const EdgeInsets.all(3.0),
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(

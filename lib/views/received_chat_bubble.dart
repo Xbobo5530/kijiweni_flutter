@@ -41,7 +41,7 @@ class ReceivedChatBubbleView extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 20.0,
                     backgroundImage: NetworkImage(
-                      _user.imageUrl,
+                      _user.fileUrl,
                     ),
                   ),
                 );

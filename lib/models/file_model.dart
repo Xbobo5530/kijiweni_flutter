@@ -88,8 +88,9 @@ abstract class FileModel extends Model {
     print('$_tag at _updateChatWithFileUrl');
     bool _hasError = false;
     Map<String, dynamic> updateFileMap = {
-      IMAGE_URL_FIELD: _fileUrl,
-      IMAGE_PATH_FIELD: _filePath
+      FILE_URL_FIELD: _fileUrl,
+      FILE_PATH_FIELD: _filePath,
+      FILE_STATUS_FIELD : FILE_STATUS_UPLOAD_SUCCESS
     };
 
     await _database
