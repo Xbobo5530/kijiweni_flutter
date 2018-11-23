@@ -21,27 +21,30 @@ class CommunitiesItemView extends StatelessWidget {
 
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
-        return Column(
-          children: <Widget>[
-            SizedBox(height: 8.0,),
-            community.imageUrl != null
-              ? CircleAvatar(
-                  backgroundImage: NetworkImage(community.imageUrl),
-                )
-              : CircularButton(
-                size: 80,
-                elevation: 0.0,
-                icon: Icon(Icons.people, size: 40),
+        return InkWell(
+          onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 8.0,
               ),
-            ListTile(
-              onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
-              // leading: ,
-              title: Text(community.name),
-              subtitle: community.description != null
-                  ? Text(community.description)
-                  : Container(),
-            ),
-          ],
+              community.imageUrl != null
+                  ? CircleAvatar(
+                      backgroundImage: NetworkImage(community.imageUrl),
+                    )
+                  : CircularButton(
+                      size: 80,
+                      elevation: 0.0,
+                      icon: Icon(Icons.people, size: 40),
+                    ),
+              ListTile(
+                title: Text(community.name),
+                subtitle: community.description != null
+                    ? Text(community.description)
+                    : Container(),
+              ),
+            ],
+          ),
         );
       },
     );

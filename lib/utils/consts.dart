@@ -12,12 +12,14 @@ const BIO_FIELD = 'bio';
 
 const DESC_FIELD = 'Ddescription';
 const ID_FIELD = 'id';
+const IMAGE_URL_FIELD = 'image_url';
 const FILE_URL_FIELD = 'file_url';
 const FILE_PATH_FIELD = 'file_path';
 const FILE_STATUS_FIELD = 'file_status';
 const FILE_TYPE_FIELD = 'file_type';
 const CREATED_AT_FIELD = 'created_at';
 const CREATED_BY_FIELD = 'created_by';
+
 
 /// nav items
 const NAV_ITEM_HOME = 0;

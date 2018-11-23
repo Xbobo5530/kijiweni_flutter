@@ -90,6 +90,7 @@ class MyProfileView extends StatelessWidget {
         model.currentUser == null || model.currentUser.imageUrl == null
             ? CircularButton(
               size: 120.0,
+              elevation: 0.0,
               icon: Icon(Icons.person, size: 70.0,),
             )
             : CircleAvatar(
@@ -121,7 +122,9 @@ class MyProfileView extends StatelessWidget {
         );
 
     return ScopedModelDescendant<MainModel>(
+
       builder: (BuildContext context, Widget child, MainModel model) {
+        print('${model.currentUser.toString()}');
         return model.isLoggedIn ? _buildUserProfilePage(model) : _loginView;
       },
     );

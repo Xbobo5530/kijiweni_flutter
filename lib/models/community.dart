@@ -21,7 +21,7 @@ class Community {
     this.name = document[NAME_FIELD];
     this.description = document[DESC_FIELD];
     this.id = document.documentID;
-    this.imageUrl = document[FILE_URL_FIELD];
+    this.imageUrl = document[IMAGE_URL_FIELD];
     this.createdBy = document[CREATED_BY_FIELD];
     this.createdAt = document[CREATED_AT_FIELD];
   }
