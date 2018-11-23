@@ -5,12 +5,15 @@ import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+
 
 const _tag = 'ChatModel:';
 
 abstract class ChatModel extends Model {
   Firestore _database = Firestore.instance;
-
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   StatusCode _sendingMessageStatus;
   StatusCode get sendingMessageStatus => _sendingMessageStatus;
   StatusCode _handlingLikeMessageStatus;
@@ -61,6 +64,7 @@ abstract class ChatModel extends Model {
       print('$_tag error on adding new chat: $error');
       _hasError = true;
       _sendingMessageStatus = StatusCode.failed;
+      // _notify();
       notifyListeners();
     });
 
@@ -204,4 +208,39 @@ abstract class ChatModel extends Model {
   if(_hasError || !document.exists) return false;
   return true;
   }
+
+
+  void firebaseCloudMessaging_Listeners() {
+  // if (Platform.isIOS) iOS_Permission();
+
+  _firebaseMessaging.getToken().then((token){
+    print(token);
+  });
+
+  _firebaseMessaging.configure(
+    onMessage: (Map<String, dynamic> message) async {
+      print('on message $message');
+    },
+    onResume: (Map<String, dynamic> message) async {
+      print('on resume $message');
+    },
+    onLaunch: (Map<String, dynamic> message) async {
+      print('on launch $message');
+    },
+  );
+}
+
+// void iOS_Permission() {
+//   _firebaseMessaging.requestNotificationPermissions(
+//       IosNotificationSettings(sound: true, badge: true, alert: true)
+//   );
+//   _firebaseMessaging.onIosSettingsRegistered
+//       .listen((IosNotificationSettings settings)
+//   {
+//     print("Settings registered: $settings");
+//   });
+// }
+
+ 
+
 }

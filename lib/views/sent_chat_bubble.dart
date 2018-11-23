@@ -27,15 +27,15 @@ class SentChatBubbleView extends StatelessWidget {
           chat.message.isEmpty) return Image.network(chat.fileUrl);
 
       return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Image.network(chat.fileUrl),
-            Text(
-              chat.message,
-              style: TextStyle(fontSize: 18.0),
-              softWrap: true,
-            )
-          ]);
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+      Image.network(chat.fileUrl),
+      Text(
+        chat.message,
+        style: TextStyle(fontSize: 18.0),
+        softWrap: true,
+      )
+            ]);
     }
 
     final _messageSection = Padding(
@@ -43,7 +43,7 @@ class SentChatBubbleView extends StatelessWidget {
       child: Container(
           constraints: BoxConstraints(
               maxWidth: //300.0
-                  MediaQuery.of(context).size.width - 120),
+                  MediaQuery.of(context).size.width - 80),
           child: _buildMessageContent(),
           margin: const EdgeInsets.all(3.0),
           padding: const EdgeInsets.all(8.0),
