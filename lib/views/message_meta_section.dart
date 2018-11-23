@@ -13,7 +13,7 @@ class MessageMetaSectionView extends StatelessWidget {
         DateTime.fromMillisecondsSinceEpoch(chat.createdAt);
     return Positioned(
       bottom: 0.0,
-      right: 0.0,
+      right: 8.0,
       child: Row(
         children: <Widget>[
           Text('${_createdAt.hour}:${_createdAt.minute}',

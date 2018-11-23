@@ -92,7 +92,7 @@ class ReceivedChatBubbleView extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 20.0,
                     backgroundImage: NetworkImage(
-                      _user.fileUrl,
+                      _user.imageUrl,
                     ),
                   ),
                 );
@@ -108,16 +108,21 @@ class ReceivedChatBubbleView extends StatelessWidget {
             if (!snapshot.hasData) return Container();
             final User _user = snapshot.data;
             return Container(
-              padding: const EdgeInsets.only(left: 16.0),
+              padding: const EdgeInsets.only(left: 4.0),
               width: 100.0,
-              child: _user != null
-                  ? Text(
-                      _user.name,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Colors.grey, fontStyle: FontStyle.italic),
-                    )
-                  : Container(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  _user != null
+                      ? Text(
+                          _user.name,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              color: Colors.grey, ),
+                        )
+                      : Container(),
+                ],
+              ),
             );
           },
         );
@@ -170,11 +175,13 @@ class ReceivedChatBubbleView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _userImageSection,
+          SizedBox(width: 8.0,),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     _usernameSection,
