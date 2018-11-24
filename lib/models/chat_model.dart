@@ -2,13 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/user.dart';
-
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
-
 
 const _tag = 'ChatModel:';
 
@@ -71,8 +68,6 @@ abstract class ChatModel extends Model {
       
       notifyListeners();
     });
-
-    
 
     if (_hasError)
       {_sendingMessageStatus = StatusCode.failed;
@@ -233,20 +228,20 @@ abstract class ChatModel extends Model {
   (String userId Chat chat)async{
   // print('$_tag at hasLikedChat');
   bool _hasError = false;
-  final document = await _database
-      .collection(COMMUNITIES_COLLECTION)
-      .document(chat.communityId)
-      .collection(CHATS_COLLECTION)
-      .document(chat.id)
-      .collection(LIKES_COLLECTION)
-      .document(userId). get ()
-      .catchError((error) {
-  print('$_tag error on getting current user like doc: $error');
-  _hasError = true;
-  });
+    final document = await _database
+        .collection(COMMUNITIES_COLLECTION)
+        .document(chat.communityId)
+        .collection(CHATS_COLLECTION)
+        .document(chat.id)
+        .collection(LIKES_COLLECTION)
+        .document(userId). get ()
+        .catchError((error) {
+    print('$_tag error on getting current user like doc: $error');
+    _hasError = true;
+    });
 
-  if(_hasError || !document.exists) return false;
-  return true;
+    if(_hasError || !document.exists) return false;
+    return true;
   }
 
 
@@ -284,28 +279,67 @@ abstract class ChatModel extends Model {
 //   });
 // }
 
-Future<Chat>chatFromId(String chatId, String communityId)async{
-  print('$_tag at chatFromId');
-  bool _hasError = false;
-  if (_cachedChats.containsKey(chatId)) return _cachedChats[chatId];
-  DocumentSnapshot document =await _database.collection(COMMUNITIES_COLLECTION)
-  .document(communityId)
-  .collection(CHATS_COLLECTION)
-  .document(chatId)
-  .get()
-  .catchError((error){
-    print('$_tag error on getting chat doc for caht from it: $error');
-    _hasError = true;
-  });
-  if (_hasError || !document.exists) return null;
-  Chat chat = Chat.fromSnapshot(document);
-  _cachedChats.putIfAbsent(chatId, ()=>chat);
-  return chat;
+  Future<Chat>chatFromId(String chatId, String communityId)async{
+    print('$_tag at chatFromId');
+    if (_cachedChats.containsKey(chatId)) return _cachedChats[chatId];
+    bool _hasError = false;
+    DocumentSnapshot document =await _database.collection(COMMUNITIES_COLLECTION)
+      .document(communityId)
+      .collection(CHATS_COLLECTION)
+      .document(chatId)
+      .get()
+      .catchError((error){
+        print('$_tag error on getting chat doc for caht from it: $error');
+        _hasError = true;
+      });
+    if (_hasError || !document.exists) return null;
+    Chat chat = Chat.fromSnapshot(document);
+    _cachedChats.putIfAbsent(chatId, ()=>chat);
+    return chat;
+  }
+
+   DocumentReference _chatReference(Chat chat) => _database.collection(COMMUNITIES_COLLECTION)
+      .document(chat.communityId)
+      .collection(CHATS_COLLECTION)
+      .document(chat.id);
 
 
+  Future<StatusCode> deleteChat(Chat chat)async{
+    print('$_tag at deleteChat');
+    bool _hasError = false;
+    _chatReference(chat).delete().catchError((error){
+      print('$_tag error on deleting chat : $error');
+      _hasError = true;
+    });
+    if (_hasError) return StatusCode.failed;
+    return StatusCode.success;
+  }
 
-}
+  Future<StatusCode> reportChat(Chat chat)async{
+    print('$_tag at reportChat');
+    if (chat.reports ==3) deleteChat(chat);
+    bool _hasError = false;
+    Map<String, int> reportMap = {REPORTS_FIELD: 1};
+    _database.runTransaction((transaction)async{
+      DocumentSnapshot freshSnapshot = await transaction.get(
+        _chatReference(chat)
+      );
+      if (freshSnapshot[REPORTS_FIELD] == null)
+      await freshSnapshot.reference.updateData(reportMap)
+      .catchError((error){
+        print('$_tag error on updaitng reports $error');
+        _hasError = true;
+      });
 
- 
-
+      await transaction.update(
+           freshSnapshot.reference, {REPORTS_FIELD: freshSnapshot[REPORTS_FIELD] + 1}).catchError(
+             (error){
+               print('$_tag error on performing transaction for reports: $error');
+               _hasError = true;
+             }
+           );
+     });
+     if (_hasError) return StatusCode.failed;
+     return StatusCode.success;
+  }
 }

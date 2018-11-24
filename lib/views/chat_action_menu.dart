@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:share/share.dart';
 
-// const _tag = 'ChatActionMenuView:';
+const _tag = 'ChatActionMenuView:';
 
 class ChatActionMenuView extends StatelessWidget {
   final Color color;
@@ -49,19 +51,29 @@ class ChatActionMenuView extends StatelessWidget {
           ),
         );
 
-    _shareMessage() {
-      //todo get short link
-      //todo add share to project
-      final url = 'testUrl'; //todo add app download link
-      Share.share('${chat.message}\n$url');
+    // _shareMessage() {
+    //   //todo get short link
+    //   //todo add share to project
+    //   final url = 'testUrl'; //todo add app download link
+    //   Share.share('${chat.message}\n$url');
+    // }
+
+    _handleDelete(MainModel model) async {
+      StatusCode deleteStatus = await model.deleteChat(chat);
+      if (chat.fileType == FILE_TYPE_NO_FILE) return null;
+      switch (deleteStatus) {
+        case StatusCode.success:
+          model.deleteAsset(chat);
+          break;
+        default:
+          print('$_tag unexpected status $deleteStatus');
+      }
     }
 
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
         return PopupMenuButton(
             onSelected: (selectedMenuAction) {
-              // print('$_tag $selectedMenuAction has been selected');
-
               switch (selectedMenuAction) {
                 case ChatMenuAction.like:
                   model.handleLikeMessage(chat, model.currentUser.id);
@@ -69,8 +81,14 @@ class ChatActionMenuView extends StatelessWidget {
                 case ChatMenuAction.reply:
                   model.replyMessage(chat);
                   break;
-                case ChatMenuAction.share:
-                  _shareMessage();
+                // case ChatMenuAction.share:
+                //   _shareMessage();
+                //   break;
+                case ChatMenuAction.delete:
+                  _handleDelete(model);
+                  break;
+                case ChatMenuAction.report:
+                  model.reportChat(chat);
                   break;
               }
             },
@@ -81,14 +99,14 @@ class ChatActionMenuView extends StatelessWidget {
             itemBuilder: (_) {
               return <PopupMenuItem<ChatMenuAction>>[
                 _buildLikeButton(model),
-                _buildActionButton(
-                    ChatMenuAction.share,
-                    Icon(
-                      Icons.share,
-                      color: Colors.white,
-                    ),
-                    Colors.orange,
-                    shareText),
+                // _buildActionButton(
+                //     ChatMenuAction.share,
+                //     Icon(
+                //       Icons.share,
+                //       color: Colors.white,
+                //     ),
+                //     Colors.orange,
+                //     shareText),
                 _buildActionButton(
                     ChatMenuAction.reply,
                     Icon(
@@ -96,7 +114,21 @@ class ChatActionMenuView extends StatelessWidget {
                       color: Colors.white,
                     ),
                     Colors.blue,
-                    replyText)
+                    replyText),
+                _buildActionButton(
+                    chat.createdBy == model.currentUser.id
+                        ? ChatMenuAction.delete
+                        : ChatMenuAction.report,
+                    Icon(
+                      chat.createdBy == model.currentUser.id
+                          ? Icons.delete
+                          : Icons.flag,
+                      color: Colors.red,
+                    ),
+                    primaryColor,
+                    chat.createdBy == model.currentUser.id
+                        ? deleteText
+                        : reportText),
               ];
             });
       },

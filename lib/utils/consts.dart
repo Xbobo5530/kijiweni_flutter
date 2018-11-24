@@ -20,6 +20,7 @@ const FILE_TYPE_FIELD = 'file_type';
 const CREATED_AT_FIELD = 'created_at';
 const CREATED_BY_FIELD = 'created_by';
 
+const REPORTS_FIELD = 'reports';
 
 /// nav items
 const NAV_ITEM_HOME = 0;
@@ -60,5 +61,6 @@ const CHAT_ID_FIELD = 'chat_id';
 // deep links
 const COMMUNITY_DEEP_LINK_HEAD = 'http://kijiweni.nyayozangu.com/community/';
 
-
+//reports
+const CHAT_REPORTS_LIMIT = 3;
 

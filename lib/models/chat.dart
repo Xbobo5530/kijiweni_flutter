@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 class Chat {
   String id, message, fileUrl, filePath, createdBy, replyingTo, communityId;
-  int fileStatus, fileType, createdAt;
+  int fileStatus, fileType, createdAt, reports;
 
   Chat(
       {this.id,
@@ -14,6 +14,7 @@ class Chat {
       this.filePath,
       this.fileStatus = FILE_STATUS_NO_FILE,
       this.fileType = FILE_TYPE_NO_FILE,
+      this.reports,
       @required this.createdBy,
       this.createdAt,
       this.replyingTo})
@@ -31,6 +32,7 @@ class Chat {
         filePath = document[FILE_PATH_FIELD],
         fileType = document[FILE_TYPE_FIELD],
         fileStatus = document[FILE_STATUS_FIELD],
+        reports = document[REPORTS_FIELD],
         createdBy = document[CREATED_BY_FIELD],
         replyingTo = document[REPLYING_TO_FIELD],
         createdAt = document[CREATED_AT_FIELD];

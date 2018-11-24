@@ -11,7 +11,7 @@ import 'package:scoped_model/scoped_model.dart';
 const _tag = 'ImageModel:';
 
 abstract class FileModel extends Model {
-  final FirebaseStorage storage = FirebaseStorage();
+  final FirebaseStorage _storage = FirebaseStorage();
   final Firestore _database = Firestore.instance;
   File _imageFile;
   File get imageFile => _imageFile;
@@ -57,7 +57,7 @@ abstract class FileModel extends Model {
 
     final File file = _imageFile; //TODO: account for video files as well
     final StorageReference ref =
-        storage.ref().child(IMAGES_BUCKET).child('$uuid.jpg');
+        _storage.ref().child(IMAGES_BUCKET).child('$uuid.jpg');
     final StorageUploadTask uploadTask = ref.putFile(
       file,
       StorageMetadata(
@@ -90,7 +90,7 @@ abstract class FileModel extends Model {
     Map<String, dynamic> updateFileMap = {
       FILE_URL_FIELD: _fileUrl,
       FILE_PATH_FIELD: _filePath,
-      FILE_STATUS_FIELD : FILE_STATUS_UPLOAD_SUCCESS
+      FILE_STATUS_FIELD: FILE_STATUS_UPLOAD_SUCCESS
     };
 
     await _database
@@ -101,6 +101,17 @@ abstract class FileModel extends Model {
         .updateData(updateFileMap)
         .catchError((error) {
       print('$_tag error on updating chat with uploaded file: $error');
+      _hasError = true;
+    });
+    if (_hasError) return StatusCode.failed;
+    return StatusCode.success;
+  }
+
+  Future<StatusCode> deleteAsset(Chat chat) async {
+    print('$_tag at deleteAsset');
+    bool _hasError = false;
+    _storage.ref().child(chat.filePath).delete().catchError((error) {
+      print('$_tag error on deleting file');
       _hasError = true;
     });
     if (_hasError) return StatusCode.failed;

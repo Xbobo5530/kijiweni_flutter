@@ -36,6 +36,9 @@ const dislikeText = 'Dislike';
 
 const shareText = 'Share';
 const replyText = 'Reply';
+const deleteText = 'Delete';
+const reportText = 'Report';
+
 
 const loadingText = 'Loading...';
 

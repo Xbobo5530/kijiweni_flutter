@@ -68,8 +68,8 @@ class ChatBubbleView extends StatelessWidget {
             future: model.chatFromId(chat.replyingTo, chat.communityId),
             builder: (context, snapshot) {
               if (!snapshot.hasData) return Container();
-
-              return _buildReplyContent(model, chat);
+              Chat _chat = snapshot.data;
+              return _buildReplyContent(model, _chat);
             }),
       ),
     );
