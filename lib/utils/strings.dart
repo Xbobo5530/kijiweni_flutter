@@ -41,6 +41,9 @@ const loadingText = 'Loading...';
 
 const myCommunitiesText = 'My communities';
 
+const photoText = 'Photo';
+const youText = 'You';
+
 //hints
 const exploreHint = 'Explore different communities';
 const createHint = 'Create a new community';

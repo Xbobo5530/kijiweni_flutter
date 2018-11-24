@@ -57,4 +57,8 @@ const TITLE_FIELD = 'from';
 const BODY_FIELD = 'message';
 const CHAT_ID_FIELD = 'chat_id';
 
+// deep links
+const COMMUNITY_DEEP_LINK_HEAD = 'http://kijiweni.nyayozangu.com/community/';
+
+
 

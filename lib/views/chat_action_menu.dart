@@ -41,7 +41,7 @@ class ChatActionMenuView extends StatelessWidget {
     PopupMenuItem<ChatMenuAction> _buildActionButton(ChatMenuAction action,
             Icon icon, Color backgroundColor, String label) =>
         PopupMenuItem(
-          value: ChatMenuAction.share,
+          value: action,
           child: ChatBubbleActionItemView(
             icon: icon,
             color: backgroundColor,
@@ -71,6 +71,7 @@ class ChatActionMenuView extends StatelessWidget {
                   break;
                 case ChatMenuAction.share:
                   _shareMessage();
+                  break;
               }
             },
             icon: Icon(

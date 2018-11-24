@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/pages/community_page.dart';
 import 'package:kijiweni_flutter/pages/create_community.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
@@ -90,7 +92,7 @@ class HomePage extends StatelessWidget {
     final _bottomNavSection = ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return BottomNavigationBar(
-          fixedColor: Colors.lightGreen,
+            fixedColor: Colors.lightGreen,
             currentIndex: model.currentNavItem,
             onTap: (selectedNavItem) {
               model.setSelectedNavItem(selectedNavItem);
@@ -106,8 +108,20 @@ class HomePage extends StatelessWidget {
       },
     );
 
+    // _handleDeepLink(MainModel model, String communityId) async {
+    //   Community community = await model.communityFromId(communityId);
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (contest) => CommunityPage(community: community)));
+    // }
+
     final _bodySection = ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
+        ///handle deep link
+        // if (model.deepLinkedCommunityId != null)
+        //   _handleDeepLink(model, model.deepLinkedCommunityId);
+
         switch (model.currentNavItem) {
           case NAV_ITEM_HOME:
             return HomeView();

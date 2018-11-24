@@ -9,6 +9,7 @@ import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/join_button.dart';
+import 'package:kijiweni_flutter/views/reply_message.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'InputFieldView:';
@@ -45,16 +46,16 @@ class InputFieldView extends StatelessWidget {
       if (_chatFieldController.text.trim().isNotEmpty) {
         final message = _chatFieldController.text.trim();
         final chat = Chat(
-          message: message,
-          createdBy: model.currentUser.id,
-          communityId: community.id,
-          fileType: FILE_TYPE_NO_FILE,
-          fileStatus: FILE_STATUS_NO_FILE,
-          createdAt: DateTime.now().millisecondsSinceEpoch
-        );
+            message: message,
+            createdBy: model.currentUser.id,
+            communityId: community.id,
+            fileType: FILE_TYPE_NO_FILE,
+            fileStatus: FILE_STATUS_NO_FILE,
+            createdAt: DateTime.now().millisecondsSinceEpoch);
         _chatFieldController.text = '';
 
-        StatusCode sendMessageStatus = await model.sendMessage(chat, model.currentUser, community);
+        StatusCode sendMessageStatus =
+            await model.sendMessage(chat, model.currentUser, community);
         _handleSendingMessageResult(model, sendMessageStatus);
       }
     }
@@ -142,18 +143,21 @@ class InputFieldView extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(12.0)),
           color: Colors.white70,
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Expanded(
-              child: ScopedModelDescendant<MainModel>(
-                  builder: ((context, child, model) {
-                return model.joinedCommunities.containsKey(community.id)
-                    ? _messageField
-                    : JoinButtonView(community: community); //_joinButton;
-              })),
-            ),
-          ],
+        child: ScopedModelDescendant<MainModel>(
+          builder: (_, __, model) => Column(children: <Widget>[
+                model.isReplying
+                    ? ReplyMessageView()
+                    : Container(),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                        child: model.joinedCommunities.containsKey(community.id)
+                            ? _messageField
+                            : JoinButtonView(community: community)),
+                  ],
+                )
+              ]),
         ),
       ),
     );

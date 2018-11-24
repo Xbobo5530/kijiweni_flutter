@@ -6,7 +6,6 @@ import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:kijiweni_flutter/views/join_button.dart';
-
 import 'package:scoped_model/scoped_model.dart';
 
 class CommunityInfoPage extends StatelessWidget {

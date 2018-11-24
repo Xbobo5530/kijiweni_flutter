@@ -21,10 +21,11 @@ abstract class ChatModel extends Model {
   StatusCode get handlingLikeMessageStatus => _handlingLikeMessageStatus;
   bool _isReplying = false;
   bool get isReplying => _isReplying;
-  String _replyingToId;
-  String get replyingToId => _replyingToId;
+  Chat _replyingTo;
+  Chat get replyingTo => _replyingTo;
   Chat _latestChat;
   Chat get latestChat => _latestChat;
+  Map<String, Chat> _cachedChats = Map();
 
   Stream<dynamic> communityChatStream(Community community) {
     return _database
@@ -49,11 +50,13 @@ abstract class ChatModel extends Model {
       chatMap.putIfAbsent(CREATED_BY_FIELD, () => chat.createdBy);
     if (chat.replyingTo != null)
       chatMap.putIfAbsent(REPLYING_TO_FIELD, () => chat.replyingTo);
+      if (_isReplying && _replyingTo != null)
+      chatMap.putIfAbsent(REPLYING_TO_FIELD, ()=>_replyingTo.id);
+      cancelReplyMessage();
     // if (chat.fileUrl != null)
     //   chatMap.putIfAbsent(CHAT_IMAGE_URL_FIELD, () => chat.fileUrl);
     chatMap.putIfAbsent(
         CREATED_AT_FIELD, () => chat.createdAt);
-    
     chatMap.putIfAbsent(FILE_TYPE_FIELD, ()=>chat.fileType);
 
     DocumentReference docRef = await _database
@@ -68,6 +71,8 @@ abstract class ChatModel extends Model {
       
       notifyListeners();
     });
+
+    
 
     if (_hasError)
       {_sendingMessageStatus = StatusCode.failed;
@@ -190,13 +195,14 @@ abstract class ChatModel extends Model {
 
   replyMessage(Chat chat) {
     //todo handle reply message;
-    _replyingToId = chat.id;
+    _replyingTo = chat;
     _isReplying = true;
     notifyListeners();
   }
 
   cancelReplyMessage() {
     _isReplying = false;
+    _replyingTo = null;
     notifyListeners();
   }
 
@@ -249,7 +255,7 @@ abstract class ChatModel extends Model {
   // if (Platform.isIOS) iOS_Permission();
 
   _firebaseMessaging.getToken().then((token){
-    print(token);
+    // print(token);
   });
 
   _firebaseMessaging.subscribeToTopic(SUBSCRIPTION_UPDATES);
@@ -277,6 +283,28 @@ abstract class ChatModel extends Model {
 //     print("Settings registered: $settings");
 //   });
 // }
+
+Future<Chat>chatFromId(String chatId, String communityId)async{
+  print('$_tag at chatFromId');
+  bool _hasError = false;
+  if (_cachedChats.containsKey(chatId)) return _cachedChats[chatId];
+  DocumentSnapshot document =await _database.collection(COMMUNITIES_COLLECTION)
+  .document(communityId)
+  .collection(CHATS_COLLECTION)
+  .document(chatId)
+  .get()
+  .catchError((error){
+    print('$_tag error on getting chat doc for caht from it: $error');
+    _hasError = true;
+  });
+  if (_hasError || !document.exists) return null;
+  Chat chat = Chat.fromSnapshot(document);
+  _cachedChats.putIfAbsent(chatId, ()=>chat);
+  return chat;
+
+
+
+}
 
  
 

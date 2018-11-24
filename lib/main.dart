@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/pages/community_page.dart';
 import 'package:kijiweni_flutter/pages/home.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
@@ -16,6 +18,20 @@ class Kijiweni extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('at Kijiweni');
+
+    _handleDeepLink() {
+      model
+          .communityFromId(model.deepLinkedCommunityId)
+          .catchError((Community community) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (contest) => CommunityPage(community: community)));
+      });
+    }
+
+    if (model.deepLinkedCommunityId != null) _handleDeepLink();
+
     return ScopedModel<MainModel>(
         model: model,
         child: MaterialApp(

@@ -40,20 +40,20 @@ class MyProfileView extends StatelessWidget {
       ),
     );
 
-    Widget _buildCommunityListItem(Community community) {
-      return ListTile(
-//        onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
-        leading: community.imageUrl != null
-            ? CircleAvatar(
-                backgroundImage: NetworkImage(community.imageUrl),
-              )
-            : Icon(Icons.people),
-        title: Text(community.name),
-        subtitle: community.description != null
-            ? Text(community.description)
-            : Container(),
-      );
-    }
+//     Widget _buildCommunityListItem(Community community) {
+//       return ListTile(
+// //        onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
+//         leading: community.imageUrl != null
+//             ? CircleAvatar(
+//                 backgroundImage: NetworkImage(community.imageUrl),
+//               )
+//             : Icon(Icons.people),
+//         title: Text(community.name),
+//         subtitle: community.description != null
+//             ? Text(community.description)
+//             : Container(),
+//       );
+//     }
 
     Widget _buildMyCommunitiesSection(MainModel model) {
       //  model.getUserCommunitiesFor(model.currentUser);

@@ -4,6 +4,7 @@ import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/models/user.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
+import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/chat_action_menu.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:kijiweni_flutter/views/message_meta_section.dart';
@@ -17,19 +18,8 @@ class ChatBubbleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildMessageContent() {
-      if (chat.fileType == null) return Container();
-      if (chat.message != null &&
-          chat.message.isNotEmpty &&
-          chat.fileType == FILE_TYPE_NO_FILE)
-        return Text(
-          chat.message,
-          style: TextStyle(fontSize: 18.0),
-          softWrap: true,
-        );
-      if (chat.fileType != FILE_TYPE_NO_FILE && chat.message == null ||
-          chat.message.isEmpty)
-        return chat.fileUrl != null
+    final _imageSection = chat.fileType == FILE_TYPE_IMAGE
+        ? chat.fileUrl != null
             ? Image.network(chat.fileUrl)
             : FittedBox(
                 child: Padding(
@@ -40,30 +30,76 @@ class ChatBubbleView extends StatelessWidget {
                     color: Colors.black12,
                   ),
                 ),
-              );
+              )
+        : Container();
+
+    final _messageTextSection = chat.message != null && chat.message.isNotEmpty
+        ? Text(
+            chat.message,
+            style: TextStyle(fontSize: 18.0),
+            softWrap: true,
+          )
+        : Container();
+
+    _buildReplyContent(MainModel model, Chat chat) => ListTile(
+          title: chat.createdBy == model.currentUser.id
+              ? Text(
+                  youText,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              : FutureBuilder<User>(
+                  future: model.userFromId(chat.createdBy),
+                  builder: (context, snapshot) => !snapshot.hasData
+                      ? Container()
+                      : Text(
+                          snapshot.data.name,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                ),
+          subtitle: Text(chat.message != null && chat.message.isNotEmpty
+              ? chat.message
+              : chat.fileType == FILE_TYPE_IMAGE ? photoText : Container()),
+        );
+
+    final _replyingToView = Container(
+      color: Colors.white70,
+      child: ScopedModelDescendant<MainModel>(
+        builder: (_, __, model) => FutureBuilder<Chat>(
+            future: model.chatFromId(chat.replyingTo, chat.communityId),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return Container();
+
+              return _buildReplyContent(model, chat);
+            }),
+      ),
+    );
+
+    Widget _buildMessageContent() {
+      if (chat.replyingTo != null) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _replyingToView,
+            _imageSection,
+            _messageTextSection,
+          ],
+        );
+      }
+      if (chat.fileType == null)
+        return Container(); //TODO: remove on flush data
+      if (chat.message != null &&
+          chat.message.isNotEmpty &&
+          chat.fileType == FILE_TYPE_NO_FILE) return _messageTextSection;
+      if (chat.fileType != FILE_TYPE_NO_FILE && chat.message == null ||
+          chat.message.isEmpty) return _imageSection;
 
       return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Center(
-              child: chat.fileUrl != null
-                  ? Image.network(chat.fileUrl)
-                  : FittedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Icon(
-                          Icons.image,
-                          size: 100.0,
-                          color: Colors.black12,
-                        ),
-                      ),
-                    ),
+              child: _imageSection,
             ),
-            Text(
-              chat.message,
-              style: TextStyle(fontSize: 18.0),
-              softWrap: true,
-            )
+            _messageTextSection
           ]);
     }
 
@@ -71,12 +107,11 @@ class ChatBubbleView extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Container(
           constraints: BoxConstraints(
-            minWidth: 60.0,
+              minWidth: 60.0,
               maxWidth: //300.0
                   isMe
                       ? MediaQuery.of(context).size.width - 80
                       : MediaQuery.of(context).size.width - 120),
-                      
           child: _buildMessageContent(),
           margin: const EdgeInsets.all(3.0),
           padding: const EdgeInsets.all(8.0),
@@ -215,7 +250,8 @@ class ChatBubbleView extends StatelessWidget {
       child: Row(
         mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment:
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: isMe ? _sentBubbleChildren : _receivedBubbleChilren,
       ),
     );

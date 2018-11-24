@@ -2,15 +2,12 @@ import 'package:kijiweni_flutter/models/account_model.dart';
 import 'package:kijiweni_flutter/models/chat_model.dart';
 import 'package:kijiweni_flutter/models/communities_model.dart';
 import 'package:kijiweni_flutter/models/file_model.dart';
-
-// import 'package:kijiweni_flutter/models/login_model.dart';
 import 'package:kijiweni_flutter/models/nav_model.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
-
 import 'package:scoped_model/scoped_model.dart';
 
 class MainModel extends Model
-    with /*LoginModel*/ AccountModel,
+    with  AccountModel,
         NavModel,
         CommunitiesModel,
         ChatModel,
@@ -18,9 +15,7 @@ class MainModel extends Model
   MainModel() {
     _startup();
     firebaseCloudMessagingListeners();
-    // checkLoginStatus();
-//    checkCurrentUser();
-    // updateJoinedCommunities(currentUser);
+    initUniLinks();
   }
 
   _startup() async {
