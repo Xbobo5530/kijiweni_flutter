@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
-
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
-import 'package:kijiweni_flutter/views/communities_count.dart';
+
 import 'package:kijiweni_flutter/views/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -55,51 +54,56 @@ class MyProfileView extends StatelessWidget {
       );
     }
 
-    Widget _buildMyCommunitiesListItems(
-        MainModel model, List<Community> communities) {
-      return Column(
-        children: communities.map(_buildCommunityListItem).toList(),
-      );
-    }
-
-    Widget _buildMyCommunitiesSection(MainModel model) {
-      final userId = model.currentUser.id;
-      Future<List<Community>> myCommunities =
-          model.getUserCommunitiesFor(model.currentUser.id);
-      return ExpansionTile(
-        title: Text(myCommunitiesText),
-        leading: CommunitiesCountView(key: Key(userId), userId: userId),
-        children: <Widget>[
-          FutureBuilder(
-            future: myCommunities,
-            initialData: List<Community>(),
-            builder: ((_, AsyncSnapshot<List<Community>> snapshot) {
-              if (!snapshot.hasData)
-                return Center(
-                  child: Text(loadingText),
-                );
-              List<Community> myCommunities = snapshot.data;
-              return _buildMyCommunitiesListItems(model, myCommunities);
-            }),
-          )
-        ],
+    Widget _buildMyCommunitiesSection(MainModel model)  {
+      //  model.getUserCommunitiesFor(model.currentUser);
+      return model.myCommunities.length == 0
+            ? Container()
+            : ExpansionTile(
+                title: Text(myCommunitiesText),
+                leading: Chip(
+                  label: Text('${model.myCommunities.length}'),
+                ),
+                children: model.myCommunities
+                    .map((community) => _buildCommunityListItem(community))
+                    .toList(),
+              );
+      
+      
+      
+      
+      FutureBuilder<List<Community>>(
+        initialData: <Community>[],
+        future: model.getUserCommunitiesFor(model.currentUser),
+        builder: (context, snapshot) => 
+        snapshot.data.length == 0
+            ? Container()
+            : ExpansionTile(
+                title: Text(myCommunitiesText),
+                leading: Chip(
+                  label: Text('${snapshot.data.length}'),
+                ),
+                children: snapshot.data
+                    .map((community) => _buildCommunityListItem(community))
+                    .toList(),
+              ),
       );
     }
 
     Widget _buildImageSection(MainModel model) =>
         model.currentUser == null || model.currentUser.imageUrl == null
             ? CircularButton(
-              size: 120.0,
-              elevation: 0.0,
-              icon: Icon(Icons.person, size: 70.0,),
-            )
+                size: 120.0,
+                elevation: 0.0,
+                icon: Icon(
+                  Icons.person,
+                  size: 70.0,
+                ),
+              )
             : CircleAvatar(
-              radius: 70.0,
+                radius: 70.0,
                 backgroundColor: Colors.lightGreen,
                 backgroundImage: NetworkImage(model.currentUser.imageUrl),
               );
-
-   
 
     Widget _buildInfoSection(MainModel model) => ListTile(
         title: model.currentUser != null
@@ -123,7 +127,6 @@ class MyProfileView extends StatelessWidget {
         );
 
     return ScopedModelDescendant<MainModel>(
-
       builder: (BuildContext context, Widget child, MainModel model) {
         // print('${model.currentUser.toString()}');
         return model.isLoggedIn ? _buildUserProfilePage(model) : _loginView;

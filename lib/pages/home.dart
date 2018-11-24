@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/pages/create_community.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/explore_view.dart';
@@ -37,6 +38,7 @@ class HomePage extends StatelessWidget {
               content: Text(confirmLogoutText),
               actions: <Widget>[
                 FlatButton(
+                  textColor: primaryColor,
                   onPressed: () => Navigator.pop(context),
                   child: Text(cancelText),
                 ),
@@ -56,10 +58,10 @@ class HomePage extends StatelessWidget {
     final _appBarAction = ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         switch (model.currentNavItem) {
-          case 0:
+          case NAV_ITEM_HOME:
             return Container();
             break;
-          case 1:
+          case NAV_ITEM_EXPLORE:
             return IconButton(
               onPressed: model.isLoggedIn
                   ? () => _goToCreateCommunity()
@@ -67,7 +69,7 @@ class HomePage extends StatelessWidget {
               icon: Icon(Icons.add),
             );
             break;
-          case 2:
+          case NAV_ITEM_ME:
             return model.isLoggedIn
                 ? IconButton(
                     icon: Icon(Icons.exit_to_app),

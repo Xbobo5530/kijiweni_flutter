@@ -91,6 +91,7 @@ class ReceivedChatBubbleView extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: CircleAvatar(
                     radius: 20.0,
+                    backgroundColor: Colors.lightGreen,
                     backgroundImage: NetworkImage(
                       _user.imageUrl,
                     ),

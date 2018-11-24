@@ -4,8 +4,9 @@ import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/models/user.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:kijiweni_flutter/views/join_button.dart';
-import 'package:kijiweni_flutter/views/member_count.dart';
+
 import 'package:scoped_model/scoped_model.dart';
 
 class CommunityInfoPage extends StatelessWidget {
@@ -15,21 +16,20 @@ class CommunityInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _imageSection = Container(
-      width: 120.0,
-      height: 120.0,
-      child: Material(
-        elevation: 4.0,
-        shape: CircleBorder(),
-        color: Colors.lightGreen,
-        child: community.imageUrl != null
-            ? CircleAvatar(
-                backgroundColor: Colors.lightGreen,
-                backgroundImage: NetworkImage(community.imageUrl),
-              )
-            : Icon(Icons.people, size: 50.0),
-      ),
-    );
+    final _imageSection = community.imageUrl != null
+        ? CircleAvatar(
+            radius: 70.0,
+            backgroundColor: Colors.lightGreen,
+            backgroundImage: NetworkImage(community.imageUrl),
+          )
+        : CircularButton(
+            size: 120,
+            elevation: 0.0,
+            icon: Icon(
+              Icons.people,
+              size: 70.0,
+            ),
+          );
 
     final _titleSection = ListTile(
       title: Text(
@@ -59,33 +59,27 @@ class CommunityInfoPage extends StatelessWidget {
       );
     }
 
-    final _membersSection = ExpansionTile(
-      title: Text(membersText),
-      leading: CommunityMembersCountView(
-          key: Key(community.id), community: community),
-      children: <Widget>[
-        ScopedModelDescendant<MainModel>(
-          builder: (context, child, model) {
-            Future<List<User>> _members =
-                model.getCommunityMembersFor(community);
-            return FutureBuilder(
-              future: _members,
-              initialData: List<User>(),
-              builder: ((_, AsyncSnapshot<List<User>> snapshot) {
-                if (!snapshot.hasData)
-                  return Center(
-                    child: Text(loadingText),
-                  );
-                return Column(
-                  children: snapshot.data.map(_buildMemberListItem).toList(),
-                );
-              }),
-            );
-          },
-        )
-      ],
+    final _membersSection = ScopedModelDescendant<MainModel>(
+      builder: (_, __, model) => FutureBuilder<List<User>>(
+            future: model.getCommunityMembersFor(community),
+            initialData: <User>[],
+            builder: (_, snapshot) => snapshot.data.length == 0
+                ? Container()
+                : ExpansionTile(
+                    title: Text(membersText),
+                    leading: Chip(
+                      label: Text('${snapshot.data.length}'),
+                    ),
+                    children: snapshot.data
+                                    .map(_buildMemberListItem)
+                                    .toList(),
+
+                    
+                  ),
+          ),
     );
 
+    
     final _joinButtonSection = Row(
       children: <Widget>[
         Expanded(
@@ -111,12 +105,14 @@ class CommunityInfoPage extends StatelessWidget {
               actions: <Widget>[
                 FlatButton(
                     onPressed: () => Navigator.pop(context),
+                    textColor: primaryColor,
                     child: Text(cancelText)),
                 FlatButton(
                   onPressed: () {
                     model.leaveCommunity(community, model.currentUser);
                     Navigator.pop(context);
                   },
+                  textColor: Colors.red,
                   child: Text(leaveText),
                 )
               ],
