@@ -19,18 +19,9 @@ class Kijiweni extends StatelessWidget {
   Widget build(BuildContext context) {
     print('at Kijiweni');
 
-    _handleDeepLink() {
-      model
-          .communityFromId(model.deepLinkedCommunityId)
-          .catchError((Community community) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (contest) => CommunityPage(community: community)));
-      });
-    }
+    
 
-    if (model.deepLinkedCommunityId != null) _handleDeepLink();
+    // if (model.deepLinkedCommunityId != null) _handleDeepLink();
 
     return ScopedModel<MainModel>(
         model: model,
