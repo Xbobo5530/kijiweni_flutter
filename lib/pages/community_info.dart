@@ -129,6 +129,15 @@ class CommunityInfoPage extends StatelessWidget {
           : Container();
     });
 
+    final _shareSection = ScopedModelDescendant<MainModel>(
+      builder: (_,__,model)=>RaisedButton(
+        child: Text(invtiteText),
+        color: primaryColor,
+        textColor: Colors.white,
+        onPressed: ()=>model.shareCommunity(community, model.currentUser),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(community.name),
@@ -143,6 +152,7 @@ class CommunityInfoPage extends StatelessWidget {
               _titleSection,
               _membersSection,
               _joinButtonSection
+              _shareSection
             ],
           ),
         ),

@@ -1,3 +1,5 @@
+const APP_DOWNLOAD_URL = '';
+
 //collections
 const USERS_COLLECTION = 'Users';
 const CHATS_COLLECTION = 'Chats';

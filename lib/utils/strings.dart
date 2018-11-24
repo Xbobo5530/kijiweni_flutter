@@ -39,6 +39,8 @@ const replyText = 'Reply';
 const deleteText = 'Delete';
 const reportText = 'Report';
 
+const invtiteText = 'Invite';
+
 
 const loadingText = 'Loading...';
 
