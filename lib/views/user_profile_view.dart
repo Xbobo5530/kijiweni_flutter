@@ -3,6 +3,7 @@ import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
+import 'package:kijiweni_flutter/views/joined_list_item.dart';
 
 import 'package:kijiweni_flutter/views/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -54,39 +55,22 @@ class MyProfileView extends StatelessWidget {
       );
     }
 
-    Widget _buildMyCommunitiesSection(MainModel model)  {
+    Widget _buildMyCommunitiesSection(MainModel model) {
       //  model.getUserCommunitiesFor(model.currentUser);
       return model.myCommunities.length == 0
-            ? Container()
-            : ExpansionTile(
-                title: Text(myCommunitiesText),
-                leading: Chip(
-                  label: Text('${model.myCommunities.length}'),
-                ),
-                children: model.myCommunities
-                    .map((community) => _buildCommunityListItem(community))
-                    .toList(),
-              );
-      
-      
-      
-      
-      FutureBuilder<List<Community>>(
-        initialData: <Community>[],
-        future: model.getUserCommunitiesFor(model.currentUser),
-        builder: (context, snapshot) => 
-        snapshot.data.length == 0
-            ? Container()
-            : ExpansionTile(
-                title: Text(myCommunitiesText),
-                leading: Chip(
-                  label: Text('${snapshot.data.length}'),
-                ),
-                children: snapshot.data
-                    .map((community) => _buildCommunityListItem(community))
-                    .toList(),
+          ? Container()
+          : ExpansionTile(
+              title: Text(myCommunitiesText),
+              leading: Chip(
+                label: Text('${model.myCommunities.length}'),
               ),
-      );
+              children: model.myCommunities
+                  .map((community) => JoinedCommunityListItemView(
+                        community: community,
+                        key: Key(community.id),
+                      ))
+                  .toList(),
+            );
     }
 
     Widget _buildImageSection(MainModel model) =>
