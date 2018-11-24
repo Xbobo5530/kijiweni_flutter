@@ -3,6 +3,8 @@ import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/circular_button.dart';
+import 'package:kijiweni_flutter/views/labeled_circular_button.dart';
 import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -33,37 +35,63 @@ class LoginPage extends StatelessWidget {
         ),
         body: ScopedModelDescendant<MainModel>(
           builder: (context, child, model) {
-            return InkWell(
-              onTap: () => _handleGoogleSignIn(model, context),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Material(
-                    shape: CircleBorder(),
-                    elevation: 4.0,
-                    child: Container(
-                      width: 150.0,
-                      height: 150.0,
-                      child: model.loginStatus == StatusCode.waiting
-                          ? Center(
-                              child: MyProgressIndicator(
-                                  size: 20.0, color: primaryColor))
-                          : Icon(Icons.track_changes, size: 80.0),
-                      decoration: BoxDecoration(
-                          color: Colors.blue, shape: BoxShape.circle),
-                    ),
+            return LabeledCircularButton(
+              label: model.loginStatus == StatusCode.waiting
+                  ? waitText
+                  : signInWithGoogleText,
+                  circularButton: CircularButton(
+                    size: 150.0,
+                    color: Colors.blue,
+                    icon: model.loginStatus == StatusCode.waiting
+                        ? Center(
+                            child: MyProgressIndicator(
+                                size: 20.0, color: Colors.white))
+                        : Icon(Icons.track_changes, size: 80.0),
                   ),
-                  ListTile(
-                    title: Text(
-                      model.loginStatus == StatusCode.waiting
-                          ? waitText
-                          : signInWithGoogleText,
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                ],
-              ),
+                  onTap: ()=>_handleGoogleSignIn(model, context),
             );
+
+            // InkWell(
+            //   onTap: () => _handleGoogleSignIn(model, context),
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       CircularButton(
+            //         size: 150.0,
+            //         color: Colors.blue,
+            //         icon: model.loginStatus == StatusCode.waiting
+            //             ? Center(
+            //                 child: MyProgressIndicator(
+            //                     size: 20.0, color: Colors.white))
+            //             : Icon(Icons.track_changes, size: 80.0),
+            //       ),
+
+            //       // Material(
+            //       //   shape: CircleBorder(),
+            //       //   elevation: 4.0,
+            //       //   child: Container(
+            //       //     width: 150.0,
+            //       //     height: 150.0,
+            //       //     child: model.loginStatus == StatusCode.waiting
+            //       //         ? Center(
+            //       //             child: MyProgressIndicator(
+            //       //                 size: 20.0, color: primaryColor))
+            //       //         : Icon(Icons.track_changes, size: 80.0),
+            //       //     decoration: BoxDecoration(
+            //       //         color: Colors.blue, shape: BoxShape.circle),
+            //       //   ),
+            //       // ),
+            //       ListTile(
+            //         title: Text(
+            //           model.loginStatus == StatusCode.waiting
+            //               ? waitText
+            //               : signInWithGoogleText,
+            //           textAlign: TextAlign.center,
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // );
           },
         ));
   }
