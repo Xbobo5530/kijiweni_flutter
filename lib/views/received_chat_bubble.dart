@@ -136,14 +136,7 @@ class ReceivedChatBubbleView extends StatelessWidget {
           constraints: BoxConstraints(
               maxWidth: // 300.0
                   MediaQuery.of(context).size.width - 120),
-          child: _buildMessageContent()
-
-          // Text(
-          //   chat.message,
-          //   style: TextStyle(fontSize: 18.0),
-          //   softWrap: true,
-          // )
-          ,
+          child: _buildMessageContent(),
           margin: const EdgeInsets.all(3.0),
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(

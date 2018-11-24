@@ -101,10 +101,10 @@ class InputFieldView extends StatelessWidget {
                       value: AddMenuOption.image,
                       child: Text(addImageText),
                     ),
-                    const PopupMenuItem(
-                      value: AddMenuOption.video,
-                      child: Text(addVideoText),
-                    ),
+                    // const PopupMenuItem(
+                    //   value: AddMenuOption.video,
+                    //   child: Text(addVideoText),
+                    // ),
                   ],
               child: Icon(
                 Icons.add,

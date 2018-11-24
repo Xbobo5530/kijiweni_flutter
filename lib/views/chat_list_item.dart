@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/views/chat_bubble.dart';
 import 'package:kijiweni_flutter/views/empty_community_page.dart';
 import 'package:kijiweni_flutter/views/received_chat_bubble.dart';
 import 'package:kijiweni_flutter/views/sent_chat_bubble.dart';
@@ -21,6 +22,14 @@ class ChatListItemView extends StatelessWidget {
         final bool isMe = chat.createdBy == model.currentUser.id;
 //        print(
 //            '$_tag chat was created by: ${chat.createdBy}\ncurrent user is: ${model.currentUser.id}');
+        
+        
+        return ChatBubbleView(
+          chat: chat,
+          key:  Key(chat.id),
+          isMe: isMe,
+        );
+        
         return isMe
             ? SentChatBubbleView(chat: chat)
             : ReceivedChatBubbleView(key: Key(chat.id), chat: chat);
