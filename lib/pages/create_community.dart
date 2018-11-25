@@ -47,10 +47,11 @@ class CreateCommunityPage extends StatelessWidget {
         _handleResult(createCommunityStatus);
         return null;
       }
-      
-      StatusCode uploadStatus = await model.uploadFile(FileUploadFor.community, community);
-      _handleResult(uploadStatus);
 
+      _handleResult(createCommunityStatus);
+
+      if (await model.uploadFile(FileUploadFor.community, community) ==
+          StatusCode.success) model.updateJoinedCommunities(model.currentUser);
     }
 
     _submitNewCommunity(MainModel model, BuildContext context) async {

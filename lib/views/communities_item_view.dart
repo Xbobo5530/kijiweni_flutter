@@ -40,9 +40,10 @@ class CommunitiesItemView extends StatelessWidget {
                       icon: Icon(Icons.people, size: 40),
                     ),
               ListTile(
-                title: Text(community.name),
+                title: Text(community.name, textAlign: TextAlign.center,),
                 subtitle: community.description != null
-                    ? Text(community.description)
+                    ? Text(community.description, textAlign: TextAlign.center,
+                    maxLines: 3,)
                     : Container(),
               ),
             ],

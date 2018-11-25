@@ -17,7 +17,17 @@ class EmptyCommunityPage extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            CircularButton(
+            community.imageUrl != null
+
+?
+CircleAvatar(
+  radius: 80.0,
+  backgroundColor: Colors.lightGreen,
+  backgroundImage: NetworkImage(community.imageUrl),
+)
+
+
+:            CircularButton(
                 elevation: 4.0,
                 size: 150.0,
                 color: Colors.lightGreen,

@@ -83,11 +83,11 @@ class MyProfileView extends StatelessWidget {
                   size: 70.0,
                 ),
               )
-            : CircleAvatar(
+            : Center(child:CircleAvatar(
                 radius: 70.0,
                 backgroundColor: Colors.lightGreen,
                 backgroundImage: NetworkImage(model.currentUser.imageUrl),
-              );
+              ));
 
     Widget _buildInfoSection(MainModel model) => ListTile(
         title: model.currentUser != null
@@ -100,7 +100,7 @@ class MyProfileView extends StatelessWidget {
     Widget _buildUserProfilePage(MainModel model) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: Center(
-            child: Column(
+            child: ListView(
               children: <Widget>[
                 _buildImageSection(model),
                 _buildInfoSection(model),
