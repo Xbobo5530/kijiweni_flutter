@@ -55,6 +55,8 @@ abstract class ChatModel extends Model {
     chatMap.putIfAbsent(
         CREATED_AT_FIELD, () => chat.createdAt);
     chatMap.putIfAbsent(FILE_TYPE_FIELD, ()=>chat.fileType);
+    chatMap.putIfAbsent(REPORTS_FIELD, ()=>chat.reports);
+    print(chat.toString());
 
     DocumentReference docRef = await _database
         .collection(COMMUNITIES_COLLECTION)
@@ -315,21 +317,42 @@ abstract class ChatModel extends Model {
     return StatusCode.success;
   }
 
-  Future<StatusCode> reportChat(Chat chat)async{
-    print('$_tag at reportChat');
-    if (chat.reports ==3) deleteChat(chat);
+  DocumentReference _getReport(Chat chat, User user){
+    return _database.collection(COMMUNITIES_COLLECTION).document(
+      chat.communityId
+    ).collection(CHATS_COLLECTION)
+    .document(chat.id)
+    .collection(REPORTS_COLLECTION)
+    .document(user.id);
+  }
+
+  Future<bool> _userHasReported(User user, Chat chat)async{
+    print('$_tag at _userHasReported');
     bool _hasError = false;
-    Map<String, int> reportMap = {REPORTS_FIELD: 1};
+    DocumentSnapshot document = await _getReport(chat, user).get()
+    .catchError((error){
+      print('$_tag error on getting user report document: $error');
+      _hasError = true;
+    });
+    if (_hasError) return false;
+    return document.exists;
+    
+  }
+
+  Future<StatusCode> reportChat(Chat chat, User user)async{
+    print('$_tag at reportChat');
+    if (chat.reports == 3) {
+      deleteChat(chat);
+      return StatusCode.success;
+    }
+    if (await _userHasReported(user, chat)) return StatusCode.success;
+
+    bool _hasError = false;
+    
     _database.runTransaction((transaction)async{
       DocumentSnapshot freshSnapshot = await transaction.get(
         _chatReference(chat)
       );
-      if (freshSnapshot[REPORTS_FIELD] == null)
-      await freshSnapshot.reference.updateData(reportMap)
-      .catchError((error){
-        print('$_tag error on updaitng reports $error');
-        _hasError = true;
-      });
 
       await transaction.update(
            freshSnapshot.reference, {REPORTS_FIELD: freshSnapshot[REPORTS_FIELD] + 1}).catchError(
@@ -340,6 +363,25 @@ abstract class ChatModel extends Model {
            );
      });
      if (_hasError) return StatusCode.failed;
-     return StatusCode.success;
+     return _addUserReport(chat, user);
+  }
+
+  Future<StatusCode> _addUserReport(Chat chat, User user) async{
+    print('$_tag at _addUserReport');
+    bool _hasError = false;
+    Map<String, dynamic> reportMap = {
+      CREATED_AT_FIELD : DateTime.now().millisecondsSinceEpoch,
+      CREATED_BY_FIELD : user.id,
+
+    };
+    await _getReport(chat, user).setData(reportMap)
+    .catchError((error){
+      print('$_tag errot on submitting report for user: $error')
+    ;
+    _hasError = true;
+    });
+    if (_hasError) return StatusCode.failed;
+    return StatusCode.success;
+
   }
 }

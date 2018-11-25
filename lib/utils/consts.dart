@@ -61,8 +61,9 @@ const BODY_FIELD = 'message';
 const CHAT_ID_FIELD = 'chat_id';
 
 // deep links
-const COMMUNITY_DEEP_LINK_HEAD = 'http://kijiweni.nyayozangu.com/community/';
+const APP_DEEP_LINK_HEAD = 'http://kijiweni.nyayozangu.com/app/';
 
 //reports
 const CHAT_REPORTS_LIMIT = 3;
+const REPORTS_COLLECTION = 'Reports';
 

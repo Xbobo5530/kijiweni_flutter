@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
-import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
@@ -45,53 +44,12 @@ class LoginPage extends StatelessWidget {
                     icon: model.loginStatus == StatusCode.waiting
                         ? Center(
                             child: MyProgressIndicator(
-                                size: 20.0, color: Colors.white))
+                                size: 40.0, color: Colors.white))
                         : Icon(Icons.track_changes, size: 80.0),
                   ),
                   onTap: ()=>_handleGoogleSignIn(model, context),
             );
 
-            // InkWell(
-            //   onTap: () => _handleGoogleSignIn(model, context),
-            //   child: Column(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       CircularButton(
-            //         size: 150.0,
-            //         color: Colors.blue,
-            //         icon: model.loginStatus == StatusCode.waiting
-            //             ? Center(
-            //                 child: MyProgressIndicator(
-            //                     size: 20.0, color: Colors.white))
-            //             : Icon(Icons.track_changes, size: 80.0),
-            //       ),
-
-            //       // Material(
-            //       //   shape: CircleBorder(),
-            //       //   elevation: 4.0,
-            //       //   child: Container(
-            //       //     width: 150.0,
-            //       //     height: 150.0,
-            //       //     child: model.loginStatus == StatusCode.waiting
-            //       //         ? Center(
-            //       //             child: MyProgressIndicator(
-            //       //                 size: 20.0, color: primaryColor))
-            //       //         : Icon(Icons.track_changes, size: 80.0),
-            //       //     decoration: BoxDecoration(
-            //       //         color: Colors.blue, shape: BoxShape.circle),
-            //       //   ),
-            //       // ),
-            //       ListTile(
-            //         title: Text(
-            //           model.loginStatus == StatusCode.waiting
-            //               ? waitText
-            //               : signInWithGoogleText,
-            //           textAlign: TextAlign.center,
-            //         ),
-            //       )
-            //     ],
-            //   ),
-            // );
           },
         ));
   }

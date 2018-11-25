@@ -14,7 +14,6 @@ class CommunityTimelineView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    final _scrollController = ScrollController();
 
     return ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       return StreamBuilder<QuerySnapshot>(

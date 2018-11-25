@@ -3,8 +3,6 @@ import 'package:kijiweni_flutter/models/chat.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/views/chat_bubble.dart';
 import 'package:kijiweni_flutter/views/empty_community_page.dart';
-import 'package:kijiweni_flutter/views/received_chat_bubble.dart';
-import 'package:kijiweni_flutter/views/sent_chat_bubble.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 // const _tag = 'ChatListItemView:';
@@ -30,9 +28,9 @@ class ChatListItemView extends StatelessWidget {
           isMe: isMe,
         );
         
-        return isMe
-            ? SentChatBubbleView(chat: chat)
-            : ReceivedChatBubbleView(key: Key(chat.id), chat: chat);
+        // return isMe
+        //     ? SentChatBubbleView(chat: chat)
+        //     : ReceivedChatBubbleView(key: Key(chat.id), chat: chat);
       },
     );
   }

@@ -7,7 +7,6 @@ import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:share/share.dart';
 
 const _tag = 'ChatActionMenuView:';
 
@@ -88,7 +87,7 @@ class ChatActionMenuView extends StatelessWidget {
                   _handleDelete(model);
                   break;
                 case ChatMenuAction.report:
-                  model.reportChat(chat);
+                  model.reportChat(chat, model.currentUser);
                   break;
               }
             },

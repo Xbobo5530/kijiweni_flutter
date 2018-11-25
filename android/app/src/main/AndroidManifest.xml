@@ -34,7 +34,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                  android:scheme="http"
-                 android:pathPattern="/community/.*"
+                 android:pathPattern="/app/.*"
                 android:host="kijiweni.nyayozangu.com" />
             </intent-filter>
 

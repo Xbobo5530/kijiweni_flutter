@@ -14,7 +14,7 @@ class Chat {
       this.filePath,
       this.fileStatus = FILE_STATUS_NO_FILE,
       this.fileType = FILE_TYPE_NO_FILE,
-      this.reports,
+      this.reports = 0,
       @required this.createdBy,
       this.createdAt,
       this.replyingTo})
@@ -22,6 +22,7 @@ class Chat {
         assert(fileType != null),
         assert(fileStatus != null),
         assert(communityId != null),
+        assert(reports != null),
         assert(createdBy != null);
 
   Chat.fromSnapshot(DocumentSnapshot document)
@@ -50,6 +51,7 @@ class Chat {
           fileType: ${this.fileType}
           fileStatus: ${this.fileStatus}
           replyingTo: ${this.replyingTo}
+          reports: ${this.reports}
           ''';
   }
 }

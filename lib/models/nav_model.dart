@@ -41,7 +41,7 @@ abstract class NavModel extends Model {
       // but keep in mind it could be `null`.
       print('$_tag initialLink is: $initialLink');
       if (initialLink == null) return ;
-      String communityId = initialLink.substring(COMMUNITY_DEEP_LINK_HEAD.length);
+      String communityId = initialLink.substring(APP_DEEP_LINK_HEAD.length);
       _deepLinkedCommunityId = communityId;
       print('$_tag the community id is: $communityId');
       notifyListeners();

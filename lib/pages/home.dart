@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
-import 'package:kijiweni_flutter/pages/community_page.dart';
 import 'package:kijiweni_flutter/pages/create_community.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';

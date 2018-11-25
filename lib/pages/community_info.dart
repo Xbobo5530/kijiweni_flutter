@@ -151,7 +151,7 @@ class CommunityInfoPage extends StatelessWidget {
               _imageSection,
               _titleSection,
               _membersSection,
-              _joinButtonSection
+              _joinButtonSection,
               _shareSection
             ],
           ),

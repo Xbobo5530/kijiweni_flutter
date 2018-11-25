@@ -4,7 +4,12 @@ class CircularButton extends StatelessWidget {
   final double size;
   final double elevation;
   final Color color;
-  final Icon icon;
+  
+  /// Typically a [Widget] of type [Icon]
+  /// but can be replaced with any other appropriate [Widget]
+  /// like a [CircularProgressIndicator] or a layout [Widget]
+  /// like a [Center]
+  final Widget icon;
 
   const CircularButton(
       {Key key,
