@@ -2,7 +2,7 @@ const APP_NAME = 'Kijiweni';
 const googleSignInText = 'Usajili kwa Google';// 'Google sign in';
 const signInWithGoogleText = 'Sajili kwa Google';// 'Sign in with Google';
 
-const waitText ='Tafadhali subiri';// 'Please wait...';
+const waitText ='Tafadhali subiri...';// 'Please wait...';
 
 const loginText = 'Ingia'; //'Login';
 const logoutText = 'Toka'; // 'Logout';
@@ -45,7 +45,7 @@ const reportText = 'Toa malalamiko';//'Report';
 
 const inviteText = 'Karibisha majamaa';//'Invite';
 
-const loadingText = 'Tafadhali subiri'; //'Loading...';
+const loadingText = 'Tafadhali subiri...'; //'Loading...';
 
 const myCommunitiesText = 'Vijiwe vyangu';//'My communities';
 

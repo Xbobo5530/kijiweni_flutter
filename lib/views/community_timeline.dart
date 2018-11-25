@@ -14,28 +14,60 @@ class CommunityTimelineView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       return StreamBuilder<QuerySnapshot>(
         stream: model.communityChatStream(community),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
-          if (snapshot.data.documents.length == 0)
-            return EmptyCommunityPage(community: community);
+          switch (snapshot.connectionState) {
+            case ConnectionState.active:
+            case ConnectionState.done:
+              if (!snapshot.hasData)
+                return Center(child: CircularProgressIndicator());
 
-          return ListView.builder(
-            controller: model.scrollController,
-            reverse: false,
-            shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (BuildContext context, int index) {
-              final DocumentSnapshot chatDoc = snapshot.data.documents[index];
-              final Chat chat = Chat.fromSnapshot(chatDoc);
+              if (snapshot.data.length == 0)
+                return EmptyCommunityPage(community: community);
 
-              return ChatListItemView(chat: chat);
-            },
-          );
+              if (snapshot.hasError)
+                return EmptyCommunityPage(community: community);
+              return ListView.builder(
+                controller: model.scrollController,
+                reverse: false,
+                shrinkWrap: true,
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final DocumentSnapshot chatDoc =
+                      snapshot.data.documents[index];
+                  final Chat chat = Chat.fromSnapshot(chatDoc);
+
+                  return ChatListItemView(chat: chat);
+                },
+              );
+              break;
+            case ConnectionState.waiting:
+              return Center(child: CircularProgressIndicator());
+              break;
+            case ConnectionState.none:
+              return EmptyCommunityPage(community: community);
+              break;
+          }
+
+          // if (!snapshot.hasData)
+          //   return Center(child: CircularProgressIndicator());
+          // if (snapshot.data.documents.length == 0)
+          //   return EmptyCommunityPage(community: community);
+
+          // return ListView.builder(
+          //   controller: model.scrollController,
+          //   reverse: false,
+          //   shrinkWrap: true,
+          //   itemCount: snapshot.data.documents.length,
+          //   itemBuilder: (BuildContext context, int index) {
+          //     final DocumentSnapshot chatDoc = snapshot.data.documents[index];
+          //     final Chat chat = Chat.fromSnapshot(chatDoc);
+
+          //     return ChatListItemView(chat: chat);
+          //   },
+          // );
         },
       );
     });

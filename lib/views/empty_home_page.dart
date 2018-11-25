@@ -48,25 +48,23 @@ class EmptyHomePageView extends StatelessWidget {
           ),
         );
 
-    return Center(
-      child: ScopedModelDescendant<MainModel>(
-        builder: (_, __, model) => Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                _buildButton(exploreHint, Colors.orange, Icons.search,
-                    () => model.setSelectedNavItem(1)),
-                _buildButton(
-                    createHint,
-                    Colors.lightGreen,
-                    Icons.group_add,
-                    model.isLoggedIn
-                        ? () => _goToCreateCommunityPage()
-                        : () => _goToLoginPage())
+    return ScopedModelDescendant<MainModel>(
+      builder: (_, __, model) => Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _buildButton(exploreHint, Colors.orange, Icons.search,
+                  () => model.setSelectedNavItem(1)),
+              _buildButton(
+                  createHint,
+                  Colors.lightGreen,
+                  Icons.group_add,
+                  model.isLoggedIn
+                      ? () => _goToCreateCommunityPage()
+                      : () => _goToLoginPage())
 
-                //_createButton
-              ],
-            ),
-      ),
+              //_createButton
+            ],
+          ),
     );
   }
 }
