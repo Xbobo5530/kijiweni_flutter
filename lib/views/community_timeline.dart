@@ -5,6 +5,7 @@ import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/views/chat_list_item.dart';
 import 'package:kijiweni_flutter/views/empty_community_page.dart';
+import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CommunityTimelineView extends StatelessWidget {
@@ -22,10 +23,11 @@ class CommunityTimelineView extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
             case ConnectionState.done:
+              // print(snapshot.connectionState);
               if (!snapshot.hasData)
-                return Center(child: CircularProgressIndicator());
+                return Center(child: MyProgressIndicator());
 
-              if (snapshot.data.length == 0)
+              if (snapshot.data.documents.length == 0)
                 return EmptyCommunityPage(community: community);
 
               if (snapshot.hasError)
@@ -45,9 +47,11 @@ class CommunityTimelineView extends StatelessWidget {
               );
               break;
             case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
+              // print(snapshot.connectionState);
+              return Center(child: MyProgressIndicator());
               break;
             case ConnectionState.none:
+              // print(snapshot.connectionState);
               return EmptyCommunityPage(community: community);
               break;
           }

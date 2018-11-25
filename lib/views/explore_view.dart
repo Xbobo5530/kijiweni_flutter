@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/views/communities_item_view.dart';
+import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ExploreView extends StatelessWidget {
@@ -16,7 +17,7 @@ class ExploreView extends StatelessWidget {
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: MyProgressIndicator(),
                 );
               return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
