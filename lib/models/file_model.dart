@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kijiweni_flutter/models/chat.dart';
+
 import 'package:uuid/uuid.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -100,12 +100,10 @@ abstract class FileModel extends Model {
     notifyListeners();
     return await _updateTargetWithFileUrl(uploadFor, target);
   }
-  _resetFileField(){
+
+  _resetFileField() {
     _imageFile = null;
-    
   }
-
-
 
   DocumentReference _getTargetRef(FileUploadFor uploadFor, var target) {
     switch (uploadFor) {
@@ -165,29 +163,6 @@ abstract class FileModel extends Model {
     if (_hasError) return StatusCode.failed;
     return StatusCode.success;
   }
-
-  // Future<StatusCode> _updateChatWithFileUrl(Chat chat) async {
-  //   print('$_tag at _updateChatWithFileUrl');
-  //   bool _hasError = false;
-  //   Map<String, dynamic> updateFileMap = {
-  //     FILE_URL_FIELD: _fileUrl,
-  //     FILE_PATH_FIELD: _filePath,
-  //     FILE_STATUS_FIELD: FILE_STATUS_UPLOAD_SUCCESS
-  //   };
-
-  //   await _database
-  //       .collection(COMMUNITIES_COLLECTION)
-  //       .document(chat.communityId)
-  //       .collection(CHATS_COLLECTION)
-  //       .document(chat.id)
-  //       .updateData(updateFileMap)
-  //       .catchError((error) {
-  //     print('$_tag error on updating chat with uploaded file: $error');
-  //     _hasError = true;
-  //   });
-  //   if (_hasError) return StatusCode.failed;
-  //   return StatusCode.success;
-  // }
 
   Future<StatusCode> deleteAsset(String path) async {
     print('$_tag at deleteAsset');

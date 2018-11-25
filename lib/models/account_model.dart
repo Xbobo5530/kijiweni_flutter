@@ -50,22 +50,7 @@ abstract class AccountModel extends Model {
       notifyListeners();
       return _updatingLoginStatus;
     }
-    // DocumentSnapshot document = await _database
-    //     .collection(USERS_COLLECTION)
-    //     .document(user.uid)
-    //     .get()
-    //     .catchError((error) {
-    //   print('$_tag updating login status: $error');
-    //   _hasError = true;
-    // });
-
-
-
-    // if (_hasError || !document.exists) {
-    //   _updatingLoginStatus = StatusCode.failed;
-    //   notifyListeners();
-    //   return _updatingLoginStatus;
-    // }
+    
 
     User currentUser = await userFromId(user.uid);//User.fromSnapshot(document);
     _currentUser = currentUser;

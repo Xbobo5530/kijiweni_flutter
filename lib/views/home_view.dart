@@ -12,8 +12,6 @@ class HomeView extends StatelessWidget {
     return Scaffold(body: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
 
-      // model.updateJoinedCommunities(model.currentUser);
-
       if (model.currentUser == null ||
           model.joinedCommunities == null ||
           model.joinedCommunities.length == 0) return EmptyHomePageView();

@@ -23,10 +23,6 @@ class InputFieldView extends StatelessWidget {
   Widget build(BuildContext context) {
     final _chatFieldController = TextEditingController();
 
-    // _showOptionsMenu() {
-    //   //todo handle adding image
-    // }
-
     _handleSendingMessageResult(MainModel model, StatusCode code) {
       switch (code) {
         case StatusCode.failed:
@@ -59,12 +55,6 @@ class InputFieldView extends StatelessWidget {
         _handleSendingMessageResult(model, sendMessageStatus);
       }
     }
-
-    // _handlePickImage(MainModel model, AddMenuOption option) {
-    //   switch(option){
-    //     case video
-    //   }
-    // }
 
     _handleSelectFileFromDevice(MainModel model, AddMenuOption option) async {
       StatusCode getFileStatus = await model.getFile(option);
@@ -147,9 +137,7 @@ class InputFieldView extends StatelessWidget {
         ),
         child: ScopedModelDescendant<MainModel>(
           builder: (_, __, model) => Column(children: <Widget>[
-                model.isReplying
-                    ? ReplyMessageView()
-                    : Container(),
+                model.isReplying ? ReplyMessageView() : Container(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[

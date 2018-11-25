@@ -29,7 +29,8 @@ class ChatLikesCountView extends StatelessWidget {
                       Text(
                         '${snapshot.data}',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 10.0,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10.0,
                             color: Colors.white70),
                       ),
                     ],

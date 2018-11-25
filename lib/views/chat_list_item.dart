@@ -18,19 +18,12 @@ class ChatListItemView extends StatelessWidget {
       builder: (context, child, model) {
         if (model.currentUser == null) return EmptyCommunityPage();
         final bool isMe = chat.createdBy == model.currentUser.id;
-//        print(
-//            '$_tag chat was created by: ${chat.createdBy}\ncurrent user is: ${model.currentUser.id}');
-        
-        
+
         return ChatBubbleView(
           chat: chat,
-          key:  Key(chat.id),
+          key: Key(chat.id),
           isMe: isMe,
         );
-        
-        // return isMe
-        //     ? SentChatBubbleView(chat: chat)
-        //     : ReceivedChatBubbleView(key: Key(chat.id), chat: chat);
       },
     );
   }

@@ -245,8 +245,6 @@ abstract class ChatModel extends Model {
     if(_hasError || !document.exists) return false;
     return true;
   }
-
-
   
   void firebaseCloudMessagingListeners() {
 

@@ -5,7 +5,8 @@ import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
-import 'package:kijiweni_flutter/views/chat_bubblt_action_item.dart';
+import 'package:kijiweni_flutter/views/chat_bubble_action_item.dart';
+
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'ChatActionMenuView:';

@@ -45,7 +45,6 @@ const reportText = 'Toa malalamiko';//'Report';
 
 const inviteText = 'Karibisha majamaa';//'Invite';
 
-
 const loadingText = 'Tafadhali subiri'; //'Loading...';
 
 const myCommunitiesText = 'Vijiwe vyangu';//'My communities';

@@ -106,20 +106,8 @@ class HomePage extends StatelessWidget {
       },
     );
 
-    // _handleDeepLink(MainModel model, String communityId) async {
-    //   Community community = await model.communityFromId(communityId);
-    //   Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (contest) => CommunityPage(community: community)));
-    // }
-
     final _bodySection = ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        ///handle deep link
-        // if (model.deepLinkedCommunityId != null)
-        //   _handleDeepLink(model, model.deepLinkedCommunityId);
-
         switch (model.currentNavItem) {
           case NAV_ITEM_HOME:
             return HomeView();

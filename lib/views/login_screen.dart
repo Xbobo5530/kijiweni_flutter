@@ -38,18 +38,17 @@ class LoginPage extends StatelessWidget {
               label: model.loginStatus == StatusCode.waiting
                   ? waitText
                   : signInWithGoogleText,
-                  circularButton: CircularButton(
-                    size: 150.0,
-                    color: Colors.blue,
-                    icon: model.loginStatus == StatusCode.waiting
-                        ? Center(
-                            child: MyProgressIndicator(
-                                size: 40.0, color: Colors.white))
-                        : Icon(Icons.track_changes, size: 80.0),
-                  ),
-                  onTap: ()=>_handleGoogleSignIn(model, context),
+              circularButton: CircularButton(
+                size: 150.0,
+                color: Colors.blue,
+                icon: model.loginStatus == StatusCode.waiting
+                    ? Center(
+                        child: MyProgressIndicator(
+                            size: 40.0, color: Colors.white))
+                    : Icon(Icons.track_changes, size: 80.0),
+              ),
+              onTap: () => _handleGoogleSignIn(model, context),
             );
-
           },
         ));
   }

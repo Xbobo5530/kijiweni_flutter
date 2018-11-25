@@ -12,8 +12,6 @@ class JoinButtonView extends StatelessWidget {
 
   const JoinButtonView({Key key, this.community}) : super(key: key);
 
-  
-
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(builder: ((context, child, model) {
@@ -36,7 +34,6 @@ class JoinButtonView extends StatelessWidget {
                   size: 15.0,
                 )
               : Text(joinText),
-
           textColor: primaryColor,
         );
       });
