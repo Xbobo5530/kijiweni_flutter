@@ -18,6 +18,7 @@ class CommunityTimelineView extends StatelessWidget {
       return StreamBuilder<QuerySnapshot>(
         stream: model.communityChatStream(community),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          //TODO: test this
           switch (snapshot.connectionState) {
             case ConnectionState.active:
             case ConnectionState.done:
