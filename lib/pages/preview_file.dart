@@ -14,9 +14,13 @@ const _tag = 'PreviewFilePage:';
 class PreviewFilePage extends StatelessWidget {
   final AddMenuOption option;
   final Community community;
+  final FileUploadFor uploadFor;
 
   const PreviewFilePage(
-      {Key key, @required this.option, @required this.community})
+      {Key key,
+      @required this.option,
+      @required this.community,
+      this.uploadFor})
       : assert(option != null),
         assert(community != null),
         super(key: key);
@@ -24,10 +28,8 @@ class PreviewFilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _captionController = TextEditingController();
-    Widget _previewImage() {
-      return ScopedModelDescendant<MainModel>(
-          builder: (_, __, model) => Image.file(model.imageFile));
-    }
+    Widget _previewImage() => ScopedModelDescendant<MainModel>(
+        builder: (_, __, model) => Image.file(model.imageFile));
 
     final _previewSection = Center(
       child: /*option == AddMenuOption.video ? _previewVideo(_controller) : */ _previewImage(),
@@ -59,7 +61,8 @@ class PreviewFilePage extends StatelessWidget {
           fileType: _getFileType(),
           fileStatus: FILE_STATUS_UPLOADING);
 
-      StatusCode sendStatus = await model.sendMessage(chat, model.currentUser, community);
+      StatusCode sendStatus =
+          await model.sendMessage(chat, model.currentUser, community);
       switch (sendStatus) {
         case StatusCode.failed:
           Scaffold.of(context)
@@ -67,7 +70,7 @@ class PreviewFilePage extends StatelessWidget {
           break;
         case StatusCode.success:
           chat.id = model.latestChat.id;
-          model.uploadFile(chat);
+          model.uploadFile(FileUploadFor.chat, chat);
           Navigator.pop(context);
           break;
         default:
@@ -124,7 +127,7 @@ class PreviewFilePage extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           _previewSection,
-          _captionSection,
+          uploadFor == FileUploadFor.chat ? _captionSection : Container(),
         ],
       ),
     );

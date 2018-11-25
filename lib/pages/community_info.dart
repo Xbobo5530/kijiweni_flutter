@@ -131,7 +131,7 @@ class CommunityInfoPage extends StatelessWidget {
 
     final _shareSection = ScopedModelDescendant<MainModel>(
       builder: (_,__,model)=>RaisedButton(
-        child: Text(invtiteText),
+        child: Text(inviteText),
         color: primaryColor,
         textColor: Colors.white,
         onPressed: ()=>model.shareCommunity(community, model.currentUser),

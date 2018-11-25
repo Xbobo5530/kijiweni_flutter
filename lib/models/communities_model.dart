@@ -24,7 +24,6 @@ abstract class CommunitiesModel extends Model {
   Map<String, Community> get joinedCommunities => _joinedCommunities;
   List<Community> _myCommunities = <Community>[];
   List<Community> get myCommunities => _myCommunities;
-  
 
   Stream<dynamic> getSubscribedCommunitiesStream(String userId) {
     return _database
@@ -405,7 +404,6 @@ abstract class CommunitiesModel extends Model {
         .catchError((error) {
       print('$_tag error on getting communities for user: $error');
       _hasError = true;
-      
     });
     if (_hasError) return null;
 
@@ -429,7 +427,8 @@ abstract class CommunitiesModel extends Model {
     return communityList;
   }
 
-  shareCommunity(Community community, User user){
-    Share.share('${user.name} has invited you to join the ${community.name} community on Kijiweni.\n$APP_DOWNLOAD_URL');
+  shareCommunity(Community community, User user) {
+    Share.share(
+        '${user.name} has invited you to join the ${community.name} community on Kijiweni.\n$APP_DEEP_LINK_HEAD${community.id}');
   }
 }

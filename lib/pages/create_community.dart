@@ -4,6 +4,7 @@ import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:kijiweni_flutter/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -33,6 +34,25 @@ class CreateCommunityPage extends StatelessWidget {
       }
     }
 
+    _hanldeCommunityWithoutImage(MainModel model, Community community) async {
+      final createCommunityStatus =
+          await model.createCommunity(community, model.currentUser);
+      _handleResult(createCommunityStatus);
+    }
+
+    _handleCommuntyWithImage(MainModel model, Community community) async {
+      final createCommunityStatus =
+          await model.createCommunity(community, model.currentUser);
+      if (createCommunityStatus == StatusCode.failed) {
+        _handleResult(createCommunityStatus);
+        return null;
+      }
+      
+      StatusCode uploadStatus = await model.uploadFile(FileUploadFor.community, community);
+      _handleResult(uploadStatus);
+
+    }
+
     _submitNewCommunity(MainModel model, BuildContext context) async {
       final name = _nameFieldController.text.trim();
       final description = _descriptionFieldController.text.trim();
@@ -47,8 +67,9 @@ class CreateCommunityPage extends StatelessWidget {
                 ? _descriptionFieldController.text.trim()
                 : null);
 
-        final createCommunityStatus = await model.createCommunity(community, model.currentUser);
-        _handleResult(createCommunityStatus);
+        model.imageFile != null
+            ? _handleCommuntyWithImage(model, community)
+            : _hanldeCommunityWithoutImage(model, community);
       }
     }
 
@@ -56,23 +77,40 @@ class CreateCommunityPage extends StatelessWidget {
       title: Text(createCommunityText),
     );
 
-    final _imageSection = Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Material(
-        elevation: 4.0,
-        shape: CircleBorder(),
-        child: Container(
-          height: 150.0,
-          width: 150.0,
-          child: Icon(
-            Icons.people,
-            size: 80.0,
-          ),
-          decoration:
-              BoxDecoration(color: Colors.lightGreen, shape: BoxShape.circle),
-        ),
-      ),
-    );
+    _buildImageSection() => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ScopedModelDescendant<MainModel>(
+            builder: (_, __, model) => model.imageFile == null
+                ? CircularButton(
+                    icon: Icon(Icons.add_photo_alternate, size: 80),
+                    onTap: () => model.getFile(AddMenuOption.image),
+                  )
+                : Center(
+                    child: Stack(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundColor: Colors.lightGreen,
+                        backgroundImage: FileImage(model.imageFile),
+                      ),
+                      Positioned(
+                        top: 0.0,
+                        bottom: 0.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: Opacity(
+                          opacity: 0.5,
+                          child: CircularButton(
+                            color: Colors.white10,
+                            elevation: 0.0,
+                            size: 120.0,
+                            icon: Icon(Icons.add_photo_alternate, size: 80),
+                            onTap: () => model.getFile(AddMenuOption.image),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ))));
 
     final _nameField = Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
@@ -125,7 +163,7 @@ class CreateCommunityPage extends StatelessWidget {
       builder: ((context) {
         return ListView(
           children: <Widget>[
-            _imageSection,
+            _buildImageSection(),
             _fieldsSection(context),
             _submitButton,
           ],

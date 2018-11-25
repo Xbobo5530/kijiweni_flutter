@@ -4,7 +4,8 @@ class CircularButton extends StatelessWidget {
   final double size;
   final double elevation;
   final Color color;
-  
+  final GestureTapCallback onTap;
+
   /// Typically a [Widget] of type [Icon]
   /// but can be replaced with any other appropriate [Widget]
   /// like a [CircularProgressIndicator] or a layout [Widget]
@@ -19,7 +20,7 @@ class CircularButton extends StatelessWidget {
       this.icon = const Icon(
         Icons.people,
         size: 80.0,
-      )})
+      ), this.onTap})
       : assert(size != null),
         assert(elevation != null),
         assert(color != null),
@@ -28,14 +29,17 @@ class CircularButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      shape: CircleBorder(),
-      elevation: elevation,
-      child: Container(
-        width: size,
-        height: size,
-        child: icon,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    return InkWell(
+      onTap: onTap,
+          child: Material(
+        shape: CircleBorder(),
+        elevation: elevation,
+        child: Container(
+          width: size,
+          height: size,
+          child: icon,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
       ),
     );
   }

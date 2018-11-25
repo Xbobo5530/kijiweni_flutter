@@ -30,6 +30,8 @@ class CommunitiesItemView extends StatelessWidget {
               ),
               community.imageUrl != null
                   ? CircleAvatar(
+                    backgroundColor: Colors.lightGreen,
+                    radius: 40.0,
                       backgroundImage: NetworkImage(community.imageUrl),
                     )
                   : CircularButton(

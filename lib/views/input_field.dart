@@ -76,6 +76,7 @@ class InputFieldView extends StatelessWidget {
                   builder: (_) => PreviewFilePage(
                         option: option,
                         community: community,
+                        uploadFor: FileUploadFor.chat,
                       ),
                   fullscreenDialog: true));
           break;

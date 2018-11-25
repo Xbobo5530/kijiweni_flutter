@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -16,13 +17,11 @@ class EmptyCommunityPage extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            
             CircularButton(
-              elevation: 4.0,
-              size: 150.0,
-              color: Colors.lightGreen,
-              icon: Icon(Icons.people, size: 80.0)
-            ),
+                elevation: 4.0,
+                size: 150.0,
+                color: Colors.lightGreen,
+                icon: Icon(Icons.people, size: 80.0)),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(
@@ -39,6 +38,13 @@ class EmptyCommunityPage extends StatelessWidget {
                       )
                     : Container(),
               ),
+            ),
+            ScopedModelDescendant<MainModel>(
+              builder: (_, __, model) => RaisedButton(
+                    child: Text(inviteText),
+                    onPressed: () =>
+                        model.shareCommunity(community, model.currentUser),
+                  ),
             )
           ],
         );

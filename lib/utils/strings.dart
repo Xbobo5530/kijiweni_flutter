@@ -4,7 +4,6 @@ const signInWithGoogleText = 'Sign in with Google';
 
 const waitText = 'Please wait...';
 
-const errorMessage = 'Something went wrong';
 const loginText = 'Login';
 const logoutText = 'Logout';
 const homeText = 'Home';
@@ -22,8 +21,12 @@ const addVideoText = 'Add video';
 const takePhotoText = 'Take a photo';
 
 //errors
+const errorMessage = 'Something went wrong';
 const failedToSendMessageText = 'Failed to send your message, please try again';
 const failedToJoinCommunityText = 'Failed to join, please try again';
+
+// messages
+const reportSubmittedMessage = 'Your report has been submitted';
 
 const joinText = 'Join';
 const createCommunityText = 'Create community';
@@ -39,7 +42,7 @@ const replyText = 'Reply';
 const deleteText = 'Delete';
 const reportText = 'Report';
 
-const invtiteText = 'Invite';
+const inviteText = 'Invite';
 
 
 const loadingText = 'Loading...';

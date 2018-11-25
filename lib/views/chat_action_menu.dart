@@ -63,6 +63,14 @@ class ChatActionMenuView extends StatelessWidget {
       switch (deleteStatus) {
         case StatusCode.success:
           model.deleteAsset(chat);
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(reportSubmittedMessage),
+          ));
+          break;
+        case StatusCode.failed:
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(errorMessage),
+          ));
           break;
         default:
           print('$_tag unexpected status $deleteStatus');

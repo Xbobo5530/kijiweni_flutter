@@ -21,6 +21,7 @@ abstract class FileModel extends Model {
   String get fileUrl => _fileUrl;
   String _filePath;
   String get filePath => _filePath;
+  List<StorageUploadTask> _tasks = <StorageUploadTask>[];
 
   Future<StatusCode> getFile(AddMenuOption option) async {
     print('$_tag at getFile');
@@ -50,14 +51,32 @@ abstract class FileModel extends Model {
     return StatusCode.success;
   }
 
-  Future<StatusCode> uploadFile(Chat chat) async {
+  StorageReference _getStorageRefFor(FileUploadFor uploadFor, String uuid) {
+    switch (uploadFor) {
+      case FileUploadFor.chat:
+        return _storage.ref().child(CHAT_IMAGES_BUCKET).child('$uuid.jpg');
+        break;
+
+      case FileUploadFor.community:
+        return _storage.ref().child(COMMUNITY_IMAGES_BUCKET).child('$uuid.jpg');
+        break;
+      case FileUploadFor.user:
+        return _storage.ref().child(USER_IMAGES_BUCKET).child('$uuid.jpg');
+        break;
+      default:
+        print('$_tag unexpected uploadFor: $uploadFor');
+        return null;
+    }
+  }
+
+  Future<StatusCode> uploadFile(FileUploadFor uploadFor, var target) async {
     print('$_tag at uploadFile');
     bool _hasError = false;
     final String uuid = Uuid().v1();
 
     final File file = _imageFile; //TODO: account for video files as well
-    final StorageReference ref =
-        _storage.ref().child(IMAGES_BUCKET).child('$uuid.jpg');
+    final StorageReference ref = _getStorageRefFor(uploadFor, uuid);
+
     final StorageUploadTask uploadTask = ref.putFile(
       file,
       StorageMetadata(
@@ -66,9 +85,7 @@ abstract class FileModel extends Model {
       ),
     );
 
-    /// TODO: monitor uploads
-    //    _tasks.add(uploadTask);
-    //  _task = uploadTask;
+    _tasks.add(uploadTask);
 
     StorageTaskSnapshot snapshot =
         await uploadTask.onComplete.catchError((error) {
@@ -79,33 +96,98 @@ abstract class FileModel extends Model {
     _fileUrl = await snapshot.ref.getDownloadURL();
     _filePath = await snapshot.ref.getPath();
     //print('$_tag the download url is : $_fileUrl');
-
+    _resetFileField();
     notifyListeners();
-    return await _updateChatWithFileUrl(chat);
+    return await _updateTargetWithFileUrl(uploadFor, target);
+  }
+  _resetFileField(){
+    _imageFile = null;
+    
   }
 
-  Future<StatusCode> _updateChatWithFileUrl(Chat chat) async {
+
+
+  DocumentReference _getTargetRef(FileUploadFor uploadFor, var target) {
+    switch (uploadFor) {
+      case FileUploadFor.chat:
+        return _database
+            .collection(COMMUNITIES_COLLECTION)
+            .document(target.communityId)
+            .collection(CHATS_COLLECTION)
+            .document(target.id);
+        break;
+      case FileUploadFor.community:
+        return _database.collection(COMMUNITIES_COLLECTION).document(target.id);
+        break;
+      case FileUploadFor.user:
+        return _database.collection(USERS_COLLECTION).document(target.id);
+        break;
+      default:
+        print('$_tag unexpected uloadFor: $uploadFor');
+        return null;
+    }
+  }
+
+  Map<String, dynamic> _getMap(FileUploadFor uploadFor) {
+    switch (uploadFor) {
+      case FileUploadFor.chat:
+        return {
+          FILE_URL_FIELD: _fileUrl,
+          FILE_PATH_FIELD: _filePath,
+          FILE_STATUS_FIELD: FILE_STATUS_UPLOAD_SUCCESS
+        };
+        break;
+      case FileUploadFor.community:
+      case FileUploadFor.user:
+        return {
+          IMAGE_URL_FIELD: _fileUrl,
+          IMAGE_PATH_FIELD: _filePath,
+        };
+        break;
+      default:
+        print('$_tag unexpected uploadFor: $uploadFor');
+        return {};
+    }
+  }
+
+  Future<StatusCode> _updateTargetWithFileUrl(
+      FileUploadFor uploadFor, var target) async {
     print('$_tag at _updateChatWithFileUrl');
     bool _hasError = false;
-    Map<String, dynamic> updateFileMap = {
-      FILE_URL_FIELD: _fileUrl,
-      FILE_PATH_FIELD: _filePath,
-      FILE_STATUS_FIELD: FILE_STATUS_UPLOAD_SUCCESS
-    };
+    Map<String, dynamic> updateTargetMap = _getMap(uploadFor);
 
-    await _database
-        .collection(COMMUNITIES_COLLECTION)
-        .document(chat.communityId)
-        .collection(CHATS_COLLECTION)
-        .document(chat.id)
-        .updateData(updateFileMap)
+    await _getTargetRef(uploadFor, target)
+        .updateData(updateTargetMap)
         .catchError((error) {
-      print('$_tag error on updating chat with uploaded file: $error');
+      print('$_tag error on updating target with uploaded file: $error');
       _hasError = true;
     });
     if (_hasError) return StatusCode.failed;
     return StatusCode.success;
   }
+
+  // Future<StatusCode> _updateChatWithFileUrl(Chat chat) async {
+  //   print('$_tag at _updateChatWithFileUrl');
+  //   bool _hasError = false;
+  //   Map<String, dynamic> updateFileMap = {
+  //     FILE_URL_FIELD: _fileUrl,
+  //     FILE_PATH_FIELD: _filePath,
+  //     FILE_STATUS_FIELD: FILE_STATUS_UPLOAD_SUCCESS
+  //   };
+
+  //   await _database
+  //       .collection(COMMUNITIES_COLLECTION)
+  //       .document(chat.communityId)
+  //       .collection(CHATS_COLLECTION)
+  //       .document(chat.id)
+  //       .updateData(updateFileMap)
+  //       .catchError((error) {
+  //     print('$_tag error on updating chat with uploaded file: $error');
+  //     _hasError = true;
+  //   });
+  //   if (_hasError) return StatusCode.failed;
+  //   return StatusCode.success;
+  // }
 
   Future<StatusCode> deleteAsset(Chat chat) async {
     print('$_tag at deleteAsset');

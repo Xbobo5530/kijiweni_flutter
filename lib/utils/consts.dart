@@ -15,6 +15,7 @@ const BIO_FIELD = 'bio';
 const DESC_FIELD = 'Ddescription';
 const ID_FIELD = 'id';
 const IMAGE_URL_FIELD = 'image_url';
+const IMAGE_PATH_FIELD = 'image_path';
 const FILE_URL_FIELD = 'file_url';
 const FILE_PATH_FIELD = 'file_path';
 const FILE_STATUS_FIELD = 'file_status';
@@ -40,6 +41,9 @@ const MEMBER_ID_FIELD = 'member_id';
 /// storage 
 const IMAGES_BUCKET = 'Images';
 const VIDEOS_BUCKET = 'Videos';
+const CHAT_IMAGES_BUCKET = 'chat_images';
+const COMMUNITY_IMAGES_BUCKET = 'community_images';
+const USER_IMAGES_BUCKET = 'user_images';
 
 /// upload file status
 const FILE_STATUS_NO_FILE = 0;

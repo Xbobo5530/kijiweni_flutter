@@ -3,7 +3,7 @@ import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:meta/meta.dart';
 
 class Community {
-  String name, id, imageUrl, createdBy, description;
+  String name, id, imageUrl, imagePath, createdBy, description;
   int createdAt;
 
   Community(
@@ -11,6 +11,7 @@ class Community {
       this.description,
       this.id,
       this.imageUrl,
+      this.imagePath,
       @required this.createdAt,
       @required this.createdBy})
       : assert(name != null),
@@ -18,10 +19,11 @@ class Community {
         assert(createdBy != null);
 
   Community.fromSnapShot(DocumentSnapshot document) {
+    this.id = document.documentID;
     this.name = document[NAME_FIELD];
     this.description = document[DESC_FIELD];
-    this.id = document.documentID;
     this.imageUrl = document[IMAGE_URL_FIELD];
+    this.imagePath = document[IMAGE_PATH_FIELD];
     this.createdBy = document[CREATED_BY_FIELD];
     this.createdAt = document[CREATED_AT_FIELD];
   }

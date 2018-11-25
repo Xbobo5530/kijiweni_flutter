@@ -249,38 +249,41 @@ abstract class ChatModel extends Model {
 
   
   void firebaseCloudMessagingListeners() {
-  // if (Platform.isIOS) iOS_Permission();
 
-  _firebaseMessaging.getToken().then((token){
-    // print(token);
-  });
+    // if (Platform.isIOS) iOS_Permission();
 
-  _firebaseMessaging.subscribeToTopic(SUBSCRIPTION_UPDATES);
+    _firebaseMessaging.getToken().then((token){
+      // print(token);
+    });
 
-  _firebaseMessaging.configure(
-    onMessage: (Map<String, dynamic> message) async {
-      print('on message $message');
-    },
-    onResume: (Map<String, dynamic> message) async {
-      print('on resume $message');
-    },
-    onLaunch: (Map<String, dynamic> message) async {
-      print('on launch $message');
-    },
-  );
-}
+    _firebaseMessaging.subscribeToTopic(SUBSCRIPTION_UPDATES);
 
-// void iOS_Permission() {
-//   _firebaseMessaging.requestNotificationPermissions(
-//       IosNotificationSettings(sound: true, badge: true, alert: true)
-//   );
-//   _firebaseMessaging.onIosSettingsRegistered
-//       .listen((IosNotificationSettings settings)
-//   {
-//     print("Settings registered: $settings");
-//   });
-// }
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
 
+  // void iOS_Permission() {
+  //   _firebaseMessaging.requestNotificationPermissions(
+  //       IosNotificationSettings(sound: true, badge: true, alert: true)
+  //   );
+  //   _firebaseMessaging.onIosSettingsRegistered
+  //       .listen((IosNotificationSettings settings)
+  //   {
+  //     print("Settings registered: $settings");
+  //   });
+  // }
+
+  /// Returns a [Future<Chat>] after taking in a [chatId] and a [communityId]
+  /// Returns a [null] if an [error] occurs and prints the [error] to the log
   Future<Chat>chatFromId(String chatId, String communityId)async{
     print('$_tag at chatFromId');
     if (_cachedChats.containsKey(chatId)) return _cachedChats[chatId];
@@ -300,12 +303,17 @@ abstract class ChatModel extends Model {
     return chat;
   }
 
+  /// Returns the [DocumentReference] for a [chat]
    DocumentReference _chatReference(Chat chat) => _database.collection(COMMUNITIES_COLLECTION)
       .document(chat.communityId)
       .collection(CHATS_COLLECTION)
       .document(chat.id);
 
-
+  /// Deletes the [chat]
+  /// called the when [currentUser] deletes the [chat] 
+  /// or when the chat has exceeded the [CHAT_REPORTS_LIMIT]
+  /// returns a [StatusCode] for whether the deletion 
+  /// was [StatusCode.success], or [StatusCode.failed]
   Future<StatusCode> deleteChat(Chat chat)async{
     print('$_tag at deleteChat');
     bool _hasError = false;
@@ -317,6 +325,8 @@ abstract class ChatModel extends Model {
     return StatusCode.success;
   }
 
+  /// Returns a [DocumentReference] for the [user] in the
+  /// [REPORTS_COLLECTION] in the [chat]
   DocumentReference _getReport(Chat chat, User user){
     return _database.collection(COMMUNITIES_COLLECTION).document(
       chat.communityId
@@ -326,6 +336,11 @@ abstract class ChatModel extends Model {
     .document(user.id);
   }
 
+  /// checks if the [user] has alredy submitted a report
+  /// for the [chat]
+  /// returns a [Future<bool>] which is [true] if the [user]
+  /// has already submitted a report and [false] if the [user]
+  /// has not submitted a report
   Future<bool> _userHasReported(User user, Chat chat)async{
     print('$_tag at _userHasReported');
     bool _hasError = false;
@@ -339,9 +354,17 @@ abstract class ChatModel extends Model {
     
   }
 
+  /// submits a report to a [chat]
+  /// it also creates a reports document for the [user] 
+  /// who has submitted a report and keeps track of how many 
+  /// reports hace been submitted for the [chat]
+  /// if the value [reports] of type [int] esceeds the [CHAT_REPORTS_LIMIT]
+  /// the [chat] is automatcally deleted and [deleteChat(Chat)] is called
+  /// if the [CHAT_REPORTS_LIMIT] is not reached, the [chat] [reports] value
+  /// is increased by 1
   Future<StatusCode> reportChat(Chat chat, User user)async{
     print('$_tag at reportChat');
-    if (chat.reports == 3) {
+    if (chat.reports == CHAT_REPORTS_LIMIT) {
       deleteChat(chat);
       return StatusCode.success;
     }
@@ -366,6 +389,7 @@ abstract class ChatModel extends Model {
      return _addUserReport(chat, user);
   }
 
+  /// creates a report document for a [user] in the [chat] document
   Future<StatusCode> _addUserReport(Chat chat, User user) async{
     print('$_tag at _addUserReport');
     bool _hasError = false;
