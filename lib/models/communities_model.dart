@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/user.dart';
-
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -24,10 +23,11 @@ abstract class CommunitiesModel extends Model {
   Map<String, Community> get joinedCommunities => _joinedCommunities;
   List<Community> _myCommunities = <Community>[];
   List<Community> get myCommunities => _myCommunities;
-
   Stream<dynamic> get communitiesStream => _communitiesCollection
       .orderBy(CREATED_AT_FIELD, descending: true)
       .snapshots();
+  Community _lastAddedCommunity;
+  Community get lastAddedCommunity => _lastAddedCommunity;
 
   Future<Community> communityFromId(String communityId) async {
     bool _hasError = false;
@@ -80,11 +80,12 @@ abstract class CommunitiesModel extends Model {
     if (_hasError) {
       _createCommunityStatus = StatusCode.failed;
       notifyListeners();
-    } else {
-      _createCommunityStatus = await _createUserCommunityRef(community, user);
-      notifyListeners();
+      return _createCommunityStatus;
     }
-    getUserCommunitiesFor(user);
+    _createCommunityStatus = await _createUserCommunityRef(community, user);
+    await getUserCommunitiesFor(user);
+    _lastAddedCommunity = await communityFromId(community.id);
+    notifyListeners();
     return _createCommunityStatus;
   }
 
@@ -357,7 +358,8 @@ abstract class CommunitiesModel extends Model {
 
   shareCommunity(Community community, User user) {
     Share.share(
-        '${user.name} has invited you to join the ${community.name} community on Kijiweni.\n$APP_DEEP_LINK_HEAD${community.id}');
+        //'${user.name} has invited you to join the ${community.name} community on Kijiweni.\n$APP_DEEP_LINK_HEAD${community.id}');
+        '${user.name} amekualika kujiunga na Kijiwe cha ${community.name}. Karibu!!.\n$APP_DEEP_LINK_HEAD${community.id}');
   }
 
   DocumentReference _getCommunityRef(Community community) {

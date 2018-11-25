@@ -17,7 +17,7 @@ abstract class NavModel extends Model {
 
   setSelectedNavItem(int selectedNavItem) {
     _currentNavItem = selectedNavItem;
-    print('$_tag selected nav item is $selectedNavItem');
+    // print('$_tag selected nav item is $selectedNavItem');
     notifyListeners();
   }
 

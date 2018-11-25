@@ -19,11 +19,12 @@ class CommunityInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _imageSection = community.imageUrl != null
-        ? CircleAvatar(
+        ? Center(
+            child: CircleAvatar(
             radius: 70.0,
             backgroundColor: Colors.lightGreen,
             backgroundImage: NetworkImage(community.imageUrl),
-          )
+          ))
         : CircularButton(
             size: 120,
             elevation: 0.0,
@@ -77,18 +78,12 @@ class CommunityInfoPage extends StatelessWidget {
           ),
     );
 
-    final _joinButtonSection = Row(
-      children: <Widget>[
-        Expanded(
-          child: ScopedModelDescendant<MainModel>(
-            builder: (BuildContext context, Widget child, MainModel model) {
-              return model.joinedCommunities.containsKey(community.id)
-                  ? Container()
-                  : JoinButtonView(community: community);
-            },
-          ),
-        ),
-      ],
+    final _joinButtonSection = ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return model.joinedCommunities.containsKey(community.id)
+            ? Container()
+            : JoinButtonView(community: community);
+      },
     );
 
     _handleLeaveCommunity(MainModel model) async {
@@ -98,7 +93,8 @@ class CommunityInfoPage extends StatelessWidget {
             return AlertDialog(
               title: Text(confirmLeaveCommunityText),
               content: Text(
-                  'Are you sure you want to leave the ${community.name} community?'),
+                  //'Are you sure you want to leave the ${community.name} community?'),
+                  'Unauhakika unataka kujitoa kwenye kijiwe cha ${community.name}?'),
               actions: <Widget>[
                 FlatButton(
                     onPressed: () => Navigator.pop(context),
@@ -149,7 +145,7 @@ class CommunityInfoPage extends StatelessWidget {
           context: context,
           builder: (_) => AlertDialog(
                 title: Text(deleteCommunityText),
-                content: Text(conformDeleteCommunityMessage),
+                content: Text(confirmDeleteCommunityMessage),
                 actions: <Widget>[
                   FlatButton(
                     textColor: primaryColor,
@@ -186,14 +182,17 @@ class CommunityInfoPage extends StatelessWidget {
           : Container();
     });
 
-    final _shareSection = ScopedModelDescendant<MainModel>(
-      builder: (_, __, model) => RaisedButton(
-            child: Text(inviteText),
-            color: primaryColor,
-            textColor: Colors.white,
-            onPressed: () => model.shareCommunity(community, model.currentUser),
-          ),
-    );
+    final _shareButton = Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 80.0),
+        child: ScopedModelDescendant<MainModel>(
+          builder: (_, __, model) => RaisedButton(
+                child: Text(inviteText),
+                color: primaryColor,
+                textColor: Colors.white,
+                onPressed: () =>
+                    model.shareCommunity(community, model.currentUser),
+              ),
+        ));
 
     final _appBar = AppBar(
       title: Text(community.name),
@@ -204,16 +203,14 @@ class CommunityInfoPage extends StatelessWidget {
       appBar: _appBar,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              _imageSection,
-              _titleSection,
-              _membersSection,
-              _joinButtonSection,
-              _shareSection
-            ],
-          ),
+        child: ListView(
+          children: <Widget>[
+            _imageSection,
+            _titleSection,
+            _membersSection,
+            _joinButtonSection,
+            _shareButton
+          ],
         ),
       ),
     );

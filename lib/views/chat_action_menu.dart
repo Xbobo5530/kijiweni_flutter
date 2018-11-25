@@ -62,7 +62,7 @@ class ChatActionMenuView extends StatelessWidget {
       if (chat.fileType == FILE_TYPE_NO_FILE) return null;
       switch (deleteStatus) {
         case StatusCode.success:
-          model.deleteAsset(chat);
+          model.deleteAsset(chat.filePath);
           Scaffold.of(context).showSnackBar(SnackBar(
             content: Text(reportSubmittedMessage),
           ));

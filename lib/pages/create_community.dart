@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
+import 'package:kijiweni_flutter/pages/community_page.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
@@ -18,7 +19,7 @@ class CreateCommunityPage extends StatelessWidget {
 
     final snackBar = SnackBar(content: Text(emptyNameFieldsWarningText));
 
-    _handleResult(StatusCode createCommunityResult) {
+    _handleResult(MainModel model, StatusCode createCommunityResult) {
       switch (createCommunityResult) {
         case StatusCode.failed:
           Scaffold.of(context).showSnackBar(SnackBar(
@@ -26,7 +27,12 @@ class CreateCommunityPage extends StatelessWidget {
           ));
           break;
         case StatusCode.success:
-          Navigator.pop(context);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (_) =>
+                      CommunityPage(community: model.lastAddedCommunity)),
+              ModalRoute.withName('/'));
           break;
         default:
           print(
@@ -37,18 +43,18 @@ class CreateCommunityPage extends StatelessWidget {
     _hanldeCommunityWithoutImage(MainModel model, Community community) async {
       final createCommunityStatus =
           await model.createCommunity(community, model.currentUser);
-      _handleResult(createCommunityStatus);
+      _handleResult(model, createCommunityStatus);
     }
 
     _handleCommuntyWithImage(MainModel model, Community community) async {
       final createCommunityStatus =
           await model.createCommunity(community, model.currentUser);
       if (createCommunityStatus == StatusCode.failed) {
-        _handleResult(createCommunityStatus);
+        _handleResult(model, createCommunityStatus);
         return null;
       }
 
-      _handleResult(createCommunityStatus);
+      _handleResult(model, createCommunityStatus);
 
       if (await model.uploadFile(FileUploadFor.community, community) ==
           StatusCode.success) model.updateJoinedCommunities(model.currentUser);
@@ -116,45 +122,49 @@ class CreateCommunityPage extends StatelessWidget {
     final _nameField = Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
       child: TextField(
+        textCapitalization: TextCapitalization.words,
+        keyboardType: TextInputType.text,
+        // textInputAction: TextInputAction.done,
         controller: _nameFieldController,
-        decoration: InputDecoration(
-            border: OutlineInputBorder(), labelText: communityNameText),
+        decoration: InputDecoration(hintText: communityNameText),
       ),
     );
 
     final _descriptionField = Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
       child: TextField(
+        textCapitalization: TextCapitalization.sentences,
         controller: _descriptionFieldController,
-        maxLines: 5,
-        decoration: InputDecoration(
-            border: OutlineInputBorder(), labelText: communityDescriptionText),
+        maxLines: null,
+        decoration: InputDecoration(hintText: communityDescriptionText),
       ),
     );
 
-    Widget _fieldsSection(BuildContext context) => Column(
+    Widget _fieldsSection(BuildContext context) =>
+
+        Column(
           children: <Widget>[_nameField, _descriptionField],
         );
+
     final _submitButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Expanded(
-            child: ScopedModelDescendant<MainModel>(
-              builder: (BuildContext context, Widget child, MainModel model) {
-                return RaisedButton(
-                  onPressed: () => _submitNewCommunity(model, context),
-                  textColor: Colors.white,
-                  color: primaryColor,
-                  child: model.createCommunityStatus == StatusCode.waiting
-                      ? MyProgressIndicator(
-                          size: 15.0,
-                          color: Colors.white,
-                        )
-                      : Text(submitText),
-                );
-              },
-            ),
+          ScopedModelDescendant<MainModel>(
+            builder: (BuildContext context, Widget child, MainModel model) {
+              return RaisedButton(
+                onPressed: () => _submitNewCommunity(model, context),
+                textColor: Colors.white,
+                color: primaryColor,
+                child: model.createCommunityStatus == StatusCode.waiting
+                    ? MyProgressIndicator(
+                        size: 15.0,
+                        color: Colors.white,
+                      )
+                    : Text(submitText),
+              );
+            },
           ),
         ],
       ),
@@ -173,6 +183,7 @@ class CreateCommunityPage extends StatelessWidget {
     );
 
     return Scaffold(
+      // resizeToAvoidBottomPadding: false,
       appBar: _appBar,
       body: _body,
     );

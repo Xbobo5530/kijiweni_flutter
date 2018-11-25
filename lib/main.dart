@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/pages/home.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-void main() => runApp(Kijiweni(
-      model: MainModel(),
-    ));
+void main() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+        .then((_) => runApp(Kijiweni(model: MainModel())));
+  }
 
 class Kijiweni extends StatelessWidget {
   final MainModel model;
