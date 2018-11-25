@@ -189,10 +189,10 @@ abstract class FileModel extends Model {
   //   return StatusCode.success;
   // }
 
-  Future<StatusCode> deleteAsset(Chat chat) async {
+  Future<StatusCode> deleteAsset(String path) async {
     print('$_tag at deleteAsset');
     bool _hasError = false;
-    _storage.ref().child(chat.filePath).delete().catchError((error) {
+    _storage.ref().child(path).delete().catchError((error) {
       print('$_tag error on deleting file');
       _hasError = true;
     });

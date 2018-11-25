@@ -129,6 +129,7 @@ class InputFieldView extends StatelessWidget {
     final _messageField = TextField(
       controller: _chatFieldController,
       maxLines: null,
+      textCapitalization: TextCapitalization.sentences,
       textInputAction: TextInputAction.newline,
       decoration: InputDecoration(
           hintText: messageText,

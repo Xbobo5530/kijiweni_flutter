@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/pages/community_page.dart';
+import 'package:kijiweni_flutter/utils/colors.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
 
 class JoinedCommunityListItemView extends StatelessWidget {
@@ -20,6 +21,7 @@ class JoinedCommunityListItemView extends StatelessWidget {
               elevation: 0.0,
               icon: Icon(
                 Icons.people,
+                color: primaryColor,
               ),
             ),
       title: Text(community.name),

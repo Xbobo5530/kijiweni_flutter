@@ -25,15 +25,9 @@ abstract class CommunitiesModel extends Model {
   List<Community> _myCommunities = <Community>[];
   List<Community> get myCommunities => _myCommunities;
 
-  Stream<dynamic> getSubscribedCommunitiesStream(String userId) {
-    return _database
-        .collection(USERS_COLLECTION)
-        .document(userId)
-        .collection(COMMUNITIES_COLLECTION)
-        .snapshots();
-  }
-
-  Stream<dynamic> get communitiesStream => _communitiesCollection.snapshots();
+  Stream<dynamic> get communitiesStream => _communitiesCollection
+      .orderBy(CREATED_AT_FIELD, descending: true)
+      .snapshots();
 
   Future<Community> communityFromId(String communityId) async {
     bool _hasError = false;
@@ -158,9 +152,7 @@ abstract class CommunitiesModel extends Model {
       COMMUNITY_ID_FIELD: community.id,
       CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
     };
-    await _database
-        .collection(COMMUNITIES_COLLECTION)
-        .document(community.id)
+    await _getCommunityRef(community)
         .collection(MEMBERS_COLLECTION)
         .document(user.id)
         .setData(memberMap)
@@ -208,9 +200,7 @@ abstract class CommunitiesModel extends Model {
   Future<StatusCode> leaveCommunity(Community community, User user) async {
     print('$_tag at leaveCommunity');
     bool _hasError = false;
-    await _database
-        .collection(COMMUNITIES_COLLECTION)
-        .document(community.id)
+    await _getCommunityRef(community)
         .collection(MEMBERS_COLLECTION)
         .document(user.id)
         .delete()
@@ -291,28 +281,10 @@ abstract class CommunitiesModel extends Model {
     notifyListeners();
   }
 
-  // Future<int> getCommunityMembersCountFor(Community community) async {
-  //   print('$_tag at getMembersCountFor');
-  //   bool _hasError = false;
-  //   final snapshot = await _database
-  //       .collection(COMMUNITIES_COLLECTION)
-  //       .document(community.id)
-  //       .collection(MEMBERS_COLLECTION)
-  //       .getDocuments()
-  //       .catchError((error) {
-  //     print('$_tag error on getting members count for community: $error');
-  //     _hasError = true;
-  //   });
-  //   if (_hasError) return 0;
-  //   return snapshot.documents.length;
-  // }
-
   Future<List<User>> getCommunityMembersFor(Community community) async {
     print('$_tag at getMembersCountFor');
     bool _hasError = false;
-    final snapshot = await _database
-        .collection(COMMUNITIES_COLLECTION)
-        .document(community.id)
+    final snapshot = await _getCommunityRef(community)
         .collection(MEMBERS_COLLECTION)
         .getDocuments()
         .catchError((error) {
@@ -347,50 +319,6 @@ abstract class CommunitiesModel extends Model {
     _cachedUsers.putIfAbsent(userId, () => userFromId);
     return userFromId;
   }
-
-  // Future<User> _userFromId(String userId) async {
-  //   // print('$_tag at userFromId');
-  //   if (_cachedUsers[userId] != null) {
-  //     // print('$_tag, _cached users contains user ${_cachedUsers[userId].name}');
-  //     return _cachedUsers[userId];
-  //   } else {
-  //     bool _hasError = false;
-  //     DocumentSnapshot userFromIdDoc = await _database
-  //         .collection(USERS_COLLECTION)
-  //         .document(userId)
-  //         .get()
-  //         .catchError((error) {
-  //       print('$_tag error on getting use from ID');
-  //       _hasError = true;
-  //     });
-
-  //     if (_hasError || !userFromIdDoc.exists)
-  //       return User(name: null);
-  //     else {
-  //       final _user = User.fromSnapshot(userFromIdDoc);
-  //       _cachedUsers.putIfAbsent(userId, () => _user);
-  //       print(
-  //           '$_tag user ${_user.name} has been added to _cached users, _cached users contains ${_cachedUsers.length} users');
-  //       return _user;
-  //     }
-  //   }
-  // }
-
-  // Future<int> getUserCommunitiesCountFor(String userId) async {
-  //   print('$_tag at getUserCommunitiesCountFor');
-  //   bool _hasError = false;
-  //   final snapshot = await _database
-  //       .collection(USERS_COLLECTION)
-  //       .document(userId)
-  //       .collection(MY_COMMUNITIES_COLLECTION)
-  //       .getDocuments()
-  //       .catchError((error) {
-  //     print('$_tag error on getting communities count for user: $error');
-  //     _hasError = true;
-  //   });
-  //   if (_hasError) return 0;
-  //   return snapshot.documents.length;
-  // }
 
   Future<void> getUserCommunitiesFor(User user) async {
     print('$_tag at getUserCommunitiesFor');
@@ -430,5 +358,20 @@ abstract class CommunitiesModel extends Model {
   shareCommunity(Community community, User user) {
     Share.share(
         '${user.name} has invited you to join the ${community.name} community on Kijiweni.\n$APP_DEEP_LINK_HEAD${community.id}');
+  }
+
+  DocumentReference _getCommunityRef(Community community) {
+    return _database.collection(COMMUNITIES_COLLECTION).document(community.id);
+  }
+
+  Future<StatusCode> deleteCommunity(Community community, User user) async {
+    print('$_tag deleteCommunity');
+    bool _hasError = false;
+    await _getCommunityRef(community).delete().catchError((error) {
+      print('$_tag error on deleting community');
+      _hasError = true;
+    });
+    if (_hasError) return StatusCode.failed;
+    return await _deleteCommunityRefFromUser(community, user);
   }
 }

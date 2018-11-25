@@ -40,6 +40,7 @@ const dislikeText = 'Dislike';
 const shareText = 'Share';
 const replyText = 'Reply';
 const deleteText = 'Delete';
+const deleteCommunityText = 'Delete community';
 const reportText = 'Report';
 
 const inviteText = 'Invite';
@@ -62,3 +63,4 @@ const communityDescriptionText = 'Community description';
 const emptyNameFieldsWarningText = 'The name field cannot be empty';
 const confirmLogoutText = 'Are you sure you want to logout?';
 const confirmLeaveCommunityText = 'Confirm leave community';
+const conformDeleteCommunityMessage = 'Are you sure you want to delete this community?';

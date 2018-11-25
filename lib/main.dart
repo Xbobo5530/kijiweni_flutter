@@ -17,15 +17,18 @@ class Kijiweni extends StatelessWidget {
   Widget build(BuildContext context) {
     print('at Kijiweni');
 
-    
-
     // if (model.deepLinkedCommunityId != null) _handleDeepLink();
 
     return ScopedModel<MainModel>(
         model: model,
         child: MaterialApp(
-            title: APP_NAME,
-            theme: ThemeData(primaryColor: primaryColor),
-            home: HomePage()));
+          title: APP_NAME,
+          theme: ThemeData(primaryColor: primaryColor),
+          // home: HomePage()
+          initialRoute: '/',
+          routes: {
+            '/': (context) => HomePage(),
+          },
+        ));
   }
 }

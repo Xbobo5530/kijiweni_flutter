@@ -3,10 +3,13 @@ import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/main_model.dart';
 import 'package:kijiweni_flutter/models/user.dart';
 import 'package:kijiweni_flutter/utils/colors.dart';
+import 'package:kijiweni_flutter/utils/status_code.dart';
 import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:kijiweni_flutter/views/join_button.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+const _tag = 'CommunityInfoPage:';
 
 class CommunityInfoPage extends StatelessWidget {
   final Community community;
@@ -69,16 +72,11 @@ class CommunityInfoPage extends StatelessWidget {
                     leading: Chip(
                       label: Text('${snapshot.data.length}'),
                     ),
-                    children: snapshot.data
-                                    .map(_buildMemberListItem)
-                                    .toList(),
-
-                    
+                    children: snapshot.data.map(_buildMemberListItem).toList(),
                   ),
           ),
     );
 
-    
     final _joinButtonSection = Row(
       children: <Widget>[
         Expanded(
@@ -119,30 +117,91 @@ class CommunityInfoPage extends StatelessWidget {
           });
     }
 
+    _handleSelection(MainModel model, bool shouldDelete) async {
+      switch (shouldDelete) {
+        case true:
+          StatusCode deleteCommunityStatus =
+              await model.deleteCommunity(community, model.currentUser);
+
+          switch (deleteCommunityStatus) {
+            case StatusCode.success:
+              if (community.imageUrl != null)
+                await model.deleteAsset(community.imagePath);
+              Navigator.popUntil(context, ModalRoute.withName('/'));
+              break;
+            case StatusCode.failed:
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(errorMessage),
+              ));
+              break;
+            default:
+              print(
+                  '$_tag unexpected deleteCommunityStatus: $deleteCommunityStatus');
+          }
+          break;
+        default:
+          print('$_tag shouldDelete is: $shouldDelete');
+      }
+    }
+
+    _handleDeleteCommunity(MainModel model) async {
+      bool shouldDelete = await showDialog<bool>(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text(deleteCommunityText),
+                content: Text(conformDeleteCommunityMessage),
+                actions: <Widget>[
+                  FlatButton(
+                    textColor: primaryColor,
+                    child: Text(cancelText),
+                    onPressed: () {
+                      return Navigator.pop(context, false);
+                    },
+                  ),
+                  FlatButton(
+                    textColor: Colors.red,
+                    child: Text(deleteText),
+                    onPressed: () {
+                      return Navigator.pop(context, true);
+                    },
+                  )
+                ],
+              ));
+
+      _handleSelection(model, shouldDelete);
+    }
+
     final _leaveButton =
         ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       return model.joinedCommunities.containsKey(community.id)
-          ? IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () => _handleLeaveCommunity(model),
-            )
+          ? community.createdBy == model.currentUser.id
+              ? IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () => _handleDeleteCommunity(model),
+                )
+              : IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: () => _handleLeaveCommunity(model),
+                )
           : Container();
     });
 
     final _shareSection = ScopedModelDescendant<MainModel>(
-      builder: (_,__,model)=>RaisedButton(
-        child: Text(inviteText),
-        color: primaryColor,
-        textColor: Colors.white,
-        onPressed: ()=>model.shareCommunity(community, model.currentUser),
-      ),
+      builder: (_, __, model) => RaisedButton(
+            child: Text(inviteText),
+            color: primaryColor,
+            textColor: Colors.white,
+            onPressed: () => model.shareCommunity(community, model.currentUser),
+          ),
+    );
+
+    final _appBar = AppBar(
+      title: Text(community.name),
+      actions: <Widget>[_leaveButton],
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(community.name),
-        actions: <Widget>[_leaveButton],
-      ),
+      appBar: _appBar,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
