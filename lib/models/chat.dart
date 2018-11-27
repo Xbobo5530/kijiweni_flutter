@@ -3,7 +3,18 @@ import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:meta/meta.dart';
 
 class Chat {
-  String id, message, fileUrl, filePath, createdBy, replyingTo, communityId;
+  String id,
+      message,
+      fileUrl,
+      filePath,
+      createdBy,
+      replyingTo,
+      replyToUserId,
+      username,
+      userImageUrl,
+      communityId,
+      replyToUsername,
+      replyToMessage;
   int fileStatus, fileType, createdAt, reports;
 
   Chat(
@@ -16,6 +27,11 @@ class Chat {
       this.fileType = FILE_TYPE_NO_FILE,
       this.reports = 0,
       @required this.createdBy,
+      this.username,
+      this.userImageUrl,
+      this.replyToUsername,
+      this.replyToUserId,
+      this.replyToMessage,
       this.createdAt,
       this.replyingTo})
       : assert(message != null),

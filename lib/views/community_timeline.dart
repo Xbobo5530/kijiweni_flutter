@@ -19,12 +19,8 @@ class CommunityTimelineView extends StatelessWidget {
       return StreamBuilder<QuerySnapshot>(
         stream: model.communityChatStream(community),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          //TODO: test this
-          switch (snapshot.connectionState) {
-            case ConnectionState.active:
-            case ConnectionState.done:
-              // print(snapshot.connectionState);
-              if (!snapshot.hasData)
+          if (!snapshot.hasData)
+              
                 return Center(child: MyProgressIndicator());
 
               if (snapshot.data.documents.length == 0)
@@ -41,38 +37,14 @@ class CommunityTimelineView extends StatelessWidget {
                   final DocumentSnapshot chatDoc =
                       snapshot.data.documents[index];
                   final Chat chat = Chat.fromSnapshot(chatDoc);
-
-                  return ChatListItemView(chat: chat);
+                  
+                  return FutureBuilder<Chat>(
+                    initialData: chat,
+                    future: model.refineChat(chat),
+                    builder: (context, snapshot)=> ChatListItemView(chat: snapshot.data, key: Key(snapshot.data.id),));
                 },
               );
-              break;
-            case ConnectionState.waiting:
-              // print(snapshot.connectionState);
-              return Center(child: MyProgressIndicator());
-              break;
-            case ConnectionState.none:
-              // print(snapshot.connectionState);
-              return EmptyCommunityPage(community: community);
-              break;
-          }
-
-          // if (!snapshot.hasData)
-          //   return Center(child: CircularProgressIndicator());
-          // if (snapshot.data.documents.length == 0)
-          //   return EmptyCommunityPage(community: community);
-
-          // return ListView.builder(
-          //   controller: model.scrollController,
-          //   reverse: false,
-          //   shrinkWrap: true,
-          //   itemCount: snapshot.data.documents.length,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     final DocumentSnapshot chatDoc = snapshot.data.documents[index];
-          //     final Chat chat = Chat.fromSnapshot(chatDoc);
-
-          //     return ChatListItemView(chat: chat);
-          //   },
-          // );
+          
         },
       );
     });

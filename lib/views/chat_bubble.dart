@@ -10,6 +10,8 @@ import 'package:kijiweni_flutter/views/circular_button.dart';
 import 'package:kijiweni_flutter/views/message_meta_section.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+
+const _tag = 'ChatBubble:'
 class ChatBubbleView extends StatelessWidget {
   final bool isMe;
   final Chat chat;
@@ -41,37 +43,48 @@ class ChatBubbleView extends StatelessWidget {
           )
         : Container();
 
-    _buildReplyContent(MainModel model, Chat chat) => ListTile(
+    _buildReplyContent(MainModel model) => ListTile(
           title: chat.createdBy == model.currentUser.id
               ? Text(
                   youText,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )
-              : FutureBuilder<User>(
-                  future: model.userFromId(chat.createdBy),
-                  builder: (context, snapshot) => !snapshot.hasData
-                      ? Container()
-                      : Text(
-                          snapshot.data.name,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                ),
-          subtitle: Text(chat.message != null && chat.message.isNotEmpty
-              ? chat.message
-              : chat.fileType == FILE_TYPE_IMAGE ? photoText : Container()),
+              : chat.replyToUsername == null
+                  ? Container()
+                  : Text(
+                      chat.replyToUsername,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+          subtitle: Text(
+              chat.replyToMessage != null && chat.replyToMessage.isNotEmpty
+                  ? chat.replyToMessage
+                  : chat.fileType == FILE_TYPE_IMAGE ? photoText : ''),
         );
 
     final _replyingToView = Container(
       color: Colors.white70,
       child: ScopedModelDescendant<MainModel>(
-        builder: (_, __, model) => FutureBuilder<Chat>(
-            future: model.chatFromId(chat.replyingTo, chat.communityId),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) return Container();
-              Chat _chat = snapshot.data;
-              return _buildReplyContent(model, _chat);
-            }),
-      ),
+          builder: (_, __, model){
+          
+          print('$_tag ');
+          return
+           ListTile(
+                title: chat.replyToUserId == model.currentUser.id
+                    ? Text(
+                        youText,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    : chat.replyToUsername == null
+                        ? Container()
+                        : Text(
+                            chat.replyToUsername,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                subtitle: Text(chat.replyToMessage != null &&
+                        chat.replyToMessage.isNotEmpty
+                    ? chat.replyToMessage
+                    : chat.fileType == FILE_TYPE_IMAGE ? photoText : ''),
+              );}),
     );
 
     Widget _buildMessageContent() {
@@ -105,36 +118,38 @@ class ChatBubbleView extends StatelessWidget {
 
     final _messageSection = Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: Container(
-          constraints: BoxConstraints(
-              minWidth: 60.0,
-              maxWidth: //300.0
-                  isMe
-                      ? MediaQuery.of(context).size.width - 80
-                      : MediaQuery.of(context).size.width - 120),
-          child: _buildMessageContent(),
-          margin: const EdgeInsets.all(3.0),
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  blurRadius: .5,
-                  spreadRadius: 1.0,
-                  color: Colors.black.withOpacity(.12))
-            ],
-            color: isMe ? sentMessageColor : receivedMessageColor,
-            borderRadius: isMe
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(5.0),
-                    bottomLeft: Radius.circular(5.0),
-                    bottomRight: Radius.circular(10.0),
-                  )
-                : BorderRadius.only(
-                    topRight: Radius.circular(5.0),
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(5.0),
-                  ),
-          )),
+      child: FittedBox(
+        child: Container(
+            constraints: BoxConstraints(
+                minWidth: 60.0,
+                maxWidth: //300.0
+                    isMe
+                        ? MediaQuery.of(context).size.width - 80
+                        : MediaQuery.of(context).size.width - 120),
+            child: _buildMessageContent(),
+            margin: const EdgeInsets.all(3.0),
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: .5,
+                    spreadRadius: 1.0,
+                    color: Colors.black.withOpacity(.12))
+              ],
+              color: isMe ? sentMessageColor : receivedMessageColor,
+              borderRadius: isMe
+                  ? BorderRadius.only(
+                      topLeft: Radius.circular(5.0),
+                      bottomLeft: Radius.circular(5.0),
+                      bottomRight: Radius.circular(10.0),
+                    )
+                  : BorderRadius.only(
+                      topRight: Radius.circular(5.0),
+                      bottomLeft: Radius.circular(10.0),
+                      bottomRight: Radius.circular(5.0),
+                    ),
+            )),
+      ),
     );
 
     final _messageStack = Stack(
@@ -143,34 +158,23 @@ class ChatBubbleView extends StatelessWidget {
         MessageMetaSectionView(chat: chat),
       ],
     );
-    final _usernameSection = ScopedModelDescendant<MainModel>(
-      builder: (context, child, model) {
-        return FutureBuilder(
-          future: model.userFromId(chat.createdBy),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return Container();
-            final User _user = snapshot.data;
-            return Container(
-              padding: const EdgeInsets.only(left: 4.0),
-              width: 100.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  _user != null
-                      ? Text(
-                          _user.name,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        )
-                      : Container(),
-                ],
-              ),
-            );
-          },
-        );
-      },
+    final _usernameSection = FittedBox(
+      // padding: const EdgeInsets.only(left: 4.0),
+      // width: 100.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          chat.username != null
+              ? Text(
+                  chat.username,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                )
+              : Container(),
+        ],
+      ),
     );
 
     final _actionMenu = ChatActionMenuView(
@@ -183,39 +187,23 @@ class ChatBubbleView extends StatelessWidget {
       _messageStack,
     ];
 
-    final _userImageSection =
-        ScopedModelDescendant<MainModel>(builder: (context, child, model) {
-      return FutureBuilder(
-        future: model.userFromId(chat.createdBy),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return Padding(
-              padding: const EdgeInsets.all(28.0),
-              child: CircularButton(
-                  size: 45.0, icon: Icon(Icons.person, size: 30.0)),
-            );
-          final _user = snapshot.data;
-          return _user == null
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Icon(
-                    Icons.account_circle,
-                    size: 42.0,
-                  ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: CircleAvatar(
-                    radius: 20.0,
-                    backgroundColor: Colors.lightGreen,
-                    backgroundImage: NetworkImage(
-                      _user.imageUrl,
-                    ),
-                  ),
-                );
-        },
-      );
-    });
+    final _userImageSection = chat.userImageUrl == null
+        ? Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: CircularButton(
+                size: 45.0, icon: Icon(Icons.person, size: 30.0)),
+          )
+        : Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: CircleAvatar(
+              radius: 20.0,
+              backgroundColor: Colors.lightGreen,
+              backgroundImage: NetworkImage(
+                chat.userImageUrl,
+              ),
+            ),
+          );
+
     final _receivedBubbleChilren = <Widget>[
       _userImageSection,
       SizedBox(

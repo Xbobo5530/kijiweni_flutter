@@ -4,6 +4,7 @@ import 'package:kijiweni_flutter/models/community.dart';
 import 'package:kijiweni_flutter/models/user.dart';
 import 'package:kijiweni_flutter/utils/consts.dart';
 import 'package:kijiweni_flutter/utils/status_code.dart';
+import 'package:kijiweni_flutter/utils/strings.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -23,6 +24,11 @@ abstract class ChatModel extends Model {
   Chat _latestChat;
   Chat get latestChat => _latestChat;
   Map<String, Chat> _cachedChats = Map();
+  Map<String, User> _cachedUsers = Map();
+  
+
+  // List<Chat> _chatList;
+  
 
   Stream<dynamic> communityChatStream(Community community) {
     return _database
@@ -31,6 +37,29 @@ abstract class ChatModel extends Model {
         .collection(CHATS_COLLECTION)
         .snapshots();
   }
+
+  // List<Chat> getChatListFor(Community community){
+  //   print('$_tag at getChatListFor');
+  //   List<Chat> _chatList = <Chat>[];
+  //   // bool _hasError = false;
+  //   //  _communityChatStream(community)
+     
+  //   //  .listen((document){
+  //   //    if ( document == DocumentChangeType.added){
+  //   //      print('$_tag a document has been added');
+  //   //      Chat chat = Chat.fromSnapshot(document);
+  //   //      _chatList.add(chat);
+  //   //    }
+  //   //  });
+
+  //   QuerySnapshot snapshot = _communityChatStream(community).
+
+  //    return _chatList;
+  // }
+
+
+
+
 
   Future<StatusCode> sendMessage(Chat chat, User user, Community community) async {
     print('$_tag at sendMessage');
@@ -405,5 +434,52 @@ abstract class ChatModel extends Model {
     if (_hasError) return StatusCode.failed;
     return StatusCode.success;
 
+  }
+
+  Future<Chat>refineChat(Chat chat)async{
+    print('at refineChat');
+
+    User _user = await _userFromId(chat.createdBy);
+    if (_user != null) {chat.username = _user.name;
+    chat.userImageUrl = _user.imageUrl;}
+
+    if (replyingTo != null){
+
+      Chat _chat = await chatFromId(chat.replyingTo, chat.communityId);
+      if(_chat!= null){
+        User _replyToUser =  await _userFromId(_chat.createdBy);
+        if (_replyToUser != null) {
+          chat.replyToUsername = _replyToUser.name;
+          chat.replyToUserId = _replyToUser.id;
+        }
+        if (_chat.message != null && _chat.message.isNotEmpty){
+          chat.replyToMessage = _chat.message;
+        }else{
+          chat.replyToMessage = photoText;
+        }
+      }
+    }
+
+    return chat;
+
+
+  }
+
+   Future<User> _userFromId(String userId) async {
+    // print('$_tag at userFromId');
+    bool _hasError = false;
+    if (_cachedUsers[userId] != null) return _cachedUsers[userId];
+    DocumentSnapshot document = await _database
+        .collection(USERS_COLLECTION)
+        .document(userId)
+        .get()
+        .catchError((error) {
+      print('$_tag error on getting user document form id');
+      _hasError = true;
+    });
+    if (_hasError) return null;
+    final userFromId = User.fromSnapshot(document);
+    _cachedUsers.putIfAbsent(userId, () => userFromId);
+    return userFromId;
   }
 }

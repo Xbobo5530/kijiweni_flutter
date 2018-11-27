@@ -21,7 +21,7 @@ const addVideoText = 'Tuma video';//'Add video';
 const takePhotoText = 'Piga picha';//'Take a photo';
 
 //errors
-const errorMessage = 'Kuna hitilafu imatokea, jaribu tena baadae';//'Something went wrong';
+const errorMessage = 'Kuna hitilafu imetokea, jaribu tena baadae';//'Something went wrong';
 const failedToSendMessageText = 'Imeshindikana kutuma ujumbe wako, jaribu tena';//'Failed to send your message, please try again';
 const failedToJoinCommunityText = 'Imeshidikana kujiunga, jaribu tena';//'Failed to join, please try again';
 
