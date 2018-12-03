@@ -4,3 +4,4 @@ enum AddMenuOption{video, image, camera}
 enum FileType {video, image,}
 enum DetailType{name, bio, title, description}
 enum FileUploadFor {chat, community, user}
+enum Action{leave, join}

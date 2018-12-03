@@ -32,9 +32,9 @@ abstract class JoinedCommunityModel extends Model {
 
     joinedCommunities.forEach((joinedCommunity) async {
       Community community = await _getCommunityFromId(joinedCommunity.id);
-      if (community != null && !joinedCommunitiesMap.containsKey(community.id)
-      && _isNotCached(community))
-        _tempSortedCommunities.add(community);
+      if (community != null &&
+          !joinedCommunitiesMap.containsKey(community.id) &&
+          _isNotCached(community)) _tempSortedCommunities.add(community);
     });
     _tempSortedCommunities.sort((firstCommunity, secCommunity) =>
         secCommunity.lastMessageAt.compareTo(firstCommunity.lastMessageAt));
@@ -46,9 +46,9 @@ abstract class JoinedCommunityModel extends Model {
     return _cachedJoinedCommunities;
   }
 
-  bool _isNotCached(Community community){
+  bool _isNotCached(Community community) {
     bool _isCached = true;
-    _cachedJoinedCommunities.forEach((cCommunity){
+    _cachedJoinedCommunities.forEach((cCommunity) {
       if (cCommunity.id == community.id) _isCached = false;
     });
     return _isCached;
@@ -76,7 +76,6 @@ abstract class JoinedCommunityModel extends Model {
       tempJoinedCommunities.add(community);
     });
 
-
     return tempJoinedCommunities;
   }
 
@@ -94,8 +93,6 @@ abstract class JoinedCommunityModel extends Model {
     Community community = Community.fromSnapShot(document);
     return community;
   }
-
-  
 
   DocumentReference _getCommunityRef(Community community) {
     return _database.collection(COMMUNITIES_COLLECTION).document(community.id);
@@ -124,6 +121,8 @@ abstract class JoinedCommunityModel extends Model {
       _userCommunityStatus = StatusCode.failed;
       notifyListeners();
       await updatedJoinedCommunities(user);
+
+      _updateCache(community, Action.join);
       return _userCommunityStatus;
     }
 
@@ -182,7 +181,7 @@ abstract class JoinedCommunityModel extends Model {
     }
     _firebaseMessaging.unsubscribeFromTopic(community.id);
     print('$_tag usubscripbed to community ${community.name}');
-    _userCommunityStatus =  await _deleteCommunityRefFromUser(community, user);
+    _userCommunityStatus = await _deleteCommunityRefFromUser(community, user);
     notifyListeners();
     return _userCommunityStatus;
   }
@@ -204,18 +203,25 @@ abstract class JoinedCommunityModel extends Model {
 
     if (_hasError) return StatusCode.failed;
     _joinedCommunitiesMap.remove(community.id);
-    _updateCache(community);
+    _updateCache(community, Action.leave);
     notifyListeners();
     return StatusCode.success;
   }
 
-  _updateCache(Community community) {
+  _updateCache(Community community, Action action) {
+    switch (action) {
+      case Action.leave:
+        _cachedJoinedCommunities.remove(community);
+        _joinedCommunitiesMap.remove(community.id);
+        break;
+      case Action.join:
+        _cachedJoinedCommunities.add(community);
+        _joinedCommunitiesMap.putIfAbsent(community.id, () => community);
+        break;
+      default:
+        print('Action is: $action');
+    }
 
-    _cachedJoinedCommunities.remove(community);
-
-
-    // _cachedJoinedCommunities.forEach((commu) {
-    //   if (commu.id == community.id) _cachedJoinedCommunities.remove(commu);
-    // });
+    notifyListeners();
   }
 }
