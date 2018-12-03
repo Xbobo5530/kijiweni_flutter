@@ -25,7 +25,7 @@ class MainModel extends Model
   }
 
   _getJoinedCommunities()async{
-    await updateLoginStatus(); if (isLoggedIn)sortedCommunities(currentUser);
+    await updateLoginStatus(); if (isLoggedIn)updatedJoinedCommunities(currentUser);
   }
 
   

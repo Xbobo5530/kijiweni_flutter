@@ -39,31 +39,18 @@ class MyProfileView extends StatelessWidget {
       ),
     );
 
-//     Widget _buildCommunityListItem(Community community) {
-//       return ListTile(
-// //        onTap: model.isLoggedIn ? () => _goToCommunity() : () => _goToLogin(),
-//         leading: community.imageUrl != null
-//             ? CircleAvatar(
-//                 backgroundImage: NetworkImage(community.imageUrl),
-//               )
-//             : Icon(Icons.people),
-//         title: Text(community.name),
-//         subtitle: community.description != null
-//             ? Text(community.description)
-//             : Container(),
-//       );
-//     }
+
 
     Widget _buildMyCommunitiesSection(MainModel model) {
       //  model.getUserCommunitiesFor(model.currentUser);
-      return model.myCommunities.length == 0
+      return model.cachedJoinedCommunities.length == 0
           ? Container()
           : ExpansionTile(
               title: Text(myCommunitiesText),
               leading: Chip(
-                label: Text('${model.myCommunities.length}'),
+                label: Text('${model.cachedJoinedCommunities.length}'),
               ),
-              children: model.myCommunities
+              children: model.cachedJoinedCommunities
                   .map((community) => JoinedCommunityListItemView(
                         community: community,
                         key: Key(community.id),
@@ -111,7 +98,6 @@ class MyProfileView extends StatelessWidget {
 
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        // print('${model.currentUser.toString()}');
         return model.isLoggedIn ? _buildUserProfilePage(model) : _loginView;
       },
     );

@@ -20,7 +20,41 @@ abstract class JoinedCommunityModel extends Model {
   List<Community> _tempSortedCommunities = [];
   List<Community> get cachedJoinedCommunities => _cachedJoinedCommunities;
 
-  Future<List<JoinedCommunity>> _updateJoinedCommunities(User user) async {
+  /// updates the joined communities by making getting the latest list of
+  /// joined communities and returning a [Future<List<Community>>] that is
+  /// a sorted list of [joinedCommunities] sorted based on the [lastMessageAt]
+  /// variable for each community
+  /// the [user] is the [User] that has joined these communities
+  /// usually the [currentUser]
+  Future<List<Community>> updatedJoinedCommunities(User user) async {
+    List<JoinedCommunity> joinedCommunities =
+        await _fetchJoinedCommunities(user);
+
+    joinedCommunities.forEach((joinedCommunity) async {
+      Community community = await _getCommunityFromId(joinedCommunity.id);
+      if (community != null && !joinedCommunitiesMap.containsKey(community.id)
+      && _isNotCached(community))
+        _tempSortedCommunities.add(community);
+    });
+    _tempSortedCommunities.sort((firstCommunity, secCommunity) =>
+        secCommunity.lastMessageAt.compareTo(firstCommunity.lastMessageAt));
+    _tempSortedCommunities.forEach((community) {
+      _joinedCommunitiesMap.putIfAbsent(community.id, () => community);
+    });
+
+    _cachedJoinedCommunities = _tempSortedCommunities;
+    return _cachedJoinedCommunities;
+  }
+
+  bool _isNotCached(Community community){
+    bool _isCached = true;
+    _cachedJoinedCommunities.forEach((cCommunity){
+      if (cCommunity.id == community.id) _isCached = false;
+    });
+    return _isCached;
+  }
+
+  Future<List<JoinedCommunity>> _fetchJoinedCommunities(User user) async {
     bool _hasError = false;
     QuerySnapshot snapshot = await _database
         .collection(USERS_COLLECTION)
@@ -42,6 +76,7 @@ abstract class JoinedCommunityModel extends Model {
       tempJoinedCommunities.add(community);
     });
 
+
     return tempJoinedCommunities;
   }
 
@@ -57,30 +92,10 @@ abstract class JoinedCommunityModel extends Model {
     });
     if (_hasError || !document.exists) return null;
     Community community = Community.fromSnapShot(document);
-    // print(community.toString());
     return community;
   }
 
-  /// sorts coommunities based on the ones with the most recent messages
-  /// the [user] is the [User] that has joined these communities
-  Future<List<Community>> sortedCommunities(User user) async {
-    List<JoinedCommunity> joinedCommunities =
-        await _updateJoinedCommunities(user);
-
-    joinedCommunities.forEach((joinedCommunity) async {
-      Community community = await _getCommunityFromId(joinedCommunity.id);
-      if (community != null && !joinedCommunitiesMap.containsKey(community.id))
-        _tempSortedCommunities.add(community);
-    });
-    _tempSortedCommunities.sort((firstCommunity, secCommunity) =>
-        secCommunity.lastMessageAt.compareTo(firstCommunity.lastMessageAt));
-    _tempSortedCommunities.forEach((community) {
-      _joinedCommunitiesMap.putIfAbsent(community.id, () => community);
-    });
-
-    _cachedJoinedCommunities = _tempSortedCommunities;
-    return _cachedJoinedCommunities;
-  }
+  
 
   DocumentReference _getCommunityRef(Community community) {
     return _database.collection(COMMUNITIES_COLLECTION).document(community.id);
@@ -108,14 +123,14 @@ abstract class JoinedCommunityModel extends Model {
     if (_hasError) {
       _userCommunityStatus = StatusCode.failed;
       notifyListeners();
-      await sortedCommunities(user);
+      await updatedJoinedCommunities(user);
       return _userCommunityStatus;
     }
 
     _firebaseMessaging.subscribeToTopic(community.id);
     print('$_tag subscripbed to community ${community.name}');
     _userCommunityStatus = await _addCommunityMemberRef(memberMap);
-    await sortedCommunities(user);
+    await updatedJoinedCommunities(user);
     return _userCommunityStatus;
   }
 

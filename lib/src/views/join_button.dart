@@ -22,7 +22,7 @@ class JoinButtonView extends StatelessWidget {
           Scaffold.of(context)
               .showSnackBar(SnackBar(content: Text(failedToJoinCommunityText)));
         if (joinCommunityResult == StatusCode.success)
-          model.sortedCommunities(model.currentUser);
+          model.updatedJoinedCommunities(model.currentUser);
       }
 
       return Builder(builder: (context) {
@@ -33,7 +33,8 @@ class JoinButtonView extends StatelessWidget {
           child: model.userCommunityStatus == StatusCode.waiting
               ? MyProgressIndicator(
                   color: primaryColor,
-                  size: 15.0,
+                  size: 15,
+                  strokewidth: 2,
                 )
               : Text(joinText),
           textColor: primaryColor,

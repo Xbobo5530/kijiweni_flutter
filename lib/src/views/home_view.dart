@@ -17,7 +17,7 @@ class HomeView extends StatelessWidget {
 
       return FutureBuilder<List<Community>>(
         initialData: model.cachedJoinedCommunities,
-        future: model.sortedCommunities(model.currentUser),
+        future: model.updatedJoinedCommunities(model.currentUser),
         builder: (context, snapshot) {
           return snapshot.data == null
               ? Center(

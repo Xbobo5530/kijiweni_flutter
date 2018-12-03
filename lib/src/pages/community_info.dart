@@ -93,7 +93,7 @@ class CommunityInfoPage extends StatelessWidget {
 
       switch (leaveCommunityStatus) {
         case StatusCode.success:
-          await model.sortedCommunities(model.currentUser);
+          await model.updatedJoinedCommunities(model.currentUser);
           Navigator.pop(context);
           break;
         case StatusCode.failed:
@@ -106,100 +106,53 @@ class CommunityInfoPage extends StatelessWidget {
       }
     }
 
-    _handleLeaveCommunity(MainModel model) async {
-      await showDialog(
+    final _actions = <Widget>[
+      FlatButton(
+          onPressed: () => Navigator.pop(context, false),
+          textColor: primaryColor,
+          child: Text(cancelText)),
+      FlatButton(
+        onPressed: () => Navigator.pop(context, true),
+        textColor: Colors.red,
+        child: Text(leaveText),
+      )
+    ];
+
+    final _content = Text(
+        //'Are you sure you want to leave the ${community.name} community?'),
+        'Unauhakika unataka kujitoa kwenye kijiwe cha ${community.name}?');
+
+    _showLeaveCommunityDialog(MainModel model) async {
+      bool shouldLeave = await showDialog<bool>(
           context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(confirmLeaveCommunityText),
-              content: Text(
-                  //'Are you sure you want to leave the ${community.name} community?'),
-                  'Unauhakika unataka kujitoa kwenye kijiwe cha ${community.name}?'),
-              actions: <Widget>[
-                FlatButton(
-                    onPressed: () => Navigator.pop(context),
-                    textColor: primaryColor,
-                    child: Text(cancelText)),
-                FlatButton(
-                  onPressed: () => _finishLeaveCommunity(model),
-                  textColor: Colors.red,
-                  child: Text(leaveText),
-                )
-              ],
-            );
-          });
-    }
-
-    _handleSelection(MainModel model, bool shouldDelete) async {
-      switch (shouldDelete) {
-        case true:
-          StatusCode deleteCommunityStatus =
-              await model.deleteCommunity(community, model.currentUser);
-
-          switch (deleteCommunityStatus) {
-            case StatusCode.success:
-              if (community.imageUrl != null)
-                await model.deleteAsset(community.imagePath);
-              Navigator.popUntil(context, ModalRoute.withName('/'));
-              break;
-            case StatusCode.failed:
-              Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text(errorMessage),
+          builder: (context) => AlertDialog(
+                title: Text(model.userCommunityStatus == StatusCode.waiting
+                    ? waitText
+                    : confirmLeaveCommunityText),
+                content: _content,
+                actions: _actions,
               ));
-              break;
-            default:
-              print(
-                  '$_tag unexpected deleteCommunityStatus: $deleteCommunityStatus');
-          }
-          break;
-        default:
-          print('$_tag shouldDelete is: $shouldDelete');
-      }
-    }
-
-    _handleDeleteCommunity(MainModel model) async {
-      bool shouldDelete = await showDialog<bool>(
-          context: context,
-          builder: (_) => AlertDialog(
-                title: Text(deleteCommunityText),
-                content: Text(confirmDeleteCommunityMessage),
-                actions: <Widget>[
-                  FlatButton(
-                    textColor: primaryColor,
-                    child: Text(cancelText),
-                    onPressed: () {
-                      return Navigator.pop(context, false);
-                    },
-                  ),
-                  FlatButton(
-                    textColor: Colors.red,
-                    child: Text(deleteText),
-                    onPressed: () {
-                      return Navigator.pop(context, true);
-                    },
-                  )
-                ],
-              ));
-
-      _handleSelection(model, shouldDelete);
+        if (shouldLeave) _finishLeaveCommunity(model);
     }
 
     final _leaveButton =
         ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       return model.joinedCommunitiesMap.containsKey(community.id)
-          ? community.createdBy == model.currentUser.id
-              ? model.userCommunityStatus == StatusCode.waiting
-                  ? MyProgressIndicator(
+          ? model.userCommunityStatus == StatusCode.waiting
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MyProgressIndicator(
+                      strokewidth: 2,
                       size: 15,
                       color: Colors.white,
-                    )
-                  : IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () => _handleDeleteCommunity(model),
-                    )
+                      
+                    ),
+                  ),
+                )
               : IconButton(
                   icon: Icon(Icons.exit_to_app),
-                  onPressed: () => _handleLeaveCommunity(model),
+                  onPressed: () => _showLeaveCommunityDialog(model),
                 )
           : Container();
     });
