@@ -27,6 +27,19 @@ class Community {
     this.imagePath = document[IMAGE_PATH_FIELD];
     this.createdBy = document[CREATED_BY_FIELD];
     this.createdAt = document[CREATED_AT_FIELD];
-    this.lastMessageAt = document[LAST_MESSAGE_AT_FIELD];
+    this.lastMessageAt = document[LAST_MESSAGE_AT_FIELD] ?? 0;
   }
+
+  @override
+  String toString() => '''
+    id: ${this.id}
+    name: ${this.name}
+    description: ${this.description}
+    imageUrl: ${this.imageUrl}
+    imagePath: ${this.imagePath}
+    createdBy: ${this.createdBy}
+    createdAt: ${this.createdAt}
+    lastMessageAt: ${this.lastMessageAt}
+    
+    ''';
 }

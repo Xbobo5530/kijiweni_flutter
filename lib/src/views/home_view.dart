@@ -9,32 +9,30 @@ import 'package:scoped_model/scoped_model.dart';
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // _buildCommunityTile(Community community) =>
-
     print('build is called');
 
     return Scaffold(body: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
-      if (model.currentUser == null) return EmptyHomePageView();
+      if (!model.isLoggedIn) return EmptyHomePageView();
 
       return FutureBuilder<List<Community>>(
         initialData: model.cachedJoinedCommunities,
         future: model.sortedCommunities(model.currentUser),
         builder: (context, snapshot) {
-          // print('sortedCommunities is called\nnsapshot.data is: ${snapshot.data.length}');
           return snapshot.data == null
-            ? Center(
-                child: MyProgressIndicator(),
-              )
-            : snapshot.data.length == 0
-                ? EmptyHomePageView()
-                : ListView(
-                    children: snapshot.data
-                        .map(
-                          (community) => JoinedCommunityListItemView(
-                              community: community, key: Key(community.id)),
-                        )
-                        .toList());},
+              ? Center(
+                  child: MyProgressIndicator(),
+                )
+              : snapshot.data.length == 0
+                  ? EmptyHomePageView()
+                  : ListView(
+                      children: snapshot.data
+                          .map(
+                            (community) => JoinedCommunityListItemView(
+                                community: community, key: Key(community.id)),
+                          )
+                          .toList());
+        },
       );
     }));
   }

@@ -14,13 +14,15 @@ const _tag = 'PreviewFilePage:';
 class PreviewFilePage extends StatelessWidget {
   final AddMenuOption option;
   final Community community;
+  final String message;
   final FileUploadFor uploadFor;
 
   const PreviewFilePage(
       {Key key,
       @required this.option,
       @required this.community,
-      this.uploadFor})
+      this.uploadFor,
+      this.message})
       : assert(option != null),
         assert(community != null),
         super(key: key);
@@ -87,6 +89,14 @@ class PreviewFilePage extends StatelessWidget {
               onPressed: () => _handleSend(model),
             ));
 
+    _buildController(MainModel model) {
+      if (message != null) {
+        _captionController.text = message;
+        return _captionController;
+      }
+      return _captionController;
+    }
+
     final _captionSection = Positioned(
       bottom: 0.0,
       left: 0.0,
@@ -102,13 +112,15 @@ class PreviewFilePage extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: TextField(
-                    controller: _captionController,
-                    decoration: InputDecoration(
-                        suffixIcon: _sendButton,
-                        border: InputBorder.none,
-                        hintText: addCaptionText,
-                        prefixIcon: Icon(Icons.message)),
+                  child: ScopedModelDescendant<MainModel>(
+                    builder: (_, __, model) => TextField(
+                          controller: _buildController(model),
+                          decoration: InputDecoration(
+                              suffixIcon: _sendButton,
+                              border: InputBorder.none,
+                              hintText: addCaptionText,
+                              prefixIcon: Icon(Icons.message)),
+                        ),
                   ),
                 ),
               ],
@@ -127,7 +139,7 @@ class PreviewFilePage extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           _previewSection,
-          uploadFor == FileUploadFor.chat ? _captionSection : Container(),
+          _captionSection,
         ],
       ),
     );

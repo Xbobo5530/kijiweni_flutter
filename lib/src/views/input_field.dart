@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/src/models/chat.dart';
 import 'package:kijiweni_flutter/src/models/community.dart';
 import 'package:kijiweni_flutter/src/models/main_model.dart';
-
 import 'package:kijiweni_flutter/src/pages/preview_file.dart';
 import 'package:kijiweni_flutter/src/utils/colors.dart';
 import 'package:kijiweni_flutter/src/utils/consts.dart';
@@ -142,9 +141,10 @@ class InputFieldView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Expanded(
-                        child: model.joinedCommunities.containsKey(community.id)
-                            ? _messageField
-                            : JoinButtonView(community: community)),
+                        child:
+                            model.joinedCommunitiesMap.containsKey(community.id)
+                                ? _messageField
+                                : JoinButtonView(community: community)),
                   ],
                 )
               ]),

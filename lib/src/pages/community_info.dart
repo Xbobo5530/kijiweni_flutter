@@ -80,7 +80,7 @@ class CommunityInfoPage extends StatelessWidget {
 
     final _joinButtonSection = ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return model.joinedCommunities.containsKey(community.id)
+        return model.joinedCommunitiesMap.containsKey(community.id)
             ? Container()
             : JoinButtonView(community: community);
       },
@@ -169,7 +169,7 @@ class CommunityInfoPage extends StatelessWidget {
 
     final _leaveButton =
         ScopedModelDescendant<MainModel>(builder: (context, child, model) {
-      return model.joinedCommunities.containsKey(community.id)
+      return model.joinedCommunitiesMap.containsKey(community.id)
           ? community.createdBy == model.currentUser.id
               ? IconButton(
                   icon: Icon(Icons.delete),

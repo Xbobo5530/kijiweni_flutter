@@ -13,11 +13,12 @@ class JoinedCommunityListItemView extends StatelessWidget {
     return ListTile(
       leading: community.imageUrl != null
           ? CircleAvatar(
+            radius: 24,
               backgroundColor: Colors.lightGreen,
               backgroundImage: NetworkImage(community.imageUrl),
             )
           : CircularButton(
-              size: 50.0,
+              size: 48.0,
               elevation: 0.0,
               icon: Icon(
                 Icons.people,

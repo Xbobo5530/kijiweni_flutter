@@ -18,15 +18,16 @@ class MainModel extends Model
          {
   MainModel() {
     // _startup();
-    updateLoginStatus();
+    // updateLoginStatus();
     firebaseCloudMessagingListeners();
     initUniLinks();
+    _getJoinedCommunities();
   }
 
-  // _startup() async {
-  //   StatusCode updatingLoginSatus = await updateLoginStatus();
-  //   if (updatingLoginSatus == StatusCode.success ||
-  //       updatingLoginSatus == StatusCode.failed)
-  //     await updateJoinedCommunities(currentUser);
-  // }
+  _getJoinedCommunities()async{
+    await updateLoginStatus(); if (isLoggedIn)sortedCommunities(currentUser);
+  }
+
+  
+
 }

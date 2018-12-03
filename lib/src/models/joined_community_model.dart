@@ -14,16 +14,11 @@ abstract class JoinedCommunityModel extends Model {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   StatusCode _joiningCommunityStatus;
   StatusCode get joiningCommunityStatus => _joiningCommunityStatus;
-  Map<String, Community> _joinedCommunities;
-  Map<String, Community> get joinedCommunities => _joinedCommunities;
+  Map<String, Community> _joinedCommunitiesMap = Map();
+  Map<String, Community> get joinedCommunitiesMap => _joinedCommunitiesMap;
   List<Community> _cachedJoinedCommunities;
+  List<Community> _tempSortedCommunities = [];
   List<Community> get cachedJoinedCommunities => _cachedJoinedCommunities;
-
-  // Stream<QuerySnapshot> joinedCommunitiesStream(User user) => _database
-  //     .collection(USERS_COLLECTION)
-  //     .document(user.id)
-  //     .collection(COMMUNITIES_COLLECTION)
-  //     .snapshots();
 
   Future<List<JoinedCommunity>> _updateJoinedCommunities(User user) async {
     bool _hasError = false;
@@ -37,8 +32,8 @@ abstract class JoinedCommunityModel extends Model {
       _hasError = true;
     });
     if (_hasError) {
-      _joinedCommunities = Map();
-      notifyListeners();
+      // _joinedCommunitiesMap = Map();
+      // notifyListeners();
       return <JoinedCommunity>[];
     }
 
@@ -63,7 +58,9 @@ abstract class JoinedCommunityModel extends Model {
       _hasError = true;
     });
     if (_hasError || !document.exists) return null;
-    return Community.fromSnapShot(document);
+    Community community = Community.fromSnapShot(document);
+    // print(community.toString());
+    return community;
   }
 
   /// sorts coommunities based on the ones with the most recent messages
@@ -71,21 +68,21 @@ abstract class JoinedCommunityModel extends Model {
   Future<List<Community>> sortedCommunities(User user) async {
     List<JoinedCommunity> joinedCommunities =
         await _updateJoinedCommunities(user);
-        // print('joinedCommunities: $joinedCommunities');
-    List<Community> tempSortedCommunities = [];
 
     joinedCommunities.forEach((joinedCommunity) async {
       Community community = await _getCommunityFromId(joinedCommunity.id);
-      if (community != null) tempSortedCommunities.add(community);
+      if (community != null && !joinedCommunitiesMap.containsKey(community.id))
+        _tempSortedCommunities.add(community);
     });
-    tempSortedCommunities.sort((firstCommunity, secCommunity) =>
+    _tempSortedCommunities.sort((firstCommunity, secCommunity) =>
         secCommunity.lastMessageAt.compareTo(firstCommunity.lastMessageAt));
-    tempSortedCommunities.forEach((community) {
-      _joinedCommunities.putIfAbsent(community.id, () => community);
+    _tempSortedCommunities.forEach((community) {
+      _joinedCommunitiesMap.putIfAbsent(community.id, () => community);
     });
-    _cachedJoinedCommunities = tempSortedCommunities;
-    notifyListeners();
-    return tempSortedCommunities;
+
+    _cachedJoinedCommunities = _tempSortedCommunities;
+    // _tempSortedCommunities.clear();
+    return _cachedJoinedCommunities;
   }
 
   DocumentReference _getCommunityRef(Community community) {
@@ -145,7 +142,8 @@ abstract class JoinedCommunityModel extends Model {
     }
     _joiningCommunityStatus = StatusCode.success;
     // updateJoinedCommunities(await _userFromId(memberMap[MEMBER_ID_FIELD]));
-    return StatusCode.success;
+    notifyListeners();
+    return _joiningCommunityStatus;
   }
 
   Future<StatusCode> leaveCommunity(Community community, User user) async {
@@ -189,4 +187,7 @@ abstract class JoinedCommunityModel extends Model {
     sortedCommunities(user);
     return StatusCode.success;
   }
+  // resetTempJoinedCommunities(){
+  //   _tempSortedCommunities.clear();
+  // }
 }
