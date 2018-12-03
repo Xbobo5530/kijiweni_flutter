@@ -6,6 +6,7 @@ import 'package:kijiweni_flutter/src/utils/colors.dart';
 import 'package:kijiweni_flutter/src/utils/consts.dart';
 import 'package:kijiweni_flutter/src/utils/status_code.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
+import 'package:kijiweni_flutter/src/views/circular_button.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
@@ -31,7 +32,29 @@ class PreviewFilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final _captionController = TextEditingController();
     Widget _previewImage() => ScopedModelDescendant<MainModel>(
-        builder: (_, __, model) => Image.file(model.imageFile));
+        builder: (_, __, model) => model.imageFile == null
+        ? Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding( 
+              padding: const EdgeInsets.all(8.0),
+              child: CircularButton(
+                elevation: 0,
+                icon: Icon(Icons.image, size: 80,),
+              
+              ),
+            ),
+            RaisedButton(
+              child: Text(addImageText),
+              onPressed: ()=> model.getFile(AddMenuOption.image),
+            ),
+            RaisedButton(
+              child: Text(takePhotoText),
+              onPressed: ()=> model.getFile(AddMenuOption.camera),
+            )
+          ],
+        )
+        : Image.file(model.imageFile));
 
     final _previewSection = Center(
       child: /*option == AddMenuOption.video ? _previewVideo(_controller) : */ _previewImage(),

@@ -81,7 +81,6 @@ abstract class JoinedCommunityModel extends Model {
     });
 
     _cachedJoinedCommunities = _tempSortedCommunities;
-    // _tempSortedCommunities.clear();
     return _cachedJoinedCommunities;
   }
 
