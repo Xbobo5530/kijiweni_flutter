@@ -12,8 +12,8 @@ const _tag = 'JoinedCommunityModel:';
 abstract class JoinedCommunityModel extends Model {
   Firestore _database = Firestore.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  StatusCode _joiningCommunityStatus;
-  StatusCode get joiningCommunityStatus => _joiningCommunityStatus;
+  StatusCode _userCommunityStatus;
+  StatusCode get userCommunityStatus => _userCommunityStatus;
   Map<String, Community> _joinedCommunitiesMap = Map();
   Map<String, Community> get joinedCommunitiesMap => _joinedCommunitiesMap;
   List<Community> _cachedJoinedCommunities;
@@ -32,8 +32,6 @@ abstract class JoinedCommunityModel extends Model {
       _hasError = true;
     });
     if (_hasError) {
-      // _joinedCommunitiesMap = Map();
-      // notifyListeners();
       return <JoinedCommunity>[];
     }
 
@@ -90,7 +88,7 @@ abstract class JoinedCommunityModel extends Model {
 
   Future<StatusCode> joinCommunity(Community community, User user) async {
     print('$_tag at _createMembersRef');
-    _joiningCommunityStatus = StatusCode.waiting;
+    _userCommunityStatus = StatusCode.waiting;
     notifyListeners();
     bool _hasError = false;
     Map<String, dynamic> memberMap = {
@@ -108,17 +106,17 @@ abstract class JoinedCommunityModel extends Model {
     });
 
     if (_hasError) {
-      _joiningCommunityStatus = StatusCode.failed;
+      _userCommunityStatus = StatusCode.failed;
       notifyListeners();
       await sortedCommunities(user);
-      return _joiningCommunityStatus;
+      return _userCommunityStatus;
     }
 
     _firebaseMessaging.subscribeToTopic(community.id);
     print('$_tag subscripbed to community ${community.name}');
-    _joiningCommunityStatus = await _addCommunityMemberRef(memberMap);
+    _userCommunityStatus = await _addCommunityMemberRef(memberMap);
     await sortedCommunities(user);
-    return _joiningCommunityStatus;
+    return _userCommunityStatus;
   }
 
   Future<StatusCode> _addCommunityMemberRef(
@@ -136,20 +134,22 @@ abstract class JoinedCommunityModel extends Model {
       _hasError = true;
     });
     if (_hasError) {
-      _joiningCommunityStatus = StatusCode.failed;
+      _userCommunityStatus = StatusCode.failed;
       notifyListeners();
       leaveCommunity(memberMap[COMMUNITY_ID_FIELD], memberMap[MEMBER_ID_FIELD]);
-      return _joiningCommunityStatus;
+      return _userCommunityStatus;
     }
-    _joiningCommunityStatus = StatusCode.success;
+    _userCommunityStatus = StatusCode.success;
     // updateJoinedCommunities(await _userFromId(memberMap[MEMBER_ID_FIELD]));
 
     notifyListeners();
-    return _joiningCommunityStatus;
+    return _userCommunityStatus;
   }
 
   Future<StatusCode> leaveCommunity(Community community, User user) async {
     print('$_tag at leaveCommunity');
+    _userCommunityStatus = StatusCode.waiting;
+    notifyListeners();
     bool _hasError = false;
     await _getCommunityRef(community)
         .collection(MEMBERS_COLLECTION)
@@ -161,11 +161,15 @@ abstract class JoinedCommunityModel extends Model {
     });
 
     if (_hasError) {
-      return StatusCode.failed;
+      _userCommunityStatus = StatusCode.failed;
+      notifyListeners();
+      return _userCommunityStatus;
     }
     _firebaseMessaging.unsubscribeFromTopic(community.id);
     print('$_tag usubscripbed to community ${community.name}');
-    return await _deleteCommunityRefFromUser(community, user);
+    _userCommunityStatus =  await _deleteCommunityRefFromUser(community, user);
+    notifyListeners();
+    return _userCommunityStatus;
   }
 
   Future<StatusCode> _deleteCommunityRefFromUser(

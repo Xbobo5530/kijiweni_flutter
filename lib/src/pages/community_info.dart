@@ -7,6 +7,7 @@ import 'package:kijiweni_flutter/src/utils/status_code.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:kijiweni_flutter/src/views/circular_button.dart';
 import 'package:kijiweni_flutter/src/views/join_button.dart';
+import 'package:kijiweni_flutter/src/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'CommunityInfoPage:';
@@ -187,10 +188,15 @@ class CommunityInfoPage extends StatelessWidget {
         ScopedModelDescendant<MainModel>(builder: (context, child, model) {
       return model.joinedCommunitiesMap.containsKey(community.id)
           ? community.createdBy == model.currentUser.id
-              ? IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () => _handleDeleteCommunity(model),
-                )
+              ? model.userCommunityStatus == StatusCode.waiting
+                  ? MyProgressIndicator(
+                      size: 15,
+                      color: Colors.white,
+                    )
+                  : IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () => _handleDeleteCommunity(model),
+                    )
               : IconButton(
                   icon: Icon(Icons.exit_to_app),
                   onPressed: () => _handleLeaveCommunity(model),

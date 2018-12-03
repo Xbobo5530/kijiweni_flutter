@@ -27,10 +27,10 @@ class JoinButtonView extends StatelessWidget {
 
       return Builder(builder: (context) {
         return FlatButton(
-          onPressed: () => model.joiningCommunityStatus == StatusCode.waiting
+          onPressed: () => model.userCommunityStatus == StatusCode.waiting
               ? null
               : _handleJoinCommunity(model, context),
-          child: model.joiningCommunityStatus == StatusCode.waiting
+          child: model.userCommunityStatus == StatusCode.waiting
               ? MyProgressIndicator(
                   color: primaryColor,
                   size: 15.0,
