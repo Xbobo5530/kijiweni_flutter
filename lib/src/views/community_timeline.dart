@@ -38,6 +38,7 @@ class CommunityTimelineView extends StatelessWidget {
                       snapshot.data.documents[index];
                   final Chat chat = Chat.fromSnapshot(chatDoc);
                   
+                  return ChatListItemView(chat: chat, key: Key(chat.id),);
                   return FutureBuilder<Chat>(
                     initialData: chat,
                     future: model.refineChat(chat),

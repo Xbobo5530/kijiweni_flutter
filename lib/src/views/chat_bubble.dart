@@ -9,8 +9,8 @@ import 'package:kijiweni_flutter/src/views/circular_button.dart';
 import 'package:kijiweni_flutter/src/views/message_meta_section.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-
 const _tag = 'ChatBubble:';
+
 class ChatBubbleView extends StatelessWidget {
   final bool isMe;
   final Chat chat;
@@ -20,18 +20,21 @@ class ChatBubbleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _imageSection = chat.fileType == FILE_TYPE_IMAGE
-        ? chat.fileUrl != null
-            ? Image.network(chat.fileUrl)
-            : FittedBox(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Icon(
-                    Icons.image,
-                    size: 100.0,
-                    color: Colors.black12,
-                  ),
-                ),
-              )
+        ? FittedBox(
+            child: Container(
+              // height: 100,
+              color: Colors.white70,
+              child: chat.fileUrl != null
+                  ? Image.network(chat.fileUrl)
+                  : FittedBox(
+                      child: Container(
+                        height: 250,
+                        color: Colors.white70,
+                        child: Center(child: Icon(Icons.cloud_download),),
+                      ),
+                    ),
+            ),
+          )
         : Container();
 
     final _messageTextSection = chat.message != null && chat.message.isNotEmpty
@@ -42,48 +45,49 @@ class ChatBubbleView extends StatelessWidget {
           )
         : Container();
 
-    _buildReplyContent(MainModel model) => ListTile(
-          title: chat.createdBy == model.currentUser.id
-              ? Text(
-                  youText,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )
-              : chat.replyToUsername == null
-                  ? Container()
-                  : Text(
-                      chat.replyToUsername,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+    // _buildReplyContent(MainModel model) => ListTile(
+    //       title: chat.createdBy == model.currentUser.id
+    //           ? Text(
+    //               youText,
+    //               style: TextStyle(fontWeight: FontWeight.bold),
+    //             )
+    //           : chat.replyToUsername == null
+    //               ? Container()
+    //               : Text(
+    //                   chat.replyToUsername,
+    //                   style: TextStyle(fontWeight: FontWeight.bold),
+    //                 ),
+    //       subtitle: Text(
+    //           chat.replyToMessage != null && chat.replyToMessage.isNotEmpty
+    //               ? chat.replyToMessage
+    //               : chat.fileType == FILE_TYPE_IMAGE ? photoText : ''),
+    //     );
+
+    final _replyingToView = Container(
+      color: Colors.white70,
+      child: ScopedModelDescendant<MainModel>(builder: (_, __, model) {
+        print('$_tag ');
+        return ListTile(
+          title: Text('${chat.replyToUserId}'),
+          //TODO: continue
+          
+          // chat.replyToUserId == model.currentUser.id
+          //     ? Text(
+          //         youText,
+          //         style: TextStyle(fontWeight: FontWeight.bold),
+          //       )
+          //     : chat.replyToUsername == null
+          //         ? Container()
+          //         : Text(
+          //             chat.replyToUsername,
+          //             style: TextStyle(fontWeight: FontWeight.bold),
+          //           ),
           subtitle: Text(
               chat.replyToMessage != null && chat.replyToMessage.isNotEmpty
                   ? chat.replyToMessage
                   : chat.fileType == FILE_TYPE_IMAGE ? photoText : ''),
         );
-
-    final _replyingToView = Container(
-      color: Colors.white70,
-      child: ScopedModelDescendant<MainModel>(
-          builder: (_, __, model){
-          
-          print('$_tag ');
-          return
-           ListTile(
-                title: chat.replyToUserId == model.currentUser.id
-                    ? Text(
-                        youText,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    : chat.replyToUsername == null
-                        ? Container()
-                        : Text(
-                            chat.replyToUsername,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                subtitle: Text(chat.replyToMessage != null &&
-                        chat.replyToMessage.isNotEmpty
-                    ? chat.replyToMessage
-                    : chat.fileType == FILE_TYPE_IMAGE ? photoText : ''),
-              );}),
+      }),
     );
 
     Widget _buildMessageContent() {
@@ -97,8 +101,7 @@ class ChatBubbleView extends StatelessWidget {
           ],
         );
       }
-      if (chat.fileType == null)
-        return Container(); //TODO: remove on flush data
+
       if (chat.message != null &&
           chat.message.isNotEmpty &&
           chat.fileType == FILE_TYPE_NO_FILE) return _messageTextSection;

@@ -47,7 +47,7 @@ class Chat {
         communityId = document[COMMUNITY_ID_FIELD],
         fileUrl = document[FILE_URL_FIELD],
         filePath = document[FILE_PATH_FIELD],
-        fileType = document[FILE_TYPE_FIELD],
+        fileType = document[FILE_TYPE_FIELD] ?? FILE_TYPE_NO_FILE,
         fileStatus = document[FILE_STATUS_FIELD],
         reports = document[REPORTS_FIELD],
         createdBy = document[CREATED_BY_FIELD],
