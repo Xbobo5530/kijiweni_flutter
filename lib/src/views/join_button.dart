@@ -21,6 +21,8 @@ class JoinButtonView extends StatelessWidget {
         if (joinCommunityResult == StatusCode.failed)
           Scaffold.of(context)
               .showSnackBar(SnackBar(content: Text(failedToJoinCommunityText)));
+        if (joinCommunityResult == StatusCode.success)
+          model.sortedCommunities(model.currentUser);
       }
 
       return Builder(builder: (context) {

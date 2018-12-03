@@ -86,6 +86,25 @@ class CommunityInfoPage extends StatelessWidget {
       },
     );
 
+    _finishLeaveCommunity(MainModel model) async {
+      StatusCode leaveCommunityStatus =
+          await model.leaveCommunity(community, model.currentUser);
+
+      switch (leaveCommunityStatus) {
+        case StatusCode.success:
+          await model.sortedCommunities(model.currentUser);
+          Navigator.pop(context);
+          break;
+        case StatusCode.failed:
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(errorMessage),
+          ));
+          break;
+        default:
+          print('leaveCommunityStatus is: $leaveCommunityStatus');
+      }
+    }
+
     _handleLeaveCommunity(MainModel model) async {
       await showDialog(
           context: context,
@@ -101,10 +120,7 @@ class CommunityInfoPage extends StatelessWidget {
                     textColor: primaryColor,
                     child: Text(cancelText)),
                 FlatButton(
-                  onPressed: () {
-                    model.leaveCommunity(community, model.currentUser);
-                    Navigator.pop(context);
-                  },
+                  onPressed: () => _finishLeaveCommunity(model),
                   textColor: Colors.red,
                   child: Text(leaveText),
                 )

@@ -116,7 +116,9 @@ abstract class JoinedCommunityModel extends Model {
 
     _firebaseMessaging.subscribeToTopic(community.id);
     print('$_tag subscripbed to community ${community.name}');
-    return await _addCommunityMemberRef(memberMap);
+    _joiningCommunityStatus = await _addCommunityMemberRef(memberMap);
+    await sortedCommunities(user);
+    return _joiningCommunityStatus;
   }
 
   Future<StatusCode> _addCommunityMemberRef(
@@ -141,6 +143,7 @@ abstract class JoinedCommunityModel extends Model {
     }
     _joiningCommunityStatus = StatusCode.success;
     // updateJoinedCommunities(await _userFromId(memberMap[MEMBER_ID_FIELD]));
+
     notifyListeners();
     return _joiningCommunityStatus;
   }
@@ -181,12 +184,15 @@ abstract class JoinedCommunityModel extends Model {
     });
 
     if (_hasError) return StatusCode.failed;
-    // updateJoinedCommunities(user);
+    _joinedCommunitiesMap.remove(community.id);
+    _updateCache(community);
     notifyListeners();
-    sortedCommunities(user);
     return StatusCode.success;
   }
-  // resetTempJoinedCommunities(){
-  //   _tempSortedCommunities.clear();
-  // }
+
+  _updateCache(Community community) {
+    _cachedJoinedCommunities.forEach((commu) {
+      if (commu.id == community.id) _cachedJoinedCommunities.remove(commu);
+    });
+  }
 }
