@@ -94,7 +94,6 @@ class CommunityInfoPage extends StatelessWidget {
       switch (leaveCommunityStatus) {
         case StatusCode.success:
           await model.updatedJoinedCommunities(model.currentUser);
-          Navigator.pop(context);
           break;
         case StatusCode.failed:
           Scaffold.of(context).showSnackBar(SnackBar(

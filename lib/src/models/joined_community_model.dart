@@ -210,8 +210,12 @@ abstract class JoinedCommunityModel extends Model {
   }
 
   _updateCache(Community community) {
-    _cachedJoinedCommunities.forEach((commu) {
-      if (commu.id == community.id) _cachedJoinedCommunities.remove(commu);
-    });
+
+    _cachedJoinedCommunities.remove(community);
+
+
+    // _cachedJoinedCommunities.forEach((commu) {
+    //   if (commu.id == community.id) _cachedJoinedCommunities.remove(commu);
+    // });
   }
 }
