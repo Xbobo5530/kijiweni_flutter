@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kijiweni_flutter/models/main_model.dart';
-import 'package:kijiweni_flutter/pages/home.dart';
-import 'package:kijiweni_flutter/utils/colors.dart';
-import 'package:kijiweni_flutter/utils/strings.dart';
+import 'package:kijiweni_flutter/src/models/main_model.dart';
+import 'package:kijiweni_flutter/src/pages/home.dart';
+import 'package:kijiweni_flutter/src/utils/colors.dart';
+import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() {
