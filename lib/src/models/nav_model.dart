@@ -35,16 +35,19 @@ abstract class NavModel extends Model {
   Future<Null> initUniLinks() async {
     print('$_tag at initiUniLinks');
     // Platform messages may fail, so we use a try/catch PlatformException.
+    String communityId;
     try {
       String initialLink = await getInitialLink();
       // Parse the link and warn the user, if it is not correct,
       // but keep in mind it could be `null`.
       print('$_tag initialLink is: $initialLink');
       if (initialLink == null) return ;
-      String communityId = initialLink.substring(APP_DEEP_LINK_HEAD.length);
+       communityId = initialLink.substring(APP_DEEP_LINK_HEAD.length);
       _deepLinkedCommunityId = communityId;
-      print('$_tag the community id is: $communityId');
+      // print('$_tag the community id is: $communityId');
       notifyListeners();
+      // return communityId;
+      
     } on PlatformException {
       // Handle exception by warning the user their action did not succeed
       // return?
@@ -54,4 +57,6 @@ abstract class NavModel extends Model {
   resetInitialLinkData(){
     _deepLinkedCommunityId = null;
   }
+
+  
 }

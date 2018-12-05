@@ -25,6 +25,8 @@ const errorMessage = 'Kuna hitilafu imetokea, jaribu tena baadae';//'Something w
 const failedToSendMessageText = 'Imeshindikana kutuma ujumbe wako, jaribu tena';//'Failed to send your message, please try again';
 const failedToJoinCommunityText = 'Imeshidikana kujiunga, jaribu tena';//'Failed to join, please try again';
 
+
+const backHomeText = 'Anza upya';//'Back home';
 // messages
 const reportSubmittedMessage = 'Malalamiko yako yamerejeshwa';// 'Your report has been submitted';
 
@@ -48,6 +50,7 @@ const inviteText = 'Karibisha majamaa';//'Invite';
 const loadingText = 'Tafadhali subiri...'; //'Loading...';
 
 const myCommunitiesText = 'Vijiwe vyangu';//'My communities';
+const editText = 'Hariri taarifa'; //'Edit info';
 
 const photoText = 'Picha';//'Photo';
 const youText = 'Wewe';//'You';

@@ -7,7 +7,7 @@ class LabeledCircularButton extends StatelessWidget {
   final String label;
 
   const LabeledCircularButton(
-      {Key key, this.onTap, this.circularButton, @required this.label})
+      {Key key, this.onTap, @required this.circularButton, @required this.label})
       : assert(label != null),
         super(key: key);
 

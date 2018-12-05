@@ -17,11 +17,6 @@ abstract class CommunityModel extends Model {
   Map<String, User> _cachedUsers = Map();
   StatusCode _createCommunityStatus;
   StatusCode get createCommunityStatus => _createCommunityStatus;
-
-  // Map<String, Community> _joinedCommunities = Map();
-  // Map<String, Community> get joinedCommunities => _joinedCommunities;
-  // List<Community> _myCommunities = <Community>[];
-  // List<Community> get myCommunities => _myCommunities;
   Stream<dynamic> get communitiesStream => _communitiesCollection
       .orderBy(CREATED_AT_FIELD, descending: true)
       .snapshots();
@@ -39,9 +34,9 @@ abstract class CommunityModel extends Model {
       _hasError = true;
     });
     if (_hasError || !communityDoc.exists) {
-      // notifyListeners();
       // return Community(createdBy: null, createdAt: null, name: null);
-      throw NullThrownError;
+      // throw NullThrownError;
+      return null;
     }
     // notifyListeners();
     return Community.fromSnapShot(communityDoc);
@@ -88,8 +83,6 @@ abstract class CommunityModel extends Model {
     return _createCommunityStatus;
   }
 
-  
-
   Future<StatusCode> _createJoinedCommunityRef(
       Community community, User user) async {
     print('$_tag at _createUserCommunityRef');
@@ -114,7 +107,7 @@ abstract class CommunityModel extends Model {
     if (_hasError)
       return StatusCode.failed;
     else
-      return StatusCode.success;//await joinCommunity(community, user);
+      return StatusCode.success; //await joinCommunity(community, user);
   }
 
   Future<StatusCode> _createUserCommunityRef(
@@ -183,32 +176,6 @@ abstract class CommunityModel extends Model {
     return userFromId;
   }
 
-  // Future<void> getUserCommunitiesFor(User user) async {
-  //   print('$_tag at getUserCommunitiesFor');
-  //   if (user == null) return null;
-  //   bool _hasError = false;
-  //   final snapshot = await _database
-  //       .collection(USERS_COLLECTION)
-  //       .document(user.id)
-  //       .collection(MY_COMMUNITIES_COLLECTION)
-  //       .getDocuments()
-  //       .catchError((error) {
-  //     print('$_tag error on getting communities for user: $error');
-  //     _hasError = true;
-  //   });
-  //   if (_hasError) return null;
-
-  //   final documents = snapshot.documents;
-  //   List<Community> communities = [];
-  //   documents.forEach((document) async {
-  //     Community community = await communityFromId(document.documentID);
-  //     communities.add(community);
-  //   });
-  //   _myCommunities = communities;
-  //   notifyListeners();
-  //   // return communities;
-  // }
-
   shareCommunity(Community community, User user) {
     Share.share(
         //'${user.name} has invited you to join the ${community.name} community on Kijiweni.\n$APP_DEEP_LINK_HEAD${community.id}');
@@ -234,5 +201,35 @@ abstract class CommunityModel extends Model {
     if (_hasError) return StatusCode.failed;
     return StatusCode
         .success; //await _deleteCommunityRefFromUser(community, user);
+  }
+
+  Map<String, dynamic> _getInfoMap(Community community, DetailType detailType) {
+    switch (detailType) {
+      case DetailType.name:
+        return {NAME_FIELD: community.name};
+        break;
+      case DetailType.description:
+        return {DESC_FIELD: community.description};
+        break;
+      default:
+        print('error received a detailType: $detailType');
+        return Map();
+    }
+  }
+
+  Future<StatusCode> editCommunityInfo(
+      Community community, DetailType detailType) async {
+    print('$_tag at editCommunityInfo');
+    bool _hasError = false;
+    _database
+        .collection(COMMUNITIES_COLLECTION)
+        .document(community.id)
+        .updateData(_getInfoMap(community, detailType))
+        .catchError((error) {
+      print('error on updating community info: $error');
+      _hasError = true;
+    });
+    if (_hasError) return StatusCode.failed;
+    return StatusCode.success;
   }
 }

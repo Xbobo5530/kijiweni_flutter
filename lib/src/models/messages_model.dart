@@ -26,6 +26,8 @@ abstract class MessagesModel extends Model {
     );
   }
 
+  
+
   // void iOS_Permission() {
   //   _firebaseMessaging.requestNotificationPermissions(
   //       IosNotificationSettings(sound: true, badge: true, alert: true)

@@ -14,39 +14,151 @@ const _tag = 'CommunityInfoPage:';
 
 class CommunityInfoPage extends StatelessWidget {
   final Community community;
-
-  CommunityInfoPage({this.community});
+  final bool isAdmin;
+  CommunityInfoPage({this.community, this.isAdmin = false});
 
   @override
   Widget build(BuildContext context) {
-    final _imageSection = community.imageUrl != null
-        ? Center(
-            child: CircleAvatar(
-            radius: 70.0,
-            backgroundColor: Colors.lightGreen,
-            backgroundImage: NetworkImage(community.imageUrl),
-          ))
-        : CircularButton(
-            size: 120,
-            elevation: 0.0,
-            icon: Icon(
-              Icons.people,
-              size: 70.0,
-            ),
-          );
+    final _editController = TextEditingController();
 
-    final _titleSection = ListTile(
-      title: Text(
-        community.name,
-        textAlign: TextAlign.center,
-      ),
-      subtitle: community.description != null
-          ? Text(
-              community.description,
-              textAlign: TextAlign.center,
+    _getCurrentData(DetailType type) {
+      switch (type) {
+        case DetailType.name:
+          return community.name;
+          break;
+        case DetailType.description:
+          return community.description != null
+              ? community.description
+              : communityDescriptionText;
+          break;
+        default:
+          return editText;
+      }
+    }
+
+    Future<bool> _handleEditDialog(DetailType type) => showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(editText),
+              content: TextField(
+                maxLines: type == DetailType.name ? 1 : null,
+                controller: _editController,
+                decoration: InputDecoration(hintText: _getCurrentData(type)),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(cancelText),
+                  onPressed: () => Navigator.pop(context, false),
+                ),
+                FlatButton(
+                  child: Text(submitText),
+                  onPressed: () => Navigator.pop(context, true),
+                )
+              ],
+            ));
+
+    _getEditedCommunity(DetailType type, String newData) {
+      switch (type) {
+        case DetailType.name:
+          community.name = newData;
+          return community;
+          break;
+        case DetailType.description:
+          community.description = newData;
+          return community;
+          break;
+        default:
+          print('error on type: $type');
+          return community;
+      }
+    }
+
+    _showEditDialog(MainModel model, DetailType detailType) async {
+      bool startEditing = await _handleEditDialog(detailType);
+      if (!startEditing) return null;
+      final String newData = _editController.text.trim();
+      if (newData.isEmpty) return null;
+      Community editedCommunity = _getEditedCommunity(detailType, newData);
+      StatusCode editStatus =
+          await model.editCommunityInfo(editedCommunity, detailType);
+      if (editStatus == StatusCode.failed) {
+        Scaffold.of(context)
+            .showSnackBar(SnackBar(content: Text(errorMessage)));
+      }
+    }
+
+    final _imageSection = Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: community.imageUrl != null
+            ? Center(
+                child: CircleAvatar(
+                radius: 70.0,
+                backgroundColor: Colors.lightGreen,
+                backgroundImage: NetworkImage(community.imageUrl),
+              ))
+            : CircularButton(
+                size: 120,
+                elevation: 0.0,
+                icon: Icon(
+                  Icons.people,
+                  size: 70.0,
+                ),
+              ));
+
+    _buildEditButton(DetailType type) => ScopedModelDescendant<MainModel>(
+        builder: (_, __, model) => IconButton(
+              icon: Icon(
+                Icons.edit,
+                color: Colors.black12,
+              ),
+              onPressed: () => _showEditDialog(model, type),
+            ));
+
+    final _titleSection =
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+      isAdmin
+          ? SizedBox(
+              width: 40,
             )
           : Container(),
-    );
+      Container(
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 1.6),
+        child: Text(
+          community.name,
+          textAlign: TextAlign.center,
+          softWrap: true,
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+      ),
+      isAdmin ? _buildEditButton(DetailType.name) : Container(),
+    ]);
+
+    final _descSection = community.description != null
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+                isAdmin
+                    ? SizedBox(
+                        width: 40,
+                      )
+                    : Container(),
+                Container(
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width / 1.4),
+                  child: Text(
+                    community.description,
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                ),
+                isAdmin ? _buildEditButton(DetailType.description) : Container()
+              ])
+        : Container();
 
     Widget _buildMemberListItem(User member) {
       return ListTile(
@@ -56,12 +168,12 @@ class CommunityInfoPage extends StatelessWidget {
                 backgroundImage: NetworkImage(member.imageUrl),
               )
             : CircleAvatar(
-              backgroundColor: Colors.black12,
-              child: Icon(
-                Icons.person,
-                color: Colors.grey,
-                size: 32,
-              )),
+                backgroundColor: Colors.black12,
+                child: Icon(
+                  Icons.person,
+                  color: Colors.grey,
+                  size: 32,
+                )),
         title: Text(member.name),
       );
     }
@@ -87,8 +199,10 @@ class CommunityInfoPage extends StatelessWidget {
         return model.joinedCommunitiesMap.containsKey(community.id)
             ? Container()
             : Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 80),
-              child:JoinButtonView(community: community, source: SourcePage.infopage));
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4, horizontal: 80),
+                child: JoinButtonView(
+                    community: community, source: SourcePage.infopage));
       },
     );
 
@@ -136,7 +250,7 @@ class CommunityInfoPage extends StatelessWidget {
                 content: _content,
                 actions: _actions,
               ));
-        if (shouldLeave) _finishLeaveCommunity(model);
+      if (shouldLeave) _finishLeaveCommunity(model);
     }
 
     final _leaveButton =
@@ -150,7 +264,6 @@ class CommunityInfoPage extends StatelessWidget {
                       strokewidth: 2,
                       size: 15,
                       color: Colors.white,
-                      
                     ),
                   ),
                 )
@@ -186,6 +299,7 @@ class CommunityInfoPage extends StatelessWidget {
           children: <Widget>[
             _imageSection,
             _titleSection,
+            _descSection,
             _joinButtonSection,
             _shareButton,
             _membersSection,

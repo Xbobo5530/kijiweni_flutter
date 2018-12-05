@@ -137,6 +137,7 @@ class PreviewFilePage extends StatelessWidget {
                 Expanded(
                   child: ScopedModelDescendant<MainModel>(
                     builder: (_, __, model) => TextField(
+                      maxLines: null,
                           controller: _buildController(model),
                           decoration: InputDecoration(
                               suffixIcon: _sendButton,

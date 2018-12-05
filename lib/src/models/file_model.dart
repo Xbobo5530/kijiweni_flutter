@@ -69,6 +69,22 @@ abstract class FileModel extends Model {
     }
   }
 
+
+  /// uploads a file to the firebase cloud storage bucket then
+  /// updates a firebase firestore document provided
+  /// the [fileUploadFor] is an enum pf type [FileUploadFor] 
+  /// it describes the purpose of the upload and specifies which bucked to place the 
+  /// file in based on the purpose
+  /// the [target] can be of either type [Community], [User] or [Chat] based on the purpose 
+  /// of the uplaod.
+  /// 
+  /// The [uploadFor] and [target] are coupled as follows:
+  /// [FileUploadFor.chat] will always have a target of type [Chat]
+  /// [FileUploadFor.community] will always have a target of type [Community]
+  /// [FileUploadFor.user] will always have a target of type [User]
+  /// 
+  /// coupling that don't match this pattern will throw an error and cause 
+  /// [uplaodFile] to return a [StatusCode.failed].
   Future<StatusCode> uploadFile(FileUploadFor uploadFor, var target) async {
     print('$_tag at uploadFile');
     bool _hasError = false;

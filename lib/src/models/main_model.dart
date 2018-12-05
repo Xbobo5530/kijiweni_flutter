@@ -19,12 +19,18 @@ class MainModel extends Model
         MessagesModel {
   MainModel() {
     firebaseCloudMessagingListeners();
-    initUniLinks();
+    
+    _handleInitLinks();
+    // initUniLinks();
     _getJoinedCommunities();
   }
 
   _getJoinedCommunities() async {
     await updateLoginStatus();
     if (isLoggedIn) updatedJoinedCommunities(currentUser);
+  }
+
+  _handleInitLinks()async{
+    await initUniLinks();
   }
 }
