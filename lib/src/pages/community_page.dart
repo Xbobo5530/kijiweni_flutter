@@ -37,6 +37,7 @@ class CommunityPage extends StatelessWidget {
         )),
         InputFieldView(
           community: community,
+          
         ),
       ],
     );

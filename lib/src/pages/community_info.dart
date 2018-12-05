@@ -86,7 +86,9 @@ class CommunityInfoPage extends StatelessWidget {
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.joinedCommunitiesMap.containsKey(community.id)
             ? Container()
-            : JoinButtonView(community: community);
+            : Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 80),
+              child:JoinButtonView(community: community, source: SourcePage.infopage));
       },
     );
 
@@ -160,7 +162,7 @@ class CommunityInfoPage extends StatelessWidget {
     });
 
     final _shareButton = Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 80.0),
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 80.0),
         child: ScopedModelDescendant<MainModel>(
           builder: (_, __, model) => RaisedButton(
                 child: Text(inviteText),
@@ -184,9 +186,9 @@ class CommunityInfoPage extends StatelessWidget {
           children: <Widget>[
             _imageSection,
             _titleSection,
-            _membersSection,
             _joinButtonSection,
-            _shareButton
+            _shareButton,
+            _membersSection,
           ],
         ),
       ),

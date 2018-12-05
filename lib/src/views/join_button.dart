@@ -9,8 +9,13 @@ import 'package:scoped_model/scoped_model.dart';
 
 class JoinButtonView extends StatelessWidget {
   final Community community;
+  final SourcePage source;
 
-  const JoinButtonView({Key key, this.community}) : super(key: key);
+  const JoinButtonView({
+    Key key,
+    this.community,
+    this.source,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +30,34 @@ class JoinButtonView extends StatelessWidget {
           model.updatedJoinedCommunities(model.currentUser);
       }
 
+      _handleButtonColor() {
+        switch (source) {
+          case SourcePage.infopage:
+          case SourcePage.homePage:
+            return primaryColor;
+            break;
+          case SourcePage.communityPage:
+            return null ;
+            break;
+          default:
+            return null;
+        }
+      }
+
+      _handleTextColor() {
+        switch (source) {
+          case SourcePage.infopage:
+          case SourcePage.homePage:
+            return Colors.white;
+            break;
+          case SourcePage.communityPage:
+            return primaryColor;
+            break;
+          default:
+            return primaryColor;
+        }
+      }
+
       return Builder(builder: (context) {
         return FlatButton(
           onPressed: () => model.userCommunityStatus == StatusCode.waiting
@@ -32,12 +65,13 @@ class JoinButtonView extends StatelessWidget {
               : _handleJoinCommunity(model, context),
           child: model.userCommunityStatus == StatusCode.waiting
               ? MyProgressIndicator(
-                  color: primaryColor,
+                  color: _handleTextColor(),
                   size: 15,
                   strokewidth: 2,
                 )
               : Text(joinText),
-          textColor: primaryColor,
+          textColor: _handleTextColor(),
+          color: _handleButtonColor(),
         );
       });
     }));
