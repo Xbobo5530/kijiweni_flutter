@@ -4,6 +4,7 @@ import 'package:kijiweni_flutter/src/pages/create_community.dart';
 import 'package:kijiweni_flutter/src/utils/colors.dart';
 import 'package:kijiweni_flutter/src/utils/consts.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
+import 'package:kijiweni_flutter/src/views/app_info_view.dart';
 import 'package:kijiweni_flutter/src/views/explore_view.dart';
 import 'package:kijiweni_flutter/src/views/home_view.dart';
 import 'package:kijiweni_flutter/src/views/login_screen.dart';
@@ -81,9 +82,12 @@ class HomePage extends StatelessWidget {
           },
         );
 
+    
+   
+
     _buildAppBar(MainModel model) => AppBar(
           title: Text(APP_NAME),
-          leading: Icon(Icons.forum),
+          leading: AppInfoView(),
           actions: <Widget>[_buildAppBarAction(model)],
         );
 

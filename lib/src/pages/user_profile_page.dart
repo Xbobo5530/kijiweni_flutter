@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/src/models/user.dart';
-import 'package:kijiweni_flutter/src/views/user_profile.dart';
+import 'package:kijiweni_flutter/src/views/user_profile_view.dart';
 
 class UserProfilePage extends StatelessWidget {
   final User user;

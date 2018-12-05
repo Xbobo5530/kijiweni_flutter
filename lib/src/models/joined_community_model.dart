@@ -154,7 +154,6 @@ abstract class JoinedCommunityModel extends Model {
       return _userCommunityStatus;
     }
     _userCommunityStatus = StatusCode.success;
-    // updateJoinedCommunities(await _userFromId(memberMap[MEMBER_ID_FIELD]));
 
     notifyListeners();
     return _userCommunityStatus;

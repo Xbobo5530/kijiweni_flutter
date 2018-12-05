@@ -123,7 +123,7 @@ class CommunityInfoPage extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           children: <Widget>[
-            CommunityImageSectionView(community: community),
+            CommunityImageSectionView(community: community, isAdmin: isAdmin,),
             CommunityDetailsSectionView(community: community, isAdmin: isAdmin),
             _joinButtonSection,
             _shareButton,

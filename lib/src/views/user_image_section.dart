@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:kijiweni_flutter/src/models/community.dart';
 import 'package:kijiweni_flutter/src/models/main_model.dart';
+import 'package:kijiweni_flutter/src/models/user.dart';
 import 'package:kijiweni_flutter/src/utils/status_code.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:kijiweni_flutter/src/views/circular_button.dart';
 import 'package:kijiweni_flutter/src/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class CommunityImageSectionView extends StatelessWidget {
-  final Community community;
-  final bool isAdmin;
+class UserImageSectionView extends StatelessWidget {
+  final User user;
+  final bool isMe;
 
-  const CommunityImageSectionView(
-      {Key key, this.community, this.isAdmin = false})
+  const UserImageSectionView({Key key, this.user, this.isMe = false})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     _handleUploadImage(MainModel model) async {
       StatusCode uploadStatus =
-          await model.uploadFile(FileUploadFor.community, community);
+          await model.uploadFile(FileUploadFor.user, user);
       if (uploadStatus == StatusCode.failed)
         Scaffold.of(context)
             .showSnackBar(SnackBar(content: Text(errorMessage)));
     }
-    final _communityImage = community.imageUrl != null
+
+    final _userImage = user.imageUrl != null
         ? Center(
             child: CircleAvatar(
             radius: 70.0,
             backgroundColor: Colors.lightGreen,
-            backgroundImage: NetworkImage(community.imageUrl),
+            backgroundImage: NetworkImage(user.imageUrl),
           ))
         : CircularButton(
             size: 120,
@@ -38,7 +38,7 @@ class CommunityImageSectionView extends StatelessWidget {
               size: 70.0,
             ),
           );
-    _buildAddImageButton(MainModel model) => isAdmin
+    _buildAddImageButton(MainModel model) => isMe
         ? Positioned(
             right: MediaQuery.of(context).size.width / 4.2,
             bottom: 0,
@@ -77,7 +77,7 @@ class CommunityImageSectionView extends StatelessWidget {
                             backgroundColor: Colors.lightGreen,
                             backgroundImage: FileImage(model.imageFile),
                           ))
-                        : _communityImage,
+                        : _userImage,
                   ),
                   _buildAddImageButton(model)
                 ]),

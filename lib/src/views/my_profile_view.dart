@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/src/models/main_model.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:kijiweni_flutter/src/views/login_screen.dart';
-import 'package:kijiweni_flutter/src/views/user_profile.dart';
+import 'package:kijiweni_flutter/src/views/user_profile_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class MyProfileView extends StatelessWidget {

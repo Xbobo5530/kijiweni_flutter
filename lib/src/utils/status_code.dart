@@ -6,3 +6,4 @@ enum DetailType{name, bio, title, description, imageUrl}
 enum FileUploadFor {chat, community, user}
 enum Action{leave, join}
 enum SourcePage{infopage, communityPage, homePage}
+enum AppInfoAction{call, email, more}

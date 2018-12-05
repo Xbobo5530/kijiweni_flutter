@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/src/utils/consts.dart';
+import 'package:kijiweni_flutter/src/utils/status_code.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter/services.dart' show PlatformException;
+import 'package:url_launcher/url_launcher.dart';
 
 const _tag = 'NavModel';
 
@@ -57,6 +59,31 @@ abstract class NavModel extends Model {
   resetInitialLinkData(){
     _deepLinkedCommunityId = null;
   }
+
+
+  handleAppInfoAction(AppInfoAction action){
+    switch(action){
+      case AppInfoAction.call:
+      _launchURL(URL_CALL);
+      break;
+      case AppInfoAction.email:
+      _launchURL(URL_EMAIL);
+      break;
+      case AppInfoAction.more:
+      _launchURL(URL_STORE);
+      break;
+    }
+  }
+
+
+  _launchURL(String url) async {
+  
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
   
 }

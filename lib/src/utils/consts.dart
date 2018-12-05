@@ -73,3 +73,9 @@ const REPORTS_COLLECTION = 'Reports';
 /// joined communities
 const   LAST_VISIT_AT_FIELD = 'last_visit_at';
 const   LAST_MESSAGE_AT_FIELD = 'last_message_at';
+
+
+/// app info actions
+const URL_CALL = 'tel:+255713810803';
+const URL_EMAIL = 'mailto:+255713810803';
+const URL_STORE = 'http://soko.nyayozangu.con';
