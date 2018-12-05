@@ -19,33 +19,34 @@ class CommunityTimelineView extends StatelessWidget {
       return StreamBuilder<QuerySnapshot>(
         stream: model.communityChatStream(community),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData)
-              
-                return Center(child: MyProgressIndicator());
+          if (!snapshot.hasData) return Center(child: MyProgressIndicator());
 
-              if (snapshot.data.documents.length == 0)
-                return EmptyCommunityPage(community: community);
+          if (snapshot.data.documents.length == 0)
+            return EmptyCommunityPage(community: community);
 
-              if (snapshot.hasError)
-                return EmptyCommunityPage(community: community);
-              return ListView.builder(
-                controller: model.scrollController,
-                reverse: false,
-                shrinkWrap: true,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final DocumentSnapshot chatDoc =
-                      snapshot.data.documents[index];
-                  final Chat chat = Chat.fromSnapshot(chatDoc);
-                  
-                  return ChatListItemView(chat: chat, key: Key(chat.id),);
-                  return FutureBuilder<Chat>(
-                    initialData: chat,
-                    future: model.refineChat(chat),
-                    builder: (context, snapshot)=> ChatListItemView(chat: snapshot.data, key: Key(snapshot.data.id),));
-                },
-              );
-          
+          if (snapshot.hasError)
+            return EmptyCommunityPage(community: community);
+          return ListView.builder(
+            controller: model.scrollController,
+            reverse: true,
+            shrinkWrap: true,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (BuildContext context, int index) {
+              final DocumentSnapshot chatDoc = snapshot.data.documents[index];
+              final Chat chat = Chat.fromSnapshot(chatDoc);
+
+              // return ChatListItemView(chat: chat, key: Key(chat.id),);
+              return FutureBuilder<Chat>(
+                  initialData: chat,
+                  future: model.refineChat(chat),
+                  builder: (context, snapshot) {
+                    // print(chat.replyToMessage);
+                    return ChatListItemView(
+                        chat: snapshot.data,
+                        key: Key(snapshot.data.id),
+                      );});
+            },
+          );
         },
       );
     });

@@ -55,10 +55,13 @@ class CommunityInfoPage extends StatelessWidget {
                 backgroundColor: green,
                 backgroundImage: NetworkImage(member.imageUrl),
               )
-            : Icon(
-                Icons.account_circle,
-                size: 20.0,
-              ),
+            : CircleAvatar(
+              backgroundColor: Colors.black12,
+              child: Icon(
+                Icons.person,
+                color: Colors.grey,
+                size: 32,
+              )),
         title: Text(member.name),
       );
     }

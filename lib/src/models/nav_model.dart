@@ -23,7 +23,7 @@ abstract class NavModel extends Model {
 
   updateListViewPosition() {
     _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
+      _scrollController.position.minScrollExtent,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeOut,
     );

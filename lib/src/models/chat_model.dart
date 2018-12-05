@@ -12,7 +12,6 @@ const _tag = 'ChatModel:';
 
 abstract class ChatModel extends Model {
   Firestore _database = Firestore.instance;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   StatusCode _sendingMessageStatus;
   StatusCode get sendingMessageStatus => _sendingMessageStatus;
   StatusCode _handlingLikeMessageStatus;
@@ -26,20 +25,17 @@ abstract class ChatModel extends Model {
   Map<String, Chat> _cachedChats = Map();
   Map<String, User> _cachedUsers = Map();
   
-
-  // List<Chat> _chatList;
-  
-
   Stream<dynamic> communityChatStream(Community community) {
     return _database
         .collection(COMMUNITIES_COLLECTION)
         .document(community.id)
         .collection(CHATS_COLLECTION)
+        .orderBy(CREATED_AT_FIELD, descending: true)
         .snapshots();
   }
 
   Future<StatusCode> sendMessage(Chat chat, User user, Community community) async {
-    print('$_tag at sendMessage');
+    // print('$_tag at sendMessage');
     _sendingMessageStatus = StatusCode.waiting;
     notifyListeners();
     bool _hasError = false;
@@ -56,8 +52,6 @@ abstract class ChatModel extends Model {
       if (_isReplying && _replyingTo != null)
       chatMap.putIfAbsent(REPLYING_TO_FIELD, ()=>_replyingTo.id);
       cancelReplyMessage();
-    // if (chat.fileUrl != null)
-    //   chatMap.putIfAbsent(CHAT_IMAGE_URL_FIELD, () => chat.fileUrl);
     chatMap.putIfAbsent(
         CREATED_AT_FIELD, () => chat.createdAt);
     chatMap.putIfAbsent(FILE_TYPE_FIELD, ()=>chat.fileType);
@@ -77,25 +71,22 @@ abstract class ChatModel extends Model {
       notifyListeners();
     });
 
-    if (_hasError)
-      {_sendingMessageStatus = StatusCode.failed;
-      notifyListeners();
-      return _sendingMessageStatus;
+    if (_hasError){
+        _sendingMessageStatus = StatusCode.failed;
+        notifyListeners();
+        return _sendingMessageStatus;
       }
-    
       _sendingMessageStatus = StatusCode.success;
-      //updateListViewPosition();
       _latestChat = await _chatFromId(chat.communityId, docRef.documentID);
       notifyListeners();
       chat.id = docRef.documentID;
       _addToMessageForNotifications(chat, user, community);
       _updateCommunityLastMessageAt(chat);
       return _sendingMessageStatus;
-    
   }
 
   Future<StatusCode> _addToMessageForNotifications(Chat chat, User user, Community community)async{
-    print('$_tag at _addToMessageForNotifications');
+    // print('$_tag at _addToMessageForNotifications');
     bool _hasError = false;
     final title = '${user.name} @ ${community.name}';
     final body = _creadeMessageBody(chat, user); 
@@ -123,7 +114,7 @@ abstract class ChatModel extends Model {
   }
 
   Future<Chat> _chatFromId(String communityId, String chatId)async{
-    print('$_tag _chatFromId');
+    // print('$_tag _chatFromId');
     bool _hasError = false;
     DocumentSnapshot document = await _database
     .collection(COMMUNITIES_COLLECTION)
@@ -142,7 +133,7 @@ abstract class ChatModel extends Model {
   }
 
   Future<StatusCode> handleLikeMessage(Chat chat, String currentUserId) async {
-    print('$_tag at likeMessage');
+    // print('$_tag at likeMessage');
     _handlingLikeMessageStatus = StatusCode.waiting;
     notifyListeners();
 
@@ -155,8 +146,6 @@ abstract class ChatModel extends Model {
         .document(currentUserId);
 
     bool _hasError = false;
-
-    //check if current user has liked chat
     final DocumentSnapshot likeDocument = await _likeRef.get().catchError((
         error) {
       print('$_tag error on checking if user has liked chat');
@@ -195,7 +184,6 @@ abstract class ChatModel extends Model {
     notifyListeners();
     return _handlingLikeMessageStatus;
   }
-
 
   replyMessage(Chat chat) {
     //todo handle reply message;
@@ -253,40 +241,7 @@ abstract class ChatModel extends Model {
     return true;
   }
   
-  void firebaseCloudMessagingListeners() {
-
-    // if (Platform.isIOS) iOS_Permission();
-
-    _firebaseMessaging.getToken().then((token){
-      // print(token);
-    });
-
-    _firebaseMessaging.subscribeToTopic(SUBSCRIPTION_UPDATES);
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-      },
-    );
-  }
-
-  // void iOS_Permission() {
-  //   _firebaseMessaging.requestNotificationPermissions(
-  //       IosNotificationSettings(sound: true, badge: true, alert: true)
-  //   );
-  //   _firebaseMessaging.onIosSettingsRegistered
-  //       .listen((IosNotificationSettings settings)
-  //   {
-  //     print("Settings registered: $settings");
-  //   });
-  // }
-
+  
   /// Returns a [Future<Chat>] after taking in a [chatId] and a [communityId]
   /// Returns a [null] if an [error] occurs and prints the [error] to the log
   Future<Chat>chatFromId(String chatId, String communityId)async{
@@ -419,12 +374,15 @@ abstract class ChatModel extends Model {
     print('at refineChat');
 
     User _user = await _userFromId(chat.createdBy);
-    if (_user != null) {chat.username = _user.name;
-    chat.userImageUrl = _user.imageUrl;}
+    if (_user != null) {
+      chat.username = _user.name;
+    chat.userImageUrl = _user.imageUrl;
+    }
 
-    if (replyingTo != null){
+    if (chat.replyingTo != null){
 
       Chat _chat = await chatFromId(chat.replyingTo, chat.communityId);
+      // print('the reply to chat:\n${_chat.toString()}');
       if(_chat!= null){
         User _replyToUser =  await _userFromId(_chat.createdBy);
         if (_replyToUser != null) {

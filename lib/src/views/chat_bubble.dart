@@ -20,21 +20,17 @@ class ChatBubbleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _imageSection = chat.fileType == FILE_TYPE_IMAGE
-        ? FittedBox(
-            child: Container(
-              // height: 100,
-              color: Colors.white70,
-              child: chat.fileUrl != null
-                  ? Image.network(chat.fileUrl)
-                  : FittedBox(
-                      child: Container(
-                        height: 250,
-                        color: Colors.white70,
-                        child: Center(child: Icon(Icons.cloud_download),),
-                      ),
-                    ),
-            ),
-          )
+        ? Container(
+          // height: 100,
+          color: Colors.white70,
+          child: chat.fileUrl != null
+              ? Image.network(chat.fileUrl)
+              : Container(
+                height: 250,
+                color: Colors.white70,
+                child: Center(child: Icon(Icons.cloud_download),),
+              ),
+        )
         : Container();
 
     final _messageTextSection = chat.message != null && chat.message.isNotEmpty
@@ -68,20 +64,18 @@ class ChatBubbleView extends StatelessWidget {
       child: ScopedModelDescendant<MainModel>(builder: (_, __, model) {
         print('$_tag ');
         return ListTile(
-          title: Text('${chat.replyToUserId}'),
-          //TODO: continue
-          
-          // chat.replyToUserId == model.currentUser.id
-          //     ? Text(
-          //         youText,
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       )
-          //     : chat.replyToUsername == null
-          //         ? Container()
-          //         : Text(
-          //             chat.replyToUsername,
-          //             style: TextStyle(fontWeight: FontWeight.bold),
-          //           ),
+          title:
+          chat.replyToUserId == model.currentUser.id
+              ? Text(
+                  youText,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              : chat.replyToUsername == null
+                  ? Container()
+                  : Text(
+                      chat.replyToUsername,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
           subtitle: Text(
               chat.replyToMessage != null && chat.replyToMessage.isNotEmpty
                   ? chat.replyToMessage
@@ -120,38 +114,36 @@ class ChatBubbleView extends StatelessWidget {
 
     final _messageSection = Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: FittedBox(
-        child: Container(
-            constraints: BoxConstraints(
-                minWidth: 60.0,
-                maxWidth: //300.0
-                    isMe
-                        ? MediaQuery.of(context).size.width - 80
-                        : MediaQuery.of(context).size.width - 120),
-            child: _buildMessageContent(),
-            margin: const EdgeInsets.all(3.0),
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: .5,
-                    spreadRadius: 1.0,
-                    color: Colors.black.withOpacity(.12))
-              ],
-              color: isMe ? sentMessageColor : receivedMessageColor,
-              borderRadius: isMe
-                  ? BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      bottomLeft: Radius.circular(5.0),
-                      bottomRight: Radius.circular(10.0),
-                    )
-                  : BorderRadius.only(
-                      topRight: Radius.circular(5.0),
-                      bottomLeft: Radius.circular(10.0),
-                      bottomRight: Radius.circular(5.0),
-                    ),
-            )),
-      ),
+      child: Container(
+          constraints: BoxConstraints(
+              minWidth: 60.0,
+              maxWidth: //300.0
+                  isMe
+                      ? MediaQuery.of(context).size.width - 80
+                      : MediaQuery.of(context).size.width - 120),
+          child: _buildMessageContent(),
+          margin: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: .5,
+                  spreadRadius: 1.0,
+                  color: Colors.black.withOpacity(.12))
+            ],
+            color: isMe ? sentMessageColor : receivedMessageColor,
+            borderRadius: isMe
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(5.0),
+                    bottomLeft: Radius.circular(5.0),
+                    bottomRight: Radius.circular(10.0),
+                  )
+                : BorderRadius.only(
+                    topRight: Radius.circular(5.0),
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(5.0),
+                  ),
+          )),
     );
 
     final _messageStack = Stack(
@@ -160,7 +152,7 @@ class ChatBubbleView extends StatelessWidget {
         MessageMetaSectionView(chat: chat),
       ],
     );
-    final _usernameSection = FittedBox(
+    final _usernameSection = Container(
       // padding: const EdgeInsets.only(left: 4.0),
       // width: 100.0,
       child: Row(
@@ -233,7 +225,10 @@ class ChatBubbleView extends StatelessWidget {
       )
     ];
 
-    return Padding(
+    return 
+    
+    
+    Padding(
       padding: isMe
           ? const EdgeInsets.only(right: 8.0)
           : const EdgeInsets.symmetric(vertical: 4.0),

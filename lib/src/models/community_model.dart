@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kijiweni_flutter/src/models/chat.dart';
 import 'package:kijiweni_flutter/src/models/community.dart';
 import 'package:kijiweni_flutter/src/models/user.dart';
 import 'package:kijiweni_flutter/src/utils/consts.dart';
@@ -19,8 +20,8 @@ abstract class CommunityModel extends Model {
 
   // Map<String, Community> _joinedCommunities = Map();
   // Map<String, Community> get joinedCommunities => _joinedCommunities;
-  List<Community> _myCommunities = <Community>[];
-  List<Community> get myCommunities => _myCommunities;
+  // List<Community> _myCommunities = <Community>[];
+  // List<Community> get myCommunities => _myCommunities;
   Stream<dynamic> get communitiesStream => _communitiesCollection
       .orderBy(CREATED_AT_FIELD, descending: true)
       .snapshots();
@@ -81,11 +82,13 @@ abstract class CommunityModel extends Model {
       return _createCommunityStatus;
     }
     _createCommunityStatus = await _createUserCommunityRef(community, user);
-    await getUserCommunitiesFor(user);
+    // await getUserCommunitiesFor(user);
     _lastAddedCommunity = await communityFromId(community.id);
     notifyListeners();
     return _createCommunityStatus;
   }
+
+  
 
   Future<StatusCode> _createJoinedCommunityRef(
       Community community, User user) async {
@@ -141,199 +144,6 @@ abstract class CommunityModel extends Model {
       return await _createJoinedCommunityRef(community, user);
   }
 
-  // Future<StatusCode> _createUserCommunityRef(
-  //     Community community, User user) async {
-  //   print('$_tag at _createUserCommunityRef');
-  //   bool _hasError = false;
-  //   Map<String, dynamic> myCommunityMapRef = {
-  //     ID_FIELD: community.id,
-  //     CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
-  //   };
-  //   await _database
-  //       .collection(USERS_COLLECTION)
-  //       .document(user.id)
-  //       .collection(MY_COMMUNITIES_COLLECTION)
-  //       .document(community.id)
-  //       .setData(myCommunityMapRef)
-  //       .catchError((error) {
-  //     print('$_tag error on creating a my collections refference');
-  //     _hasError = true;
-  //     _createCommunityStatus = StatusCode.failed;
-  //     notifyListeners();
-  //   });
-
-  //   if (_hasError)
-  //     return StatusCode.failed;
-  //   else
-  //     return await _createJoinedCommunityRef(community, user);
-  // }
-
-  // Future<StatusCode> _createJoinedCommunityRef(
-  //     Community community, User user) async {
-  //   print('$_tag at _createUserCommunityRef');
-  //   bool _hasError = false;
-  //   Map<String, dynamic> myCommunityMapRef = {
-  //     ID_FIELD: community.id,
-  //     CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
-  //   };
-  //   await _database
-  //       .collection(USERS_COLLECTION)
-  //       .document(user.id)
-  //       .collection(COMMUNITIES_COLLECTION)
-  //       .document(community.id)
-  //       .setData(myCommunityMapRef)
-  //       .catchError((error) {
-  //     print('$_tag error on creating a my collections refference');
-  //     _hasError = true;
-  //     _createCommunityStatus = StatusCode.failed;
-  //     notifyListeners();
-  //   });
-
-  //   if (_hasError)
-  //     return StatusCode.failed;
-  //   else
-  //     return await joinCommunity(community, user);
-  // }
-
-  // Future<StatusCode> joinCommunity(Community community, User user) async {
-  //   print('$_tag at _createMembersRef');
-  //   _joiningCommunityStatus = StatusCode.waiting;
-  //   notifyListeners();
-  //   bool _hasError = false;
-  //   Map<String, dynamic> memberMap = {
-  //     MEMBER_ID_FIELD: user.id,
-  //     COMMUNITY_ID_FIELD: community.id,
-  //     CREATED_AT_FIELD: DateTime.now().millisecondsSinceEpoch
-  //   };
-  //   await _getCommunityRef(community)
-  //       .collection(MEMBERS_COLLECTION)
-  //       .document(user.id)
-  //       .setData(memberMap)
-  //       .catchError((error) {
-  //     print('$_tag error on joining community: $error');
-  //     _hasError = true;
-  //   });
-
-  //   if (_hasError) {
-  //     _joiningCommunityStatus = StatusCode.failed;
-  //     notifyListeners();
-  //     return _joiningCommunityStatus;
-  //   }
-
-  //   _firebaseMessaging.subscribeToTopic(community.id);
-  //   print('$_tag subscripbed to community ${community.name}');
-  //   return await _addCommunityMemberRef(memberMap);
-  // }
-
-  // Future<StatusCode> _addCommunityMemberRef(
-  //     Map<String, dynamic> memberMap) async {
-  //   print('$_tag at _addCommunityMemberRef');
-  //   bool _hasError = false;
-  //   await _database
-  //       .collection(USERS_COLLECTION)
-  //       .document(memberMap[MEMBER_ID_FIELD])
-  //       .collection(COMMUNITIES_COLLECTION)
-  //       .document(memberMap[COMMUNITY_ID_FIELD])
-  //       .setData(memberMap)
-  //       .catchError((error) {
-  //     print('$_tag error on adding community member ref: $error');
-  //     _hasError = true;
-  //   });
-  //   if (_hasError) {
-  //     _joiningCommunityStatus = StatusCode.failed;
-  //     notifyListeners();
-  //     leaveCommunity(memberMap[COMMUNITY_ID_FIELD], memberMap[MEMBER_ID_FIELD]);
-  //     return _joiningCommunityStatus;
-  //   }
-  //   _joiningCommunityStatus = StatusCode.success;
-  //   // updateJoinedCommunities(await _userFromId(memberMap[MEMBER_ID_FIELD]));
-  //   return StatusCode.success;
-  // }
-
-  // Future<StatusCode> leaveCommunity(Community community, User user) async {
-  //   print('$_tag at leaveCommunity');
-  //   bool _hasError = false;
-  //   await _getCommunityRef(community)
-  //       .collection(MEMBERS_COLLECTION)
-  //       .document(user.id)
-  //       .delete()
-  //       .catchError((error) {
-  //     print('$_tag error on deleting user from community member list');
-  //     _hasError = true;
-  //   });
-
-  //   if (_hasError) {
-  //     return StatusCode.failed;
-  //   }
-  //   _firebaseMessaging.unsubscribeFromTopic(community.id);
-  //   print('$_tag usubscripbed to community ${community.name}');
-  //   return await _deleteCommunityRefFromUser(community, user);
-  // }
-
-  // Future<StatusCode> _deleteCommunityRefFromUser(
-  //     Community community, User user) async {
-  //   print('$_tag at _deleteCommunityRefFromUser');
-  //   bool _hasError = false;
-  //   await _database
-  //       .collection(USERS_COLLECTION)
-  //       .document(user.id)
-  //       .collection(COMMUNITIES_COLLECTION)
-  //       .document(community.id)
-  //       .delete()
-  //       .catchError((error) {
-  //     print('$_tag error deleting community from user collections');
-  //     _hasError = true;
-  //   });
-
-  //   if (_hasError) return StatusCode.failed;
-  //   // updateJoinedCommunities(user);
-  //   notifyListeners();
-  //   return StatusCode.success;
-  // }
-
-  // Future<StatusCode> updateJoinedCommunities(User user) async {
-  //   print('$_tag at updateJoinedCommunities');
-  //   if (user == null) {
-  //     _joinedCommunities = Map();
-  //     notifyListeners();
-  //     return StatusCode.success;
-  //   }
-  //   bool _hasError = false;
-
-  //   final QuerySnapshot snapshot = await _database
-  //       .collection(USERS_COLLECTION)
-  //       .document(user.id)
-  //       .collection(COMMUNITIES_COLLECTION)
-  //       .getDocuments()
-  //       .catchError((error) {
-  //     print('$_tag error on getting user collections: $error');
-  //     _hasError = true;
-  //   });
-
-  //   if (_hasError) {
-  //     _joinedCommunities = Map();
-  //     notifyListeners();
-  //     return StatusCode.failed;
-  //   }
-  //   final documents = snapshot.documents;
-  //   Map<String, Community> _tempMap = Map();
-  //   documents.forEach((document) async {
-  //     Community community = await communityFromId(document.documentID);
-  //     _tempMap.putIfAbsent(document.documentID, () => community);
-  //   });
-  //   _joinedCommunities = _tempMap;
-  //   print(
-  //       '$_tag updted _joinedCommunities has ${_joinedCommunities.length} communities');
-
-  //   notifyListeners();
-  //   return StatusCode.success;
-  // }
-
-  // resetJoinCommunityStatus() {
-  //   _joiningCommunityStatus = null;
-  //   notifyListeners();
-  // }
-
   Future<List<User>> getCommunityMembersFor(Community community) async {
     print('$_tag at getMembersCountFor');
     bool _hasError = false;
@@ -373,39 +183,30 @@ abstract class CommunityModel extends Model {
     return userFromId;
   }
 
-  Future<void> getUserCommunitiesFor(User user) async {
-    print('$_tag at getUserCommunitiesFor');
-    if (user == null) return null;
-    bool _hasError = false;
-    final snapshot = await _database
-        .collection(USERS_COLLECTION)
-        .document(user.id)
-        .collection(MY_COMMUNITIES_COLLECTION)
-        .getDocuments()
-        .catchError((error) {
-      print('$_tag error on getting communities for user: $error');
-      _hasError = true;
-    });
-    if (_hasError) return null;
-
-    final documents = snapshot.documents;
-    List<Community> communities = [];
-    documents.forEach((document) async {
-      Community community = await communityFromId(document.documentID);
-      communities.add(community);
-    });
-    _myCommunities = communities;
-    notifyListeners();
-    // return communities;
-  }
-
-  // List<Community> getJoinedCommuityList() {
-  //   print('$_tag at getJoinedCommuityList');
-  //   List<Community> communityList = <Community>[];
-  //   _joinedCommunities.forEach((id, community) {
-  //     communityList.add(community);
+  // Future<void> getUserCommunitiesFor(User user) async {
+  //   print('$_tag at getUserCommunitiesFor');
+  //   if (user == null) return null;
+  //   bool _hasError = false;
+  //   final snapshot = await _database
+  //       .collection(USERS_COLLECTION)
+  //       .document(user.id)
+  //       .collection(MY_COMMUNITIES_COLLECTION)
+  //       .getDocuments()
+  //       .catchError((error) {
+  //     print('$_tag error on getting communities for user: $error');
+  //     _hasError = true;
   //   });
-  //   return communityList;
+  //   if (_hasError) return null;
+
+  //   final documents = snapshot.documents;
+  //   List<Community> communities = [];
+  //   documents.forEach((document) async {
+  //     Community community = await communityFromId(document.documentID);
+  //     communities.add(community);
+  //   });
+  //   _myCommunities = communities;
+  //   notifyListeners();
+  //   // return communities;
   // }
 
   shareCommunity(Community community, User user) {
