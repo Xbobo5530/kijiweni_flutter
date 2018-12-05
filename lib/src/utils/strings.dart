@@ -50,6 +50,7 @@ const inviteText = 'Karibisha majamaa';//'Invite';
 const loadingText = 'Tafadhali subiri...'; //'Loading...';
 
 const myCommunitiesText = 'Vijiwe vyangu';//'My communities';
+const userCommunitiesText = 'Vijiwe vyake';//'User's communities';
 const editText = 'Hariri taarifa'; //'Edit info';
 
 const photoText = 'Picha';//'Photo';
