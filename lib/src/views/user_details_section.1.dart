@@ -101,6 +101,8 @@ class UserDetailsSectionView extends StatelessWidget {
                   width: 40,
                 )
               : Container(),
+              isMe || user.bio != null 
+              ?
           Container(
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width / 1.4),
@@ -110,7 +112,8 @@ class UserDetailsSectionView extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black54),
             ),
-          ),
+          )
+          : Container(),
           isMe ? _buildEditButton(DetailType.bio) : Container()
         ]);
 

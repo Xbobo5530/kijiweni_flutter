@@ -8,8 +8,10 @@ import 'package:kijiweni_flutter/src/utils/consts.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:kijiweni_flutter/src/views/chat_action_menu.dart';
 import 'package:kijiweni_flutter/src/views/circular_button.dart';
+import 'package:kijiweni_flutter/src/views/error_view.dart';
 import 'package:kijiweni_flutter/src/views/message_meta_section.dart';
 import 'package:kijiweni_flutter/src/views/my_progress_indicaor.dart';
+import 'package:kijiweni_flutter/src/views/waiting_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'ChatBubble:';
@@ -29,12 +31,12 @@ class ChatBubbleView extends StatelessWidget {
               builder: (context) => FutureBuilder<User>(
                     future: model.userFromId(chat.createdBy),
                     builder: (context, snapshot) => !snapshot.hasData
-                        ? MyProgressIndicator()
+                        ? WaitingView()
                         : snapshot.data == null
-                            ? Scaffold.of(context).showSnackBar(
-                                SnackBar(content: Text(errorMessage)))
+                            ? ErrorView()
                             : UserProfilePage(user: snapshot.data),
-                  ), fullscreenDialog: true));
+                  ),
+              fullscreenDialog: true));
     }
 
     final _imageSection = chat.fileType == FILE_TYPE_IMAGE
@@ -180,17 +182,19 @@ class ChatBubbleView extends StatelessWidget {
       _messageStack,
     ];
 
-    final _userImageSection = chat.userImageUrl == null
-        ? Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: CircularButton(
-                size: 45.0, icon: Icon(Icons.person, size: 30.0)),
-          )
-        : Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: ScopedModelDescendant<MainModel>(
-              builder: (_, __, model) => InkWell(
-                    onTap: () => _goToUserProfilePage(model),
+    final _userImageSection = ScopedModelDescendant<MainModel>(
+        builder: (_, __, model) => InkWell(
+            onTap: () => _goToUserProfilePage(model),
+            child: chat.userImageUrl == null
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: CircularButton(
+                        elevation: 0.0,
+                        size: 40.0,
+                        icon: Icon(Icons.person, size: 28.0)),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
                     child: CircleAvatar(
                       radius: 20.0,
                       backgroundColor: Colors.lightGreen,
@@ -198,9 +202,7 @@ class ChatBubbleView extends StatelessWidget {
                         chat.userImageUrl,
                       ),
                     ),
-                  ),
-            ),
-          );
+                  )));
 
     final _receivedBubbleChilren = <Widget>[
       _userImageSection,
