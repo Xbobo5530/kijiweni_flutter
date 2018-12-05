@@ -4,12 +4,14 @@ import 'package:kijiweni_flutter/src/models/user.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:kijiweni_flutter/src/views/circular_button.dart';
 import 'package:kijiweni_flutter/src/views/joined_list_item.dart';
+import 'package:kijiweni_flutter/src/views/user_details_section.1.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class UserProfileView extends StatelessWidget {
   final User user;
+  final bool isMe;
 
-  const UserProfileView({Key key, this.user}) : super(key: key);
+  const UserProfileView({Key key, this.user, this.isMe = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class UserProfileView extends StatelessWidget {
                     .toList(),
               ));
 
+
     final _imageSection = user.imageUrl == null
         ? CircularButton(
             size: 120.0,
@@ -47,19 +50,13 @@ class UserProfileView extends StatelessWidget {
             backgroundImage: NetworkImage(user.imageUrl),
           ));
 
-    final _detailsSection = ListTile(
-        title: Text(
-      user.name,
-      textAlign: TextAlign.center,
-    ));
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
         child: ListView(
           children: <Widget>[
             _imageSection,
-            _detailsSection,
+            UserDetailsSectionView(user: user, isMe: isMe,),
             _userCommunitiesSection,
           ],
         ),

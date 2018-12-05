@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:kijiweni_flutter/src/models/main_model.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
-import 'package:kijiweni_flutter/src/views/circular_button.dart';
-import 'package:kijiweni_flutter/src/views/joined_list_item.dart';
 import 'package:kijiweni_flutter/src/views/login_screen.dart';
 import 'package:kijiweni_flutter/src/views/user_profile.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -40,11 +38,11 @@ class MyProfileView extends StatelessWidget {
       ),
     );
 
-
-
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return model.isLoggedIn ? UserProfileView(user: model.currentUser) : _loginView;
+        return model.isLoggedIn
+            ? UserProfileView(user: model.currentUser, isMe: model.currentUser != null,)
+            : _loginView;
       },
     );
   }

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/src/models/community.dart';
 import 'package:kijiweni_flutter/src/models/main_model.dart';
+import 'package:kijiweni_flutter/src/models/user.dart';
+import 'package:kijiweni_flutter/src/utils/colors.dart';
 import 'package:kijiweni_flutter/src/utils/status_code.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class CommunityDetailsSectionView extends StatelessWidget {
-  final Community community;
-  final bool isAdmin;
+class UserDetailsSectionView extends StatelessWidget {
+  final User user;
+  final bool isMe;
 
-  const CommunityDetailsSectionView({Key key, this.community, this.isAdmin})
+  const UserDetailsSectionView({Key key, this.isMe = false, this.user})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -18,12 +20,10 @@ class CommunityDetailsSectionView extends StatelessWidget {
     _getCurrentData(DetailType type) {
       switch (type) {
         case DetailType.name:
-          return community.name;
+          return user.name;
           break;
-        case DetailType.description:
-          return community.description != null
-              ? community.description
-              : communityDescriptionText;
+        case DetailType.bio:
+          return user.bio != null ? user.bio : bioText;
           break;
         default:
           return editText;
@@ -47,25 +47,25 @@ class CommunityDetailsSectionView extends StatelessWidget {
                 ),
                 FlatButton(
                   child: Text(submitText),
-                  textColor: Colors.g`reen,
+                  textColor: Colors.green,
                   onPressed: () => Navigator.pop(context, true),
                 )
               ],
             ));
 
-    _getEditedCommunity(DetailType type, String newData) {
+    _getEditedUser(DetailType type, String newData) {
       switch (type) {
         case DetailType.name:
-          community.name = newData;
-          return community;
+          user.name = newData;
+          return user;
           break;
-        case DetailType.description:
-          community.description = newData;
-          return community;
+        case DetailType.bio:
+          user.bio = newData;
+          return user;
           break;
         default:
           print('error on type: $type');
-          return community;
+          return user;
       }
     }
 
@@ -74,9 +74,9 @@ class CommunityDetailsSectionView extends StatelessWidget {
       if (!startEditing) return null;
       final String newData = _editController.text.trim();
       if (newData.isEmpty) return null;
-      Community editedCommunity = _getEditedCommunity(detailType, newData);
+      User editedUser = _getEditedUser(detailType, newData);
       StatusCode editStatus =
-          await model.editCommunityInfo(editedCommunity, detailType);
+          await model.editAccountDetails(editedUser, detailType);
       if (editStatus == StatusCode.failed) {
         Scaffold.of(context)
             .showSnackBar(SnackBar(content: Text(errorMessage)));
@@ -92,33 +92,31 @@ class CommunityDetailsSectionView extends StatelessWidget {
               onPressed: () => _showEditDialog(model, type),
             ));
 
-    final _descSection = community.description != null
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-                isAdmin
-                    ? SizedBox(
-                        width: 40,
-                      )
-                    : Container(),
-                Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width / 1.4),
-                  child: Text(
-                    community.description,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                ),
-                isAdmin ? _buildEditButton(DetailType.description) : Container()
-              ])
-        : Container();
+    final _bioSection = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          isMe
+              ? SizedBox(
+                  width: 40,
+                )
+              : Container(),
+          Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width / 1.4),
+            child: Text(
+              user.bio != null ? user.bio : bioText,
+              softWrap: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black54),
+            ),
+          ),
+          isMe ? _buildEditButton(DetailType.bio) : Container()
+        ]);
 
     final _titleSection =
         Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-      isAdmin
+      isMe
           ? SizedBox(
               width: 40,
             )
@@ -127,7 +125,7 @@ class CommunityDetailsSectionView extends StatelessWidget {
         constraints:
             BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 1.6),
         child: Text(
-          community.name,
+          user.name,
           textAlign: TextAlign.center,
           softWrap: true,
           style: TextStyle(
@@ -135,13 +133,14 @@ class CommunityDetailsSectionView extends StatelessWidget {
           ),
         ),
       ),
-      isAdmin ? _buildEditButton(DetailType.name) : Container(),
+      isMe ? _buildEditButton(DetailType.name) : Container(),
     ]);
 
     return Column(
+
       children: <Widget>[
         _titleSection,
-        _descSection,
+        _bioSection,
       ],
     );
   }

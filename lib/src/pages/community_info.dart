@@ -4,14 +4,14 @@ import 'package:kijiweni_flutter/src/models/main_model.dart';
 import 'package:kijiweni_flutter/src/utils/colors.dart';
 import 'package:kijiweni_flutter/src/utils/status_code.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
+import 'package:kijiweni_flutter/src/views/community_basic_section.dart';
 import 'package:kijiweni_flutter/src/views/community_image_section.dart';
-import 'package:kijiweni_flutter/src/views/community_info_section.dart';
 import 'package:kijiweni_flutter/src/views/community_member_section.dart';
 import 'package:kijiweni_flutter/src/views/join_button.dart';
 import 'package:kijiweni_flutter/src/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-const _tag = 'CommunityInfoPage:';
+// const _tag = 'CommunityInfoPage:';
 
 class CommunityInfoPage extends StatelessWidget {
   final Community community;

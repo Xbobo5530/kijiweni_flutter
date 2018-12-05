@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/src/models/main_model.dart';
-import 'package:kijiweni_flutter/src/pages/community_page.dart';
 import 'package:kijiweni_flutter/src/pages/create_community.dart';
 import 'package:kijiweni_flutter/src/utils/colors.dart';
 import 'package:kijiweni_flutter/src/utils/consts.dart';
@@ -8,7 +7,7 @@ import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:kijiweni_flutter/src/views/explore_view.dart';
 import 'package:kijiweni_flutter/src/views/home_view.dart';
 import 'package:kijiweni_flutter/src/views/login_screen.dart';
-import 'package:kijiweni_flutter/src/views/user_profile_view.dart';
+import 'package:kijiweni_flutter/src/views/my_profile_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class HomePage extends StatelessWidget {

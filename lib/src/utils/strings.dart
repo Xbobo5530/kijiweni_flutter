@@ -62,6 +62,9 @@ const createHint = 'Anzisha kijiwe';//'Create a new community';
 const communityNameText ='Jina la kijiwe'; //'Name';
 const communityDescriptionText = 'Utambulisho';// 'Description';
 
+const bioText = 'Utambilisho'; // 'Bio';
+const nameText = 'Jina'; // 'Bio';
+
 //warnings
 const emptyNameFieldsWarningText = 'Andika jina la Kijiwe';//'The name field cannot be empty';
 const confirmLogoutText = 'Unauhakika unataka kuondoka?';//'Are you sure you want to logout?';
