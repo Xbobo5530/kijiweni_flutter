@@ -11,7 +11,7 @@ class UserProfileView extends StatelessWidget {
   final User user;
   final bool isMe;
 
-  const UserProfileView({Key key, this.user, this.isMe = false}) : super(key: key);
+  const UserProfileView({Key key, @required this.user, this.isMe = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

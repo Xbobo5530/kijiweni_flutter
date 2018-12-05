@@ -47,7 +47,7 @@ class CommunityDetailsSectionView extends StatelessWidget {
                 ),
                 FlatButton(
                   child: Text(submitText),
-                  textColor: Colors.g`reen,
+                  textColor: Colors.green,
                   onPressed: () => Navigator.pop(context, true),
                 )
               ],

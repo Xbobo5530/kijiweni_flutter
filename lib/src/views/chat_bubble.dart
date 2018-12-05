@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kijiweni_flutter/src/models/chat.dart';
 import 'package:kijiweni_flutter/src/models/main_model.dart';
+import 'package:kijiweni_flutter/src/models/user.dart';
+import 'package:kijiweni_flutter/src/pages/user_profile_page.dart';
 import 'package:kijiweni_flutter/src/utils/colors.dart';
 import 'package:kijiweni_flutter/src/utils/consts.dart';
 import 'package:kijiweni_flutter/src/utils/strings.dart';
 import 'package:kijiweni_flutter/src/views/chat_action_menu.dart';
 import 'package:kijiweni_flutter/src/views/circular_button.dart';
 import 'package:kijiweni_flutter/src/views/message_meta_section.dart';
+import 'package:kijiweni_flutter/src/views/my_progress_indicaor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const _tag = 'ChatBubble:';
@@ -19,18 +22,35 @@ class ChatBubbleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _goToUserProfilePage(MainModel model) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => FutureBuilder<User>(
+                    future: model.userFromId(chat.createdBy),
+                    builder: (context, snapshot) => !snapshot.hasData
+                        ? MyProgressIndicator()
+                        : snapshot.data == null
+                            ? Scaffold.of(context).showSnackBar(
+                                SnackBar(content: Text(errorMessage)))
+                            : UserProfilePage(user: snapshot.data),
+                  ), fullscreenDialog: true));
+    }
+
     final _imageSection = chat.fileType == FILE_TYPE_IMAGE
         ? Container(
-          // height: 100,
-          color: Colors.white70,
-          child: chat.fileUrl != null
-              ? Image.network(chat.fileUrl)
-              : Container(
-                height: 250,
-                color: Colors.white70,
-                child: Center(child: Icon(Icons.cloud_download),),
-              ),
-        )
+            // height: 100,
+            color: Colors.white70,
+            child: chat.fileUrl != null
+                ? Image.network(chat.fileUrl)
+                : Container(
+                    height: 250,
+                    color: Colors.white70,
+                    child: Center(
+                      child: Icon(Icons.cloud_download),
+                    ),
+                  ),
+          )
         : Container();
 
     final _messageTextSection = chat.message != null && chat.message.isNotEmpty
@@ -41,31 +61,12 @@ class ChatBubbleView extends StatelessWidget {
           )
         : Container();
 
-    // _buildReplyContent(MainModel model) => ListTile(
-    //       title: chat.createdBy == model.currentUser.id
-    //           ? Text(
-    //               youText,
-    //               style: TextStyle(fontWeight: FontWeight.bold),
-    //             )
-    //           : chat.replyToUsername == null
-    //               ? Container()
-    //               : Text(
-    //                   chat.replyToUsername,
-    //                   style: TextStyle(fontWeight: FontWeight.bold),
-    //                 ),
-    //       subtitle: Text(
-    //           chat.replyToMessage != null && chat.replyToMessage.isNotEmpty
-    //               ? chat.replyToMessage
-    //               : chat.fileType == FILE_TYPE_IMAGE ? photoText : ''),
-    //     );
-
     final _replyingToView = Container(
       color: Colors.white70,
       child: ScopedModelDescendant<MainModel>(builder: (_, __, model) {
         print('$_tag ');
         return ListTile(
-          title:
-          chat.replyToUserId == model.currentUser.id
+          title: chat.replyToUserId == model.currentUser.id
               ? Text(
                   youText,
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -153,8 +154,6 @@ class ChatBubbleView extends StatelessWidget {
       ],
     );
     final _usernameSection = Container(
-      // padding: const EdgeInsets.only(left: 4.0),
-      // width: 100.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -189,12 +188,17 @@ class ChatBubbleView extends StatelessWidget {
           )
         : Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: CircleAvatar(
-              radius: 20.0,
-              backgroundColor: Colors.lightGreen,
-              backgroundImage: NetworkImage(
-                chat.userImageUrl,
-              ),
+            child: ScopedModelDescendant<MainModel>(
+              builder: (_, __, model) => InkWell(
+                    onTap: () => _goToUserProfilePage(model),
+                    child: CircleAvatar(
+                      radius: 20.0,
+                      backgroundColor: Colors.lightGreen,
+                      backgroundImage: NetworkImage(
+                        chat.userImageUrl,
+                      ),
+                    ),
+                  ),
             ),
           );
 
@@ -225,10 +229,7 @@ class ChatBubbleView extends StatelessWidget {
       )
     ];
 
-    return 
-    
-    
-    Padding(
+    return Padding(
       padding: isMe
           ? const EdgeInsets.only(right: 8.0)
           : const EdgeInsets.symmetric(vertical: 4.0),
